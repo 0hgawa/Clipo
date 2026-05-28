@@ -1,0 +1,249 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Clipo",
+  "version": "0.1.0",
+  "identifier": "app.clipo.desktop",
+  "build": {
+    "frontendDist": "../../ui/dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "pnpm --filter clipo-ui dev",
+    "beforeBuildCommand": "pnpm --filter clipo-ui build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "url": "index.html",
+        "title": "Clipo",
+        "width": 720,
+        "height": 480,
+        "minWidth": 480,
+        "minHeight": 320,
+        "resizable": true,
+        "decorations": true,
+        "visible": false
+      },
+      {
+        "label": "actions",
+        "url": "index.html?surface=actions",
+        "title": "Clipo Capture",
+        "width": 290,
+        "height": 204,
+        "resizable": false,
+        "decorations": false,
+        "transparent": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a",
+        "focus": false
+      },
+      {
+        "label": "settings",
+        "url": "index.html?surface=settings",
+        "title": "Clipo · Settings",
+        "width": 720,
+        "height": 450,
+        "minWidth": 600,
+        "minHeight": 400,
+        "resizable": true,
+        "decorations": false,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a"
+      },
+      {
+        "label": "history",
+        "url": "index.html?surface=history",
+        "title": "Clipo · History",
+        "width": 960,
+        "height": 640,
+        "minWidth": 640,
+        "minHeight": 400,
+        "resizable": true,
+        "decorations": false,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a"
+      },
+      {
+        "label": "timer",
+        "url": "index.html?surface=timer",
+        "title": "Clipo Timer",
+        "width": 320,
+        "height": 220,
+        "resizable": false,
+        "decorations": false,
+        "transparent": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a",
+        "focus": true
+      },
+      {
+        "label": "quick",
+        "url": "index.html?surface=quick",
+        "title": "Clipo Quick Access",
+        "width": 340,
+        "height": 440,
+        "resizable": false,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a",
+        "focus": true
+      },
+      {
+        "label": "menu",
+        "url": "index.html?surface=menu",
+        "title": "Clipo Menu",
+        "width": 660,
+        "height": 264,
+        "resizable": false,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a",
+        "focus": true
+      },
+      {
+        "label": "ocr",
+        "url": "index.html?surface=ocr",
+        "title": "Clipo · OCR",
+        "width": 520,
+        "height": 420,
+        "minWidth": 360,
+        "minHeight": 280,
+        "resizable": true,
+        "decorations": false,
+        "alwaysOnTop": false,
+        "skipTaskbar": false,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a",
+        "focus": true
+      },
+      {
+        "label": "editor",
+        "url": "index.html?surface=editor",
+        "title": "Clipo · Editor",
+        "width": 1100,
+        "height": 640,
+        "minWidth": 720,
+        "minHeight": 500,
+        "resizable": true,
+        "decorations": false,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a"
+      },
+      {
+        "label": "tray-menu",
+        "url": "index.html?surface=tray-menu",
+        "title": "Clipo Menu",
+        "width": 278,
+        "height": 455,
+        "resizable": false,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a",
+        "focus": true
+      },
+      {
+        "label": "recording-bar",
+        "url": "index.html?surface=recording-bar",
+        "title": "Clipo Recording",
+        "width": 320,
+        "height": 44,
+        "resizable": false,
+        "decorations": false,
+        "transparent": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a",
+        "focus": false
+      },
+      {
+        "label": "window-picker",
+        "url": "index.html?surface=window-picker",
+        "title": "Clipo · Capture window",
+        "width": 380,
+        "height": 480,
+        "resizable": false,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "visible": false,
+        "backgroundColor": "#1a1a1a",
+        "focus": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' ipc: http://ipc.localhost; img-src 'self' data: blob: asset: http://asset.localhost; style-src 'self' 'unsafe-inline'; script-src 'self'",
+      "assetProtocol": {
+        "enable": true,
+        "scope": {
+          "allow": ["$PICTURE/Clipo/**", "$LOCALDATA/Clipo/thumbs/**"],
+          "deny": []
+        }
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "createUpdaterArtifacts": true,
+    "targets": ["nsis"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "category": "Utility",
+    "shortDescription": "Native Windows screenshot + screen recording",
+    "longDescription": "Tray-resident screenshot and screen recording utility.",
+    "copyright": "Copyright (c) 2026 Ohgawa",
+    "licenseFile": "../../LICENSE",
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
+      "allowDowngrades": false,
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "headerImage": "icons/installer-header.bmp",
+        "uninstallerHeaderImage": "icons/installer-header.bmp",
+        "sidebarImage": "icons/installer-sidebar.bmp",
+        "installMode": "perMachine",
+        "displayLanguageSelector": false,
+        "languages": ["English", "PortugueseBR"],
+        "compression": "lzma"
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEEzNjA3RkI4QjQ3MTUyNzAKUldSd1VuRzB1SDlnbzZLa1JuZ2J5eTErWVN0bWR2R3pybjFLTnFtNHo4eXFMa1p2ck1SRUIwZVgK",
+      "endpoints": [
+        "https://github.com/0hgawa/Clipo/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

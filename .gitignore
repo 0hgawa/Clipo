@@ -1,0 +1,19 @@
+/target
+**/*.rs.bk
+/node_modules
+/ui/node_modules
+/ui/dist
+/ui/.vite
+/crates/clipo/gen/schemas
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+Thumbs.db
+.DS_Store
+*.log
+
+# Tauri updater signing keys — NEVER commit
+clipo-update.key
+clipo-update.key.pub
+*.pem
