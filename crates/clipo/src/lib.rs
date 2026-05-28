@@ -116,6 +116,7 @@ const HOTKEY_DEFS: &[HotkeyDef] = &[
     // region is the dominant screenshot use case (~80%).
     HotkeyDef { id: "overlay", label: "Capture region", default_combo: "PrintScreen" },
     HotkeyDef { id: "capture", label: "Capture fullscreen", default_combo: "Shift+PrintScreen" },
+    HotkeyDef { id: "window", label: "Capture window", default_combo: "CommandOrControl+Shift+W" },
     HotkeyDef { id: "record-fullscreen", label: "Record fullscreen", default_combo: "CommandOrControl+Shift+R" },
     HotkeyDef { id: "ocr", label: "Extract text (OCR)", default_combo: "CommandOrControl+Shift+T" },
     HotkeyDef { id: "quick", label: "Quick Access", default_combo: "CommandOrControl+Shift+A" },
@@ -520,6 +521,8 @@ fn dispatch_shortcut(app: &AppHandle, shortcut: &Shortcut) {
             if reject_during_recording(app, "capture") { return; }
             spawn_fullscreen_capture(app);
         }
+        // show_window_picker has its own reject_during_recording inside.
+        "window" => show_window_picker(app),
         "quick" => show_quick_access(app),
         "menu" => show_menu(app),
         "ocr" => {
@@ -2740,7 +2743,7 @@ mod tests {
             if flag { scoped += 1 } else { unscoped += 1 }
         }
         assert_eq!(scoped, 5);
-        assert_eq!(unscoped, 6);
+        assert_eq!(unscoped, 7);
     }
 
     #[test]
