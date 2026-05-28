@@ -332,7 +332,7 @@ struct CaptureEntry {
 #[allow(clippy::too_many_lines)]
 pub fn run() {
     install_tracing();
-    tracing::info!(version = env!("CARGO_PKG_VERSION"), "clipo-alfa starting");
+    tracing::info!(version = env!("CARGO_PKG_VERSION"), "clipo starting");
 
     // Load + parse hotkeys BEFORE Builder, so State is registered before
     // the pre-declared windows exist. WebView2 starts loading the
@@ -467,7 +467,7 @@ pub fn run() {
                 }
             }
 
-            tracing::info!("clipo-alfa ready");
+            tracing::info!("clipo ready");
             Ok(())
         })
         .on_window_event(|window, event| {
