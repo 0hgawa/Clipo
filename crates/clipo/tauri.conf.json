@@ -212,6 +212,7 @@
       "icons/128x128@2x.png",
       "icons/icon.ico"
     ],
+    "resources": ["resources/ffmpeg.exe"],
     "category": "Utility",
     "shortDescription": "Native Windows screenshot + screen recording",
     "longDescription": "Tray-resident screenshot and screen recording utility.",

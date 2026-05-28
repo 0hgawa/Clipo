@@ -17,3 +17,8 @@ Thumbs.db
 clipo-update.key
 clipo-update.key.pub
 *.pem
+
+# Bundled binaries — fetched locally via scripts/fetch-ffmpeg.ps1, not
+# tracked in git (62 MB ffmpeg.exe would bloat the repo and a stale
+# vendored copy is worse than a fresh download).
+crates/clipo/resources/

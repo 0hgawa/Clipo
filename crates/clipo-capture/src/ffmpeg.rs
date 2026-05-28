@@ -9,7 +9,12 @@ pub fn locate() -> Option<PathBuf> {
         && let Some(dir) = exe.parent()
     {
         for candidate in [
+            // Flat layout (when bundled as `resources: ["ffmpeg.exe"]`).
             dir.join("ffmpeg.exe"),
+            // Tauri 2 `bundle.resources` preserves source folder
+            // structure — ffmpeg.exe declared under `resources/` lands
+            // at `<install_dir>/resources/ffmpeg.exe`.
+            dir.join("resources").join("ffmpeg.exe"),
             // Dev fallback: target/<profile>/clipo.exe → workspace/vendor/ffmpeg-bin/.
             dir.join("../../vendor/ffmpeg-bin/ffmpeg.exe"),
         ] {
