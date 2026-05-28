@@ -2293,10 +2293,12 @@ fn generate_recording_icon_variant(default: &tauri::image::Image<'_>) -> tauri::
             }
             #[allow(clippy::cast_sign_loss)]
             let idx = ((y as u32) * width + (x as u32)) as usize * 4;
-            // Inner: Apple SF semantic red #FF3B30 (reads from any
-            // background). Outer ring: white for contrast on dark trays.
+            // Inner: Material Red A400 #FF1744 — matches `--color-danger`
+            // from app.css so the tray's recording dot reads as the
+            // same red as the rest of the recording UI (bar, overlay).
+            // Outer ring: white for contrast on dark trays.
             let (r, g, b) = if dist_sq <= inner_r_sq {
-                (255, 59, 48)
+                (255, 23, 68)
             } else {
                 (255, 255, 255)
             };

@@ -48,11 +48,13 @@ const MAGNIFIER_CLASS_NAME: PCWSTR = w!("ClipoOverlayMagnifier");
 // light enough to keep the desktop legible.
 const DIMMER_ALPHA: u8 = 95;
 
-// Recording indicator: 3 px solid red ring (Windows action red #E81123).
+// Recording indicator: 3 px solid red ring. Matches `--color-danger`
+// (Material Red A400 #FF1744) used elsewhere in the app so the
+// recording cue reads as the same semantic red across surfaces.
 const RECORDING_BORDER_PX: i32 = 3;
-const RECORDING_BORDER_R: u8 = 0xE8;
-const RECORDING_BORDER_G: u8 = 0x11;
-const RECORDING_BORDER_B: u8 = 0x23;
+const RECORDING_BORDER_R: u8 = 0xFF;
+const RECORDING_BORDER_G: u8 = 0x17;
+const RECORDING_BORDER_B: u8 = 0x44;
 
 // Dimensions label (W × H pill near cursor). Fixed width avoids jitter.
 const LABEL_WIDTH: i32 = 136;
