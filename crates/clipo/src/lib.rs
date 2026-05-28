@@ -27,7 +27,9 @@ use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
 use tauri_plugin_store::StoreExt as _;
 use tracing_subscriber::{EnvFilter, fmt};
 use windows::Win32::Foundation::{HWND, TRUE};
-use windows::Win32::Graphics::Dwm::{DWMWA_TRANSITIONS_FORCEDISABLED, DwmSetWindowAttribute};
+use windows::Win32::Graphics::Dwm::{
+    DWMWA_TRANSITIONS_FORCEDISABLED, DWMWA_USE_IMMERSIVE_DARK_MODE, DwmSetWindowAttribute,
+};
 use windows::Win32::System::SystemInformation::GetLocalTime;
 use windows::Win32::UI::Shell::ShellExecuteW;
 use windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
@@ -467,13 +469,17 @@ pub fn run() {
 
             // Skip DWM fade-out on popups: every hide() otherwise gets a
             // 100-200 ms ghost fade that reads as lag vs the click.
+            // Every undecorated dark surface gets the same DWM attrs:
+            // transitions disabled (instant hide/show) + immersive dark
+            // mode (kills the black shadow-halo around the window).
+            // Tray-menu is handled separately inside prewarm_tray_menu.
             for label in [
                 ACTIONS_LABEL, SETTINGS_LABEL, HISTORY_LABEL, TIMER_LABEL,
                 QUICK_LABEL, MENU_LABEL, OCR_LABEL, EDITOR_LABEL,
-                RECORDING_BAR_LABEL,
+                RECORDING_BAR_LABEL, WINDOW_PICKER_LABEL,
             ] {
                 if let Some(win) = app.handle().get_webview_window(label) {
-                    disable_dwm_transitions(&win);
+                    apply_dark_dwm_attrs(&win);
                 }
             }
 
@@ -2431,7 +2437,7 @@ fn prewarm_tray_menu(app: &AppHandle) {
         tracing::warn!("tray-menu window missing — skip prewarm");
         return;
     };
-    disable_dwm_transitions(&win);
+    apply_dark_dwm_attrs(&win);
     if let Err(e) = win.set_position(LogicalPosition::new(-30000.0, -30000.0)) {
         tracing::warn!(error = %e, "prewarm set_position");
     }
@@ -2444,30 +2450,39 @@ fn prewarm_tray_menu(app: &AppHandle) {
     }
 }
 
-/// Tell DWM to skip its open/close/minimise/maximise animations. Same
-/// flag the Windows shell sets on its own popup menus. Without this,
-/// each hide() triggers a 100-200 ms ghost fade that reads as lag.
-fn disable_dwm_transitions(win: &WebviewWindow) {
+/// Apply the two DWM attributes that every dark, undecorated Clipo
+/// surface needs:
+///
+/// - `DWMWA_TRANSITIONS_FORCEDISABLED` skips the 100-200 ms open/close
+///   ghost fade so hide() feels instant. Same flag the Windows shell
+///   sets on its own popup menus.
+/// - `DWMWA_USE_IMMERSIVE_DARK_MODE` tells DWM the window is dark, so
+///   the shadow halo (the ~7 px DWM extends past the client area to
+///   draw the shadow) is rendered dark instead of black. Without it,
+///   undecorated dark windows show a visible black ring against light
+///   backgrounds — a known Windows 10/11 DWM quirk. Microsoft documents
+///   the attribute since build 18362 (1903); older builds return Err
+///   and we log + carry on.
+fn apply_dark_dwm_attrs(win: &WebviewWindow) {
     let Ok(tauri_hwnd) = win.hwnd() else {
-        tracing::warn!(label = win.label(), "hwnd unavailable for DWM transitions");
+        tracing::warn!(label = win.label(), "hwnd unavailable for DWM attrs");
         return;
     };
     // Tauri re-exports windows-0.61's HWND; workspace pins 0.59. Both
     // are `pub struct HWND(*mut c_void)` — bridge via raw pointer.
     let hwnd = HWND(tauri_hwnd.0.cast());
     let value = TRUE;
+    let value_ptr = std::ptr::from_ref(&value).cast();
     // SAFETY: BOOL by-pointer with size; HWND owned by Tauri outlives
-    // this synchronous call.
-    let res = unsafe {
-        DwmSetWindowAttribute(
-            hwnd,
-            DWMWA_TRANSITIONS_FORCEDISABLED,
-            std::ptr::from_ref(&value).cast(),
-            4u32,
-        )
-    };
-    if let Err(e) = res {
-        tracing::warn!(error = %e, label = win.label(), "DWMWA_TRANSITIONS_FORCEDISABLED");
+    // these synchronous calls.
+    let label = win.label();
+    for (attr, name) in [
+        (DWMWA_TRANSITIONS_FORCEDISABLED, "DWMWA_TRANSITIONS_FORCEDISABLED"),
+        (DWMWA_USE_IMMERSIVE_DARK_MODE, "DWMWA_USE_IMMERSIVE_DARK_MODE"),
+    ] {
+        if let Err(e) = unsafe { DwmSetWindowAttribute(hwnd, attr, value_ptr, 4u32) } {
+            tracing::warn!(error = %e, label, attr = name);
+        }
     }
 }
 
