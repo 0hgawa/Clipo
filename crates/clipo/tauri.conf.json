@@ -216,7 +216,6 @@
     "shortDescription": "Native Windows screenshot + screen recording",
     "longDescription": "Tray-resident screenshot and screen recording utility.",
     "copyright": "Copyright (c) 2026 Ohgawa",
-    "licenseFile": "../../LICENSE",
     "windows": {
       "webviewInstallMode": {
         "type": "downloadBootstrapper",
