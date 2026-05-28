@@ -344,6 +344,15 @@ pub fn run() {
     let shortcuts_runtime = build_shortcuts_runtime(&settings);
 
     Builder::default()
+        // First plugin in the chain: must intercept duplicate launches
+        // BEFORE any other init runs. The plugin owns the named mutex
+        // + named pipe IPC end-to-end — we just consume the callback
+        // it fires inside the original instance and open the
+        // all-in-one menu (CleanShot X convention for tray-resident
+        // apps with no "main window").
+        .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
+            show_menu(app);
+        }))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_autostart::init(
