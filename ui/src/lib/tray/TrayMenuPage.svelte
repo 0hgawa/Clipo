@@ -74,7 +74,7 @@
   const defaultItems = $derived.by<Item[]>(() => [
     { kind: "item", id: "capture-region", icon: Crop, label: t().trayCaptureRegion, hotkeyId: "overlay" },
     { kind: "item", id: "capture-fullscreen", icon: Monitor, label: t().trayCaptureFullscreen, hotkeyId: "capture" },
-    { kind: "item", id: "capture-window", icon: AppWindow, label: t().trayCaptureWindow },
+    { kind: "item", id: "capture-window", icon: AppWindow, label: t().trayCaptureWindow, hotkeyId: "window" },
     { kind: "item", id: "capture-timer", icon: TimerIcon, label: t().trayCaptureTimer },
     { kind: "item", id: "capture-ocr", icon: ScanText, label: t().trayCaptureOcr, hotkeyId: "ocr" },
     { kind: "divider" },
