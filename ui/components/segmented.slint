@@ -1,0 +1,56 @@
+import { Theme } from "../theme.slint";
+
+// Segmented control (a row of mutually-exclusive chips). iOS/Linear-style: a
+// muted track with a raised "pill" on the selected segment (white in light,
+// a lighter grey in dark — it lifts against the track in both). Segments size
+// to their label so longer options never clip. Shared by the history filters
+// and the settings appearance picker.
+export component Segmented inherits Rectangle {
+    in property <[string]> options;
+    in-out property <int> selected;
+    in property <bool> fill;          // stretch to the parent width, segments shared equally
+    callback changed(int);
+    width: l.preferred-width;
+    height: 30px;
+    // Rounded-rect (not a full pill) to match the app's buttons/inputs (Fluent 2).
+    border-radius: Theme.radius-md;
+    background: Theme.surface-2;
+    l := HorizontalLayout {
+        padding: 3px;
+        spacing: 0px;
+        for opt[i] in root.options: Rectangle {
+            horizontal-stretch: root.fill ? 1 : 0;
+            border-radius: Theme.radius-sm;
+            accessible-role: button;
+            accessible-label: opt;
+            accessible-action-default => { root.selected = i; root.changed(i); }
+            // iOS UISegmentedControl thumb colours: white in light, systemGray2
+            // (#636366) in dark — a lifted grey on the systemGray5-ish track
+            // (our surface-2). Subtle shadow in light where it actually lifts.
+            background: root.selected == i
+                ? (Theme.dark ? #525257 : Theme.surface-1)
+                : (seg.has-hover ? Theme.surface-3 : transparent);
+            drop-shadow-blur: root.selected == i && !Theme.dark ? 4px : 0;
+            drop-shadow-offset-y: root.selected == i && !Theme.dark ? 1px : 0;
+            drop-shadow-color: #00000026;
+            HorizontalLayout {
+                padding-left: 12px;
+                padding-right: 12px;
+                VerticalLayout {
+                    alignment: center;
+                    Text {
+                        text: opt;
+                        horizontal-alignment: center;
+                        color: root.selected == i ? Theme.fg : Theme.fg-muted;
+                        font-size: Theme.text-small;
+                        // Constant weight (iOS-style): the pill + colour mark the
+                        // selection. Bolding it would widen the text and make the
+                        // whole control grow/shrink as you pick options.
+                        font-weight: 500;
+                    }
+                }
+            }
+            seg := TouchArea { mouse-cursor: pointer; clicked => { root.selected = i; root.changed(i); } }
+        }
+    }
+}

@@ -1,0 +1,110 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon } from "icon.slint";
+import { Loader } from "loader.slint";
+import { Clickable } from "clickable.slint";
+
+// Action button on the hover scrim — white-on-dark, red hover for delete.
+component ThumbAct inherits Rectangle {
+    in property <image> icon;
+    in property <bool> busy; // upload in flight → spin in place of the icon
+    in property <bool> danger;
+    in property <string> a11y-label;
+    callback clicked;
+    width: 30px;
+    height: 28px;
+    border-radius: Theme.radius-sm;
+    border-width: 1px;
+    border-color: #ffffff24;
+    background: a.has-hover ? (root.danger ? Theme.danger : #000000d9) : #0000008c;
+    accessible-role: button;
+    accessible-label: root.a11y-label;
+    accessible-action-default => { root.clicked(); }
+    if !root.busy: Icon { source: root.icon; size: 14px; color: white; }
+    if root.busy: Loader { size: 14px; tint: white; }
+    a := Clickable { clicked => { root.clicked(); } }
+}
+
+// The cloud-upload action that morphs to "copy link" once the capture is on the
+// cloud — distinct icon (link) so the state is visible; re-copies the cached URL
+// instead of re-uploading.
+component UploadAct inherits ThumbAct {
+    in property <bool> uploaded;
+    in property <int> phase; // 0 idle · 1 uploading · 2 done(check)
+    callback upload;
+    callback copy-link;
+    icon: root.phase == 2 ? Icons.check : (root.uploaded ? Icons.link : Icons.upload);
+    busy: root.phase == 1;
+    a11y-label: root.uploaded ? @tr("Copy link") : @tr("Upload");
+    clicked => { if (root.uploaded) { root.copy-link(); } else { root.upload(); } }
+}
+
+export component HistoryThumb inherits Rectangle {
+    in property <image> thumb;
+    in property <int> kind; // 0 image · 1 video (mp4) · 2 gif
+    in property <bool> gif-ready; // ffmpeg present → offer GIF export on videos
+    in property <bool> upload-configured; // cloud upload set up → offer it on images
+    in property <bool> uploaded; // already uploaded → the cloud button copies the link
+    in property <int> up-phase;  // 0 idle · 1 uploading · 2 done — drives the upload button
+    in property <bool> copied;   // just copied this card → flash a check on its Copy
+    callback clicked;
+    callback edit;
+    callback ocr;
+    callback copy;
+    callback upload;
+    callback copy-link;
+    callback reveal;
+    callback delete;
+    callback export-gif;
+    border-radius: Theme.radius-md;
+    background: Theme.surface-media;
+    border-width: 1px;
+    border-color: hover.has-hover ? Theme.accent : Theme.border-subtle;
+    clip: true;
+    // Fallback glyph when there's no thumbnail.
+    if root.thumb.width <= 0: Icon { source: Icons.photo; size: 24px; color: Theme.fg-subtle; }
+    // contain (not cover): show the whole capture in its real aspect ratio —
+    // for a capture history, identifying the shot matters more than a tidy grid;
+    // the surface-media background fills the letterbox.
+    Image { source: root.thumb; image-fit: contain; width: 100%; height: 100%; }
+    hover := Clickable {
+        clicked => { root.clicked(); }
+        // Hover-reveal scrim + action row (children of `hover`, so the thumb
+        // stays hovered over them; their clicks are consumed, don't open).
+        if hover.has-hover: Rectangle {
+            background: #00000059;
+            VerticalLayout {
+                alignment: end;
+                padding-bottom: 8px;
+                if root.kind == 0: HorizontalLayout {
+                    alignment: center;
+                    spacing: 6px;
+                    // Canonical order: Copy · Upload · Edit · Extract text · Reveal · Delete.
+                    ThumbAct { icon: root.copied ? Icons.check : Icons.copy; a11y-label: @tr("Copy"); clicked => { root.copy(); } }
+                    if root.upload-configured: UploadAct { uploaded: root.uploaded; phase: root.up-phase; upload => { root.upload(); } copy-link => { root.copy-link(); } }
+                    ThumbAct { icon: Icons.pencil; a11y-label: @tr("Edit"); clicked => { root.edit(); } }
+                    ThumbAct { icon: Icons.scan-text; a11y-label: @tr("Extract text"); clicked => { root.ocr(); } }
+                    ThumbAct { icon: Icons.folder-open; a11y-label: @tr("Reveal in folder"); clicked => { root.reveal(); } }
+                    ThumbAct { icon: Icons.discard; danger: true; a11y-label: @tr("Delete"); clicked => { root.delete(); } }
+                }
+                // Gif: opens (animated) in the viewer on click; edit/ocr/copy
+                // would flatten the animation. Upload (like images) when set up.
+                if root.kind == 2: HorizontalLayout {
+                    alignment: center;
+                    spacing: 6px;
+                    if root.upload-configured: UploadAct { uploaded: root.uploaded; phase: root.up-phase; upload => { root.upload(); } copy-link => { root.copy-link(); } }
+                    ThumbAct { icon: Icons.folder-open; a11y-label: @tr("Reveal in folder"); clicked => { root.reveal(); } }
+                    ThumbAct { icon: Icons.discard; danger: true; a11y-label: @tr("Delete"); clicked => { root.delete(); } }
+                }
+                // Video: the thumb click opens the system player directly, so the
+                // hover row only needs reveal + delete (no duplicate "open").
+                if root.kind == 1: HorizontalLayout {
+                    alignment: center;
+                    spacing: 6px;
+                    if root.gif-ready: ThumbAct { icon: Icons.gif; busy: root.up-phase == 1; a11y-label: @tr("Export as GIF"); clicked => { root.export-gif(); } }
+                    ThumbAct { icon: Icons.folder-open; a11y-label: @tr("Reveal in folder"); clicked => { root.reveal(); } }
+                    ThumbAct { icon: Icons.discard; danger: true; a11y-label: @tr("Delete"); clicked => { root.delete(); } }
+                }
+            }
+        }
+    }
+}

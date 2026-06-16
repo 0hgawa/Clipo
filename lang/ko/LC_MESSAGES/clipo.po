@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Close"
+msgstr "닫기"
+
+msgid "Copy link"
+msgstr "링크 복사"
+
+msgid "Upload"
+msgstr "업로드"
+
+msgid "Copy"
+msgstr "복사"
+
+msgid "Edit"
+msgstr "편집"
+
+msgid "Extract text"
+msgstr "텍스트 추출"
+
+msgid "Reveal in folder"
+msgstr "폴더에서 보기"
+
+msgid "Delete"
+msgstr "삭제"
+
+msgid "Export as GIF"
+msgstr "GIF로 내보내기"
+
+msgid "Minimize"
+msgstr "최소화"
+
+msgid "Restore"
+msgstr "복원"
+
+msgid "Maximize"
+msgstr "최대화"
+
+msgid "Esc to cancel"
+msgstr "취소하려면 Esc"
+
+msgid "Move"
+msgstr "이동"
+
+msgid "Arrow"
+msgstr "화살표"
+
+msgid "Rectangle"
+msgstr "사각형"
+
+msgid "Ellipse"
+msgstr "타원"
+
+msgid "Line"
+msgstr "선"
+
+msgid "Highlight"
+msgstr "형광펜"
+
+msgid "Pen"
+msgstr "펜"
+
+msgid "Pixelate"
+msgstr "픽셀화"
+
+msgid "Text"
+msgstr "텍스트"
+
+msgid "Counter"
+msgstr "카운터"
+
+msgid "Crop"
+msgstr "자르기"
+
+msgid "Resize"
+msgstr "크기 조정"
+
+msgid "Width"
+msgstr "너비"
+
+msgid "Height"
+msgstr "높이"
+
+msgid "Lock aspect"
+msgstr "비율 고정"
+
+msgid "Apply"
+msgstr "적용"
+
+msgid "Save"
+msgstr "저장"
+
+msgid "Cancel"
+msgstr "취소"
+
+msgid "Aspect"
+msgstr "비율"
+
+msgid "Free"
+msgstr "자유"
+
+msgid "Padding"
+msgstr "여백"
+
+msgid "Radius"
+msgstr "반경"
+
+msgid "Shadow"
+msgstr "그림자"
+
+msgid "Strength"
+msgstr "강도"
+
+msgid "Reset background"
+msgstr "배경 재설정"
+
+msgid "Custom colour"
+msgstr "사용자 지정 색상"
+
+msgid "History"
+msgstr "기록"
+
+msgid "All"
+msgstr "전체"
+
+msgid "Photos"
+msgstr "사진"
+
+msgid "Videos"
+msgstr "동영상"
+
+msgid "Today"
+msgstr "오늘"
+
+msgid "Week"
+msgstr "이번 주"
+
+msgid "Month"
+msgstr "이번 달"
+
+msgid "No captures yet."
+msgstr "아직 캡처가 없습니다."
+
+msgid "Your screenshots and recordings show up here."
+msgstr "스크린샷과 녹화가 여기에 표시됩니다."
+
+msgid "Nothing matches this filter"
+msgstr "이 필터와 일치하는 항목이 없습니다"
+
+msgid "Try a different type or date range."
+msgstr "다른 종류나 기간을 시도해 보세요."
+
+msgid "What to capture?"
+msgstr "무엇을 캡처하시겠습니까?"
+
+msgid "Press Esc to dismiss"
+msgstr "Esc를 눌러 닫기"
+
+msgid "Capture area"
+msgstr "영역 캡처"
+
+msgid "Full screen"
+msgstr "전체 화면"
+
+msgid "Window"
+msgstr "창"
+
+msgid "Record screen"
+msgstr "화면 녹화"
+
+msgid "Record area"
+msgstr "영역 녹화"
+
+msgid "Settings"
+msgstr "설정"
+
+msgid "Extracted text"
+msgstr "추출된 텍스트"
+
+msgid "No text found"
+msgstr "텍스트를 찾을 수 없음"
+
+msgid "The image doesn't contain any recognizable characters."
+msgstr "이미지에 인식 가능한 문자가 없습니다."
+
+msgid "Copied"
+msgstr "복사됨"
+
+msgid "Recording"
+msgstr "녹화"
+
+msgid "Pause / resume"
+msgstr "일시정지 / 재개"
+
+msgid "Mute system audio"
+msgstr "시스템 오디오 음소거"
+
+msgid "Mute microphone"
+msgstr "마이크 음소거"
+
+msgid "Restart"
+msgstr "다시 시작"
+
+msgid "Discard"
+msgstr "버리기"
+
+msgid "Stop"
+msgstr "중지"
+
+msgid "In conflict"
+msgstr "충돌"
+
+msgid "Active"
+msgstr "활성"
+
+msgid "Press keys…"
+msgstr "키를 누르세요…"
+
+msgid "General"
+msgstr "일반"
+
+msgid "Capture"
+msgstr "캡처"
+
+msgid "Storage"
+msgstr "저장소"
+
+msgid "Shortcuts"
+msgstr "단축키"
+
+msgid "About"
+msgstr "정보"
+
+msgid "Theme"
+msgstr "테마"
+
+msgid "Light"
+msgstr "라이트"
+
+msgid "Dark"
+msgstr "다크"
+
+msgid "System"
+msgstr "시스템"
+
+msgid "Language"
+msgstr "언어"
+
+msgid "Interface language. Affects every Clipo window. Takes effect immediately."
+msgstr "인터페이스 언어입니다. 모든 Clipo 창에 영향을 미칩니다. 즉시 적용됩니다."
+
+msgid "Launch Clipo at system startup"
+msgstr "시스템 시작 시 Clipo 실행"
+
+msgid "Clipo lives in the system tray. With this on, it starts automatically at login."
+msgstr "Clipo는 시스템 트레이에 상주합니다. 이 옵션을 켜면 로그인 시 자동으로 시작됩니다."
+
+msgid "Open images with Clipo"
+msgstr "이미지를 Clipo로 열기"
+
+msgid "Tray icon left-click"
+msgstr "트레이 아이콘 왼쪽 클릭"
+
+msgid "What a left-click on the tray icon does. Right-click always opens the menu."
+msgstr "트레이 아이콘을 왼쪽 클릭할 때의 동작입니다. 오른쪽 클릭은 항상 메뉴를 엽니다."
+
+msgid "Area"
+msgstr "영역"
+
+msgid "Fullscreen"
+msgstr "전체 화면"
+
+msgid "Menu"
+msgstr "메뉴"
+
+msgid "Timer"
+msgstr "타이머"
+
+msgid "Capture timer"
+msgstr "캡처 타이머"
+
+msgid "Countdown before a timed capture."
+msgstr "예약 캡처 전 카운트다운."
+
+msgid "Show magnifier when selecting a region"
+msgstr "영역 선택 시 돋보기 표시"
+
+msgid "A 4× zoom under the cursor with the live width × height, for pixel-precise selections."
+msgstr "드래그하는 동안 커서 아래 픽셀을 4× 확대해 보여주고 그 아래에 현재 너비 × 높이를 표시합니다. 픽셀 단위 선택에 유용합니다. 기본값은 꺼짐입니다."
+
+msgid "Auto-dismiss the capture panel"
+msgstr "캡처 패널 자동 닫기"
+
+msgid "How long the post-capture panel stays before hiding."
+msgstr "캡처 후 패널이 사라지기 전까지 표시되는 시간."
+
+msgid "Captures folder"
+msgstr "캡처 폴더"
+
+msgid "Choose…"
+msgstr "선택…"
+
+msgid "Reset"
+msgstr "재설정"
+
+msgid "Screenshot format"
+msgstr "스크린샷 형식"
+
+msgid "PNG is lossless (larger); JPEG is smaller but lossy. Recordings are always MP4."
+msgstr "PNG는 모든 픽셀을 유지합니다(무손실, 파일이 큼). JPEG는 더 작지만 손실이 있어 공유에는 적합하지만 텍스트가 많은 화면에는 덜 적합합니다. 녹화는 항상 MP4입니다."
+
+msgid "Cloud upload"
+msgstr "클라우드 업로드"
+
+msgid "Connected"
+msgstr "연결됨"
+
+msgid "Set up"
+msgstr "설정"
+
+msgid "Capture system audio"
+msgstr "시스템 오디오 녹음"
+
+msgid "Records system sound; off makes a silent MP4."
+msgstr "시스템 소리를 녹음합니다. 끄면 MP4가 무음이 됩니다."
+
+msgid "Capture microphone"
+msgstr "마이크 녹음"
+
+msgid "Also records your microphone, mixed with system audio into one track."
+msgstr "기본 마이크도 녹음합니다. 시스템 오디오도 켜져 있으면 두 트랙이 하나로 믹스됩니다(중지 시 ffmpeg가 믹싱하므로 녹화 중 비용은 없습니다)."
+
+msgid "Recording frame rate"
+msgstr "녹화 프레임 속도"
+
+msgid "30 fps for tutorials; 60 fps smoother but ~2× heavier."
+msgstr "튜토리얼은 30fps, 60fps는 더 부드럽지만 부하가 약 2배입니다."
+
+msgid "Countdown before recording"
+msgstr "녹화 전 카운트다운"
+
+msgid "A short countdown so you can switch windows first."
+msgstr "짧은 카운트다운으로 먼저 창을 전환할 수 있습니다."
+
+msgid "Record the cursor"
+msgstr "커서 녹화"
+
+msgid "Include the mouse pointer in the recording."
+msgstr "녹화에 마우스 포인터 포함."
+
+msgid "Show mouse clicks"
+msgstr "마우스 클릭 표시"
+
+msgid "Marks each click with a brief ring while recording — handy for demos."
+msgstr "녹화 중 클릭할 때마다 잠시 확장되는 링을 그립니다. 튜토리얼이나 데모 영상에 유용합니다. 일반 녹화에서는 꺼주세요."
+
+msgid "Global — click a shortcut to rebind it."
+msgstr "전역 — 단축키를 클릭하여 다시 지정."
+
+msgid "Restore defaults"
+msgstr "기본값 복원"
+
+msgid "Capture region"
+msgstr "영역 캡처"
+
+msgid "Capture fullscreen"
+msgstr "전체 화면 캡처"
+
+msgid "Capture window"
+msgstr "창 캡처"
+
+msgid "All-in-one menu"
+msgstr "통합 메뉴"
+
+msgid "Extract text (OCR)"
+msgstr "텍스트 추출 (OCR)"
+
+msgid "While recording"
+msgstr "녹화 중"
+
+msgid "Stop recording"
+msgstr "녹화 중지"
+
+msgid "Restart recording"
+msgstr "녹화 다시 시작"
+
+msgid "Native Windows screenshot + screen recording."
+msgstr "Windows 네이티브 스크린샷 및 화면 녹화."
+
+msgid "Updates"
+msgstr "업데이트"
+
+msgid "Check whether a newer version is available."
+msgstr "새 버전이 있는지 확인합니다."
+
+msgid "Installing…"
+msgstr "설치 중…"
+
+msgid "Update now"
+msgstr "지금 업데이트"
+
+msgid "Checking…"
+msgstr "확인 중…"
+
+msgid "Check for updates"
+msgstr "업데이트 확인"
+
+msgid "Diagnostic"
+msgstr "진단"
+
+msgid "Copies the version block to the clipboard. Paste into a bug report for exact reproducibility."
+msgstr "버전 블록을 클립보드에 복사합니다. 정확한 재현을 위해 버그 보고서에 붙여넣으세요."
+
+msgid "Copy info"
+msgstr "정보 복사"
+
+msgid "Reset settings"
+msgstr "설정 재설정"
+
+msgid "Returns every preference (including custom shortcuts) to the factory state. Doesn't affect saved captures."
+msgstr "사용자 지정 단축키를 포함한 모든 환경 설정을 출고 상태로 되돌립니다. 저장된 캡처에는 영향을 미치지 않습니다."
+
+msgid "Click to confirm"
+msgstr "클릭하여 확인"
+
+msgid "Capture with timer"
+msgstr "타이머로 캡처"
+
+msgid "Record fullscreen"
+msgstr "전체 화면 녹화"
+
+msgid "Record region…"
+msgstr "영역 녹화…"
+
+msgid "Pause recording"
+msgstr "녹화 일시 중지"
+
+msgid "Resume recording"
+msgstr "녹화 재개"
+
+msgid "Discard recording"
+msgstr "녹화 버리기"
+
+msgid "Unmute system audio"
+msgstr "시스템 오디오 음소거 해제"
+
+msgid "Unmute microphone"
+msgstr "마이크 음소거 해제"
+
+msgid "History…"
+msgstr "기록…"
+
+msgid "Open captures folder"
+msgstr "캡처 폴더 열기"
+
+msgid "Settings…"
+msgstr "설정…"
+
+msgid "Quit Clipo"
+msgstr "Clipo 종료"
+
+msgid "Video preview isn't supported here yet."
+msgstr "동영상 미리보기는 아직 지원되지 않습니다."
+
+msgid "Open externally"
+msgstr "외부에서 열기"
+
+msgid "Previous"
+msgstr "이전"
+
+msgid "Next"
+msgstr "다음"
+
+msgid "No capturable windows"
+msgstr "캡처할 창이 없습니다"
+
+
+msgid "You're on the latest version."
+msgstr "최신 버전입니다."
+
+msgid "Version {} is available."
+msgstr "버전 {}을(를) 사용할 수 있습니다."
+
+msgid "Couldn't check: {}"
+msgstr "확인할 수 없습니다: {}"
+
+msgid "Downloading update…"
+msgstr "업데이트 다운로드 중…"
+
+msgid "Update failed: {}"
+msgstr "업데이트에 실패했습니다: {}"
+
+msgid "Add Clipo to the \"Open with\" menu for images"
+msgstr "이미지의 \"연결 프로그램\" 메뉴에 Clipo 추가"
+
+msgid "Copy to clipboard"
+msgstr "클립보드에 복사"
+
+msgid "Copy every capture automatically"
+msgstr "모든 캡처 자동 복사"
+
+msgid "Online save"
+msgstr "온라인 저장"
+
+msgid "Bring your own keys — captures upload to your bucket and the public link is copied to the clipboard."
+msgstr "자신의 키 사용 — 캡처가 사용자의 버킷에 업로드되고 공개 링크가 클립보드에 복사됩니다."
+
+msgid "Endpoint"
+msgstr "엔드포인트"
+
+msgid "Region"
+msgstr "리전"
+
+msgid "Account ID"
+msgstr "계정 ID"
+
+msgid "your R2 account id"
+msgstr "R2 계정 ID"
+
+msgid "Access Key ID"
+msgstr "액세스 키 ID"
+
+msgid "access key"
+msgstr "액세스 키"
+
+msgid "Secret Access Key"
+msgstr "비밀 액세스 키"
+
+msgid "secret key"
+msgstr "비밀 키"
+
+msgid "Bucket"
+msgstr "버킷"
+
+msgid "bucket name"
+msgstr "버킷 이름"
+
+msgid "Public URL"
+msgstr "공개 URL"
+
+msgid "Disconnect"
+msgstr "연결 해제"
+
+msgid "Save & test"
+msgstr "저장 및 테스트"
+
+msgid "Uploading…"
+msgstr "업로드 중…"
+
+msgid "Upload failed: {}"
+msgstr "업로드 실패: {}"
+
+msgid "GIF saved"
+msgstr "GIF 저장됨"
+
+msgid "GIF failed: {}"
+msgstr "GIF 실패: {}"
+
+msgid "Disconnected."
+msgstr "연결 끊김."
+
+msgid "Fill every field to enable upload."
+msgstr "업로드를 사용하려면 모든 항목을 입력하세요."
+
+msgid "Testing…"
+msgstr "테스트 중…"
+
+msgid "Failed: {}"
+msgstr "실패: {}"
+
+msgid "{} words · {} chars"
+msgstr "{}개 단어 · {}자"
+
+msgid "Software encoder (compatibility)"
+msgstr "소프트웨어 인코더 (호환성)"
+
+msgid "Encode on the CPU instead of the GPU. Slower and slightly lower quality, but works where the hardware encoder is unstable. Turns on automatically if a recording ever crashes."
+msgstr "GPU 대신 CPU로 인코딩합니다. 느리고 품질이 약간 낮지만 하드웨어 인코더가 불안정할 때도 작동합니다. 녹화가 충돌하면 자동으로 켜집니다."
+
+msgid "Record"
+msgstr "녹화"
+
+msgid "Copied!"
+msgstr "복사됨!"

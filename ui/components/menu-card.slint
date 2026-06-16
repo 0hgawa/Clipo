@@ -1,0 +1,44 @@
+import { Theme } from "../theme.slint";
+import { Icon } from "icon.slint";
+import { Clickable } from "clickable.slint";
+
+export component MenuCard inherits Rectangle {
+    in property <string> label;
+    in property <image> icon;
+    callback clicked;
+    // Uniform preferred width + stretch → every card is the same width, so the
+    // grid columns stay equal regardless of how long each (translated) label is.
+    // Taller min-height makes the cards squarer (less landscape) than the icon+
+    // label content alone would size them.
+    preferred-width: 160px;
+    min-height: 100px;
+    horizontal-stretch: 1;
+    border-radius: Theme.radius-lg;
+    // No resting border — the surface fill alone separates the card from the
+    // canvas (cleaner on dark). The accent edge appears only on hover.
+    border-width: touch.has-hover ? 1px : 0px;
+    background: touch.has-hover ? Theme.surface-2 : Theme.surface-1;
+    border-color: Theme.accent;
+    accessible-role: button;
+    accessible-label: root.label;
+    accessible-action-default => { root.clicked(); }
+    touch := Clickable { clicked => { root.clicked(); } }
+    VerticalLayout {
+        alignment: center;
+        spacing: 10px;
+        HorizontalLayout {
+            alignment: center;
+            Icon {
+                source: root.icon;
+                size: 30px;
+                color: touch.has-hover ? Theme.accent-hover : Theme.fg-muted;
+            }
+        }
+        Text {
+            text: root.label;
+            color: Theme.fg;
+            font-size: Theme.text-body;
+            horizontal-alignment: center;
+        }
+    }
+}

@@ -1,0 +1,44 @@
+import { Theme } from "../theme.slint";
+import { Clickable } from "../components.slint";
+
+// Self-timer countdown — a translucent "glass" card (rounded, not a full
+// circle) counting down before a fullscreen capture. Click or Esc cancels.
+// Theme-aware (matches the rest of the app); translucent so the screen shows
+// through. Rust drives `seconds` and the capture.
+export component CountdownWindow inherits Window {
+    no-frame: true;
+    background: transparent;
+    default-font-size: Theme.text-body;
+    width: 200px;
+    height: 200px;
+    in property <int> seconds;
+    callback cancelled();
+    forward-focus: fs;
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.cancelled(); }
+            accept
+        }
+    }
+    Rectangle {
+        width: 156px;
+        height: 156px;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        border-radius: 36px;
+        // Translucent so the desktop shows through (glass). Tone follows theme.
+        background: Theme.dark ? #16161acc : #ffffffe6;
+        border-width: 1px;
+        border-color: Theme.dark ? #ffffff2e : #0000001f;
+        drop-shadow-blur: 22px;
+        drop-shadow-offset-y: 8px;
+        drop-shadow-color: #00000059;
+        VerticalLayout {
+            alignment: center;
+            spacing: 4px;
+            HorizontalLayout { alignment: center; Text { text: "\{root.seconds}"; color: Theme.fg; font-size: 68px; font-weight: 700; } }
+            HorizontalLayout { alignment: center; Text { text: @tr("Esc to cancel"); color: Theme.fg-subtle; font-size: Theme.text-small; } }
+        }
+        Clickable { clicked => { root.cancelled(); } }
+    }
+}

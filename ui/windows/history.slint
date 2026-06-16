@@ -1,0 +1,209 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon, WindowControls, HistoryThumb, Segmented, WindowShell, DragArea, UploadStatus } from "../components.slint";
+
+struct HistoryItem {
+    thumb: image,
+    path: string,
+    kind: int, // 0 image · 1 video (mp4) · 2 gif
+    uploaded: bool, // already on the cloud → upload button offers "copy link"
+}
+
+// A date bucket (Today / Yesterday / month name) with its captures. Filtering
+// and bucketing happen in Rust; the markup just lays each group out.
+struct HistoryGroup {
+    label: string,
+    items: [HistoryItem],
+}
+
+export component HistoryWindow inherits Window {
+    no-frame: true;
+    title: "Clipo · History";
+    background: transparent;
+    default-font-size: Theme.text-body;
+    // preferred (not fixed) so the maximize button can resize to the work area;
+    // min keeps it usable and stops it opening tiny.
+    preferred-width: 820px;
+    preferred-height: 560px;
+    min-width: 560px;
+    min-height: 360px;
+    in property <[HistoryGroup]> groups;
+    in property <int> total;
+    in property <int> shown;
+    in property <bool> is-maximized;
+    in-out property <int> date-filter; // 0 all · 1 today · 2 week · 3 month
+    in-out property <int> kind-filter; // 0 all · 1 image · 2 video
+    callback dismiss();
+    callback minimize();
+    callback maximize();
+    callback drag-move(length, length);
+    callback filter-changed();
+    callback open(string);
+    callback edit-capture(string);
+    callback ocr-capture(string);
+    callback copy-capture(string);
+    callback reveal-capture(string);
+    callback open-external-capture(string);
+    callback delete-capture(string);
+    callback export-gif(string);
+    callback upload-capture(string);
+    callback copy-link-capture(string);
+    in property <bool> gif-ready; // ffmpeg present → show GIF export on video cards
+    in property <bool> upload-configured; // cloud upload set up → show it on image cards
+    in property <int> upload-status;      // status code (see UploadStatus); 0 = hidden
+    in property <string> upload-detail;   // error message for the failure kinds
+    in property <string> busy-path;        // path being uploaded → that card spins
+    in property <string> done-path;        // just-finished path → that card flashes a check
+    in property <string> copied-path;      // just-copied path → that card's Copy flashes a check
+    in property <bool> loaded;    // first load done → safe to show the empty state
+    forward-focus: fs;
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.dismiss(); }
+            accept
+        }
+    }
+    WindowShell {
+        is-maximized: root.is-maximized;
+        VerticalLayout {
+        // ── Title bar ──
+        Rectangle {
+            height: 44px;
+            DragArea {
+                dragged(dx, dy) => { root.drag-move(dx, dy); }
+                toggle-maximize => { root.maximize(); }
+            }
+            HorizontalLayout {
+                padding-left: 16px;
+                padding-right: 8px;
+                spacing: 10px;
+                VerticalLayout { alignment: center; Text { text: @tr("History"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; } }
+                VerticalLayout { alignment: center; Text { text: "\{root.shown} / \{root.total}"; color: Theme.fg-subtle; font-size: Theme.text-small; } }
+                VerticalLayout { alignment: center; Text { text: UploadStatus.text(root.upload-status, root.upload-detail); color: Theme.fg-subtle; font-size: Theme.text-small; } }
+                Rectangle { }
+                VerticalLayout {
+                    alignment: center;
+                    WindowControls {
+                        is-maximized: root.is-maximized;
+                        minimize => { root.minimize(); }
+                        maximize => { root.maximize(); }
+                        close => { root.dismiss(); }
+                    }
+                }
+            }
+        }
+        // ── Filter bar (kind + date) ──
+        Rectangle {
+            height: 44px;
+            border-width: 1px;
+            border-color: Theme.border-subtle;
+            HorizontalLayout {
+                padding-left: 16px;
+                padding-right: 16px;
+                spacing: 10px;
+                VerticalLayout {
+                    alignment: center;
+                    Segmented {
+                        options: [@tr("All"), @tr("Photos"), @tr("Videos")];
+                        selected <=> root.kind-filter;
+                        changed => { root.filter-changed(); }
+                    }
+                }
+                VerticalLayout {
+                    alignment: center;
+                    Segmented {
+                        options: [@tr("All"), @tr("Today"), @tr("Week"), @tr("Month")];
+                        selected <=> root.date-filter;
+                        changed => { root.filter-changed(); }
+                    }
+                }
+                Rectangle { }
+            }
+        }
+        // ── Content (stretches to fill the rest of the window) ──
+        Rectangle {
+            vertical-stretch: 1;
+            if root.loaded && root.total == 0: VerticalLayout {
+                width: 100%;
+                height: 100%;
+                alignment: center;
+                spacing: 8px;
+                HorizontalLayout { alignment: center; Icon { source: Icons.photo; size: 44px; color: Theme.fg-subtle; } }
+                Text { text: @tr("No captures yet."); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; horizontal-alignment: center; }
+                Text { text: @tr("Your screenshots and recordings show up here."); color: Theme.fg-subtle; font-size: Theme.text-small; horizontal-alignment: center; }
+            }
+            if root.total > 0 && root.groups.length == 0: VerticalLayout {
+                width: 100%;
+                height: 100%;
+                alignment: center;
+                spacing: 8px;
+                HorizontalLayout { alignment: center; Icon { source: Icons.photo; size: 44px; color: Theme.fg-subtle; } }
+                Text { text: @tr("Nothing matches this filter"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; horizontal-alignment: center; }
+                Text { text: @tr("Try a different type or date range."); color: Theme.fg-subtle; font-size: Theme.text-small; horizontal-alignment: center; }
+            }
+            if root.groups.length > 0: fl := Flickable {
+                width: 100%;
+                height: 100%;
+                viewport-width: self.width;
+                viewport-height: vbox.preferred-height;
+                // Auto-fill columns that GROW to fill the width (web's
+                // minmax(240px, 1fr)): cols from width, card = exact share.
+                property <length> gap: 12px;
+                property <length> avail: self.width - 32px;
+                property <int> cols: Math.max(1, Math.floor((self.avail + self.gap) / (240px + self.gap)));
+                property <length> cardw: (self.avail - (self.cols - 1) * self.gap) / self.cols;
+                property <length> cardh: self.cardw * 0.625;
+                vbox := VerticalLayout {
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    padding-top: 4px;
+                    padding-bottom: 16px;
+                    spacing: 8px;
+                    for group in root.groups: VerticalLayout {
+                        Rectangle {
+                            height: 34px;
+                            Text {
+                                x: 0;
+                                y: (parent.height - self.height) / 2 + 4px;
+                                text: group.label;
+                                color: Theme.fg-muted;
+                                font-size: Theme.text-small;
+                                font-weight: 600;
+                            }
+                        }
+                        Rectangle {
+                            height: Math.ceil(group.items.length * 1.0 / fl.cols) * (fl.cardh + fl.gap);
+                            for item[i] in group.items: HistoryThumb {
+                                x: Math.mod(i, fl.cols) * (fl.cardw + fl.gap);
+                                y: Math.floor(i / fl.cols) * (fl.cardh + fl.gap);
+                                width: fl.cardw;
+                                height: fl.cardh;
+                                thumb: item.thumb;
+                                kind: item.kind;
+                                gif-ready: root.gif-ready;
+                                upload-configured: root.upload-configured;
+                                uploaded: item.uploaded;
+                                up-phase: item.path == root.busy-path ? 1 : (item.path == root.done-path ? 2 : 0);
+                                copied: item.path == root.copied-path;
+                                // Videos open in the system player; images and
+                                // gifs open in the (now animating) in-app viewer.
+                                clicked => {
+                                    if (item.kind == 1) { root.open-external-capture(item.path); }
+                                    else { root.open(item.path); }
+                                }
+                                edit => { root.edit-capture(item.path); }
+                                ocr => { root.ocr-capture(item.path); }
+                                copy => { root.copy-capture(item.path); }
+                                upload => { root.upload-capture(item.path); }
+                                copy-link => { root.copy-link-capture(item.path); }
+                                reveal => { root.reveal-capture(item.path); }
+                                delete => { root.delete-capture(item.path); }
+                                export-gif => { root.export-gif(item.path); }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        }
+    }
+}

@@ -1,0 +1,16 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon } from "icon.slint";
+import { Clickable } from "clickable.slint";
+
+export component CloseButton inherits Rectangle {
+    callback clicked;
+    width: 32px;
+    height: 28px;
+    border-radius: Theme.radius-sm;
+    background: t.has-hover ? Theme.danger : transparent;
+    accessible-role: button;
+    accessible-label: @tr("Close");
+    accessible-action-default => { root.clicked(); }
+    Icon { source: Icons.close; size: 14px; color: t.has-hover ? white : Theme.fg-muted; }
+    t := Clickable { clicked => { root.clicked(); } }
+}

@@ -1,0 +1,212 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon, Clickable, IconButton, WindowShell, DragArea, UploadStatus } from "../components.slint";
+
+// Top-bar button for the always-dark viewer bar: the shared IconButton in its
+// `on-dark` style — white ink + translucent hover, since the theme tint vanishes
+// over the photo. Square 32px to sit in the 48px bar. `danger: true` = close.
+component BarBtn inherits IconButton {
+    height: 32px;
+    on-dark: true;
+}
+
+// Lightbox-style viewer: a fixed 48px top bar + a stage that fills the rest and
+// centers the media. The photo is sized from its native pixels (never
+// upscaled). Left/Right arrows browse, Esc closes.
+// Video isn't playable in Slint, so .mp4 shows a placeholder.
+export component ViewerWindow inherits Window {
+    no-frame: true;
+    title: "Clipo Viewer";
+    background: transparent;
+    default-font-size: Theme.text-body;
+    // preferred (not fixed) so maximize_work_area can resize to the work area —
+    // a fixed width/height binding would lock the size and be reasserted.
+    preferred-width: 1280px;
+    preferred-height: 800px;
+    in property <image> media;
+    in property <string> filename;
+    in property <string> counter;
+    in property <bool> can-prev;
+    in property <bool> can-next;
+    in property <bool> is-video;
+    in property <bool> is-gif; // animated → drop copy/ocr/edit (they'd flatten it)
+    in property <bool> is-maximized;
+    callback dismiss();
+    callback minimize();
+    callback maximize();
+    callback drag-move(length, length);
+    callback prev();
+    callback next();
+    callback copy();
+    callback ocr();
+    callback edit();
+    callback upload();
+    callback copy-link();
+    callback reveal();
+    callback open-external();
+    callback delete();
+    in property <bool> upload-configured; // show the upload button only when set up
+    in property <bool> uploaded;          // already uploaded → button copies the link
+    in property <int> upload-status;      // status code (see UploadStatus); 0 = hidden
+    in property <string> upload-detail;   // error message for the failure kinds
+    in property <int> upload-phase;       // 0 idle · 1 uploading · 2 done — drives the button
+    in property <bool> copied;            // just copied the image → flash a check on Copy
+    forward-focus: fs;
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.dismiss(); }
+            if (event.text == Key.LeftArrow) { root.prev(); }
+            if (event.text == Key.RightArrow) { root.next(); }
+            accept
+        }
+    }
+    WindowShell {
+        bg: #0b0b0b;
+        is-maximized: root.is-maximized;
+        VerticalLayout {
+        // Top bar: filename + count + actions + close.
+        Rectangle {
+            height: 48px;
+            DragArea {
+                dragged(dx, dy) => { root.drag-move(dx, dy); }
+                toggle-maximize => { root.maximize(); }
+            }
+            HorizontalLayout {
+                padding-left: 20px;
+                padding-right: 12px;
+                spacing: 12px;
+                VerticalLayout { alignment: center; Text { text: root.counter; color: #ffffff8c; font-size: Theme.text-small; } }
+                VerticalLayout { alignment: center; Text { text: root.filename; color: #ffffffd9; font-size: Theme.text-body; overflow: elide; } }
+                Rectangle { }
+                // Canonical action order (shared with the post-capture panel and
+                // history): Copy · Upload · Edit · Extract text · Reveal · Delete.
+                if !root.is-gif: VerticalLayout { alignment: center; BarBtn { icon: root.copied ? Icons.check : Icons.copy; a11y-label: @tr("Copy"); clicked => { root.copy(); } } }
+                if !root.is-video && root.upload-configured: VerticalLayout { alignment: center; BarBtn {
+                    icon: root.upload-phase == 2 ? Icons.check : (root.uploaded ? Icons.link : Icons.upload);
+                    busy: root.upload-phase == 1;
+                    a11y-label: root.uploaded ? @tr("Copy link") : @tr("Upload");
+                    clicked => { if (root.uploaded) { root.copy-link(); } else { root.upload(); } }
+                } }
+                if !root.is-video && !root.is-gif: VerticalLayout { alignment: center; BarBtn { icon: Icons.pencil; a11y-label: @tr("Edit"); clicked => { root.edit(); } } }
+                if !root.is-gif: VerticalLayout { alignment: center; BarBtn { icon: Icons.scan-text; a11y-label: @tr("Extract text"); clicked => { root.ocr(); } } }
+                VerticalLayout { alignment: center; BarBtn { icon: Icons.folder-open; a11y-label: @tr("Reveal in folder"); clicked => { root.reveal(); } } }
+                VerticalLayout { alignment: center; BarBtn { icon: Icons.discard; danger: true; a11y-label: @tr("Delete"); clicked => { root.delete(); } } }
+                VerticalLayout { alignment: center; Rectangle { width: 1px; height: 18px; background: #ffffff26; } }
+                VerticalLayout { alignment: center; BarBtn { icon: Icons.minimize; a11y-label: @tr("Minimize"); clicked => { root.minimize(); } } }
+                VerticalLayout { alignment: center; BarBtn { icon: root.is-maximized ? Icons.restore : Icons.maximize; a11y-label: root.is-maximized ? @tr("Restore") : @tr("Maximize"); clicked => { root.maximize(); } } }
+                VerticalLayout { alignment: center; BarBtn { icon: Icons.close; danger: true; a11y-label: @tr("Close"); clicked => { root.dismiss(); } } }
+            }
+        }
+        // Stage: fills the rest, centers the media.
+        Rectangle {
+            // Photo size = native pixels scaled to fit the available box (web
+            // stage padding: 0 top, 24 bottom, 80 sides), but NEVER upscaled past
+            // native — mirrors the web's max-width/height:100%, so small captures
+            // float with margins instead of stretching to the edges. We draw a
+            // clipped card at that exact size so the 6px corners + drop shadow
+            // round the image (Slint can't round a contain-fit Image directly).
+            property <length> avail-w: self.width - 160px;
+            property <length> avail-h: self.height - 24px;
+            property <float> scale: min(1.0, min(
+                self.avail-w / max(root.media.width * 1px, 1px),
+                self.avail-h / max(root.media.height * 1px, 1px)));
+            property <length> img-w: root.media.width * 1px * self.scale;
+            property <length> img-h: root.media.height * 1px * self.scale;
+            // Double-click toggles fullscreen (maximize/restore) — the standard
+            // image-viewer gesture. Sits behind the media card and chevrons (which
+            // consume their own clicks), so it only catches clicks on the stage.
+            TouchArea {
+                width: 100%;
+                height: 100%;
+                double-clicked => { root.maximize(); }
+            }
+            if !root.is-video: Rectangle {
+                width: parent.img-w;
+                height: parent.img-h;
+                x: (parent.width - self.width) / 2;
+                y: (parent.height - 24px - self.height) / 2;
+                border-radius: Theme.radius-sm;
+                clip: true;
+                drop-shadow-blur: 64px;
+                drop-shadow-offset-y: 16px;
+                drop-shadow-color: #00000099;
+                Image {
+                    source: root.media;
+                    image-fit: fill;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+            if root.is-video: VerticalLayout {
+                alignment: center;
+                spacing: 12px;
+                HorizontalLayout { alignment: center; Icon { source: Icons.video; size: 56px; color: Theme.fg-subtle; } }
+                Text { text: @tr("Video preview isn't supported here yet."); color: Theme.fg-muted; horizontal-alignment: center; }
+                HorizontalLayout {
+                    alignment: center;
+                    Rectangle {
+                        width: 150px;
+                        height: 32px;
+                        border-radius: Theme.radius-sm;
+                        background: ob.has-hover ? Theme.accent-hover : Theme.accent;
+                        Text { text: @tr("Open externally"); color: white; font-size: Theme.text-small; }
+                        ob := Clickable { clicked => { root.open-external(); } }
+                    }
+                }
+            }
+            // Floating chevrons, vertically centered in the stage.
+            if root.can-prev: Rectangle {
+                x: 16px;
+                y: (parent.height - self.height) / 2;
+                width: 46px;
+                height: 46px;
+                border-radius: 23px;
+                background: pv.has-hover ? #ffffff26 : #00000066;
+                accessible-role: button;
+                accessible-label: @tr("Previous");
+                accessible-action-default => { root.prev(); }
+                Icon {
+                    source: Icons.chevron-left;
+                    color: white;
+                    size: 24px;
+                    x: (parent.width - self.width) / 2;
+                    y: (parent.height - self.height) / 2;
+                }
+                pv := Clickable { clicked => { root.prev(); } }
+            }
+            if root.can-next: Rectangle {
+                x: parent.width - self.width - 16px;
+                y: (parent.height - self.height) / 2;
+                width: 46px;
+                height: 46px;
+                border-radius: 23px;
+                background: nx.has-hover ? #ffffff26 : #00000066;
+                accessible-role: button;
+                accessible-label: @tr("Next");
+                accessible-action-default => { root.next(); }
+                Icon {
+                    source: Icons.chevron-right;
+                    color: white;
+                    size: 24px;
+                    x: (parent.width - self.width) / 2;
+                    y: (parent.height - self.height) / 2;
+                }
+                nx := Clickable { clicked => { root.next(); } }
+            }
+            // Upload feedback pill, bottom-centre of the stage.
+            if root.upload-status != 0: Rectangle {
+                x: (parent.width - self.width) / 2;
+                y: parent.height - self.height - 28px;
+                width: row.preferred-width;
+                height: 32px;
+                border-radius: Theme.radius-md;
+                background: UploadStatus.failed(root.upload-status) ? #b91c1ce6 : #000000cc;
+                row := HorizontalLayout {
+                    padding-left: 12px;
+                    padding-right: 12px;
+                    VerticalLayout { alignment: center; Text { text: UploadStatus.text(root.upload-status, root.upload-detail); color: white; font-size: Theme.text-small; } }
+                }
+            }
+        }
+        }
+    }
+}

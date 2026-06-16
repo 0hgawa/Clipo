@@ -1,0 +1,88 @@
+import { Theme } from "../theme.slint";
+
+// Themed dropdown for option sets too large for a Segmented (e.g. the 12
+// languages). A button shows the current label; clicking opens a popup list.
+export component Dropdown inherits Rectangle {
+    in property <[string]> options;
+    in-out property <int> current;
+    callback changed(int);
+    width: 168px;
+    height: 32px;
+    border-radius: Theme.radius-sm;
+    background: ta.has-hover ? Theme.surface-3 : Theme.surface-2;
+    HorizontalLayout {
+        padding-left: 10px;
+        padding-right: 8px;
+        spacing: 6px;
+        VerticalLayout {
+            horizontal-stretch: 1;
+            alignment: center;
+            Text {
+                text: root.options[root.current];
+                color: Theme.fg;
+                font-size: Theme.text-small;
+                overflow: elide;
+            }
+        }
+        // Chevron ▾ drawn from two strokes (no extra icon asset).
+        VerticalLayout {
+            alignment: center;
+            Rectangle {
+                width: 9px;
+                height: 9px;
+                Path {
+                    commands: "M 1 3 L 4.5 6.5 L 8 3";
+                    stroke: Theme.fg-subtle;
+                    stroke-width: 1.4px;
+                }
+            }
+        }
+    }
+    ta := TouchArea {
+        mouse-cursor: pointer;
+        clicked => { pop.show(); }
+    }
+    pop := PopupWindow {
+        x: 0;
+        y: root.height + 4px;
+        width: root.width;
+        Rectangle {
+            background: Theme.surface-1;
+            border-radius: Theme.radius-md;
+            border-width: 1px;
+            border-color: Theme.border-subtle;
+            drop-shadow-blur: 16px;
+            drop-shadow-offset-y: 4px;
+            drop-shadow-color: #00000055;
+            VerticalLayout {
+                padding: 4px;
+                for opt[i] in root.options: Rectangle {
+                    height: 30px;
+                    border-radius: 5px;
+                    background: it.has-hover ? Theme.surface-2 : transparent;
+                    HorizontalLayout {
+                        padding-left: 8px;
+                        padding-right: 8px;
+                        VerticalLayout {
+                            alignment: center;
+                            Text {
+                                text: opt;
+                                color: i == root.current ? Theme.accent : Theme.fg;
+                                font-size: Theme.text-small;
+                                font-weight: i == root.current ? 600 : 400;
+                            }
+                        }
+                    }
+                    it := TouchArea {
+                        mouse-cursor: pointer;
+                        clicked => {
+                            root.current = i;
+                            root.changed(i);
+                            pop.close();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

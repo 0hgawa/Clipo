@@ -1,0 +1,37 @@
+import { Theme } from "../theme.slint";
+
+// Thin, subtle vertical scrollbar bound to a Flickable's geometry. Drag the
+// thumb (or press the track) to scroll; auto-hides when the content fits.
+export component Scrollbar inherits Rectangle {
+    in property <length> content-height; // total scrollable content
+    in property <length> view-height;    // visible viewport height
+    in-out property <length> pos;        // Flickable viewport-y (<= 0)
+    property <length> max-scroll: max(0px, root.content-height - root.view-height);
+    property <length> thumb-h: max(28px, root.height * root.view-height / max(root.content-height, 1px));
+    property <length> max-thumb-y: max(0px, root.height - self.thumb-h);
+    width: 10px;
+    visible: root.max-scroll > 0px;
+    function scroll-to(my: length) {
+        if (root.max-thumb-y <= 0px) {
+            return;
+        }
+        root.pos = -min(1.0, max(0.0, (my - root.thumb-h / 2) / root.max-thumb-y)) * root.max-scroll;
+    }
+    thumb := Rectangle {
+        x: (parent.width - self.width) / 2;
+        width: 4px;
+        height: root.thumb-h;
+        y: root.max-scroll > 0px ? (-root.pos / root.max-scroll) * root.max-thumb-y : 0px;
+        border-radius: Theme.radius-xs;
+        background: ta.pressed || ta.has-hover ? Theme.fg-subtle : Theme.border-strong;
+        animate background { duration: 120ms; }
+    }
+    ta := TouchArea {
+        width: 100%;
+        height: 100%;
+        moved => { root.scroll-to(self.mouse-y); }
+        pointer-event(e) => {
+            if (e.kind == PointerEventKind.down) { root.scroll-to(self.mouse-y); }
+        }
+    }
+}

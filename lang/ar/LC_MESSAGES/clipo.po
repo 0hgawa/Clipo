@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Close"
+msgstr "إغلاق"
+
+msgid "Copy link"
+msgstr "نسخ الرابط"
+
+msgid "Upload"
+msgstr "رفع"
+
+msgid "Copy"
+msgstr "نسخ"
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Extract text"
+msgstr "استخراج النص"
+
+msgid "Reveal in folder"
+msgstr "إظهار في المجلد"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Export as GIF"
+msgstr "تصدير كملف GIF"
+
+msgid "Minimize"
+msgstr "تصغير"
+
+msgid "Restore"
+msgstr "استعادة"
+
+msgid "Maximize"
+msgstr "تكبير"
+
+msgid "Esc to cancel"
+msgstr "اضغط Esc للإلغاء"
+
+msgid "Move"
+msgstr "نقل"
+
+msgid "Arrow"
+msgstr "سهم"
+
+msgid "Rectangle"
+msgstr "مستطيل"
+
+msgid "Ellipse"
+msgstr "بيضاوي"
+
+msgid "Line"
+msgstr "خط"
+
+msgid "Highlight"
+msgstr "تمييز"
+
+msgid "Pen"
+msgstr "قلم"
+
+msgid "Pixelate"
+msgstr "بكسلة"
+
+msgid "Text"
+msgstr "نص"
+
+msgid "Counter"
+msgstr "عدّاد"
+
+msgid "Crop"
+msgstr "اقتصاص"
+
+msgid "Resize"
+msgstr "تغيير الحجم"
+
+msgid "Width"
+msgstr "العرض"
+
+msgid "Height"
+msgstr "الارتفاع"
+
+msgid "Lock aspect"
+msgstr "تثبيت النسبة"
+
+msgid "Apply"
+msgstr "تطبيق"
+
+msgid "Save"
+msgstr "حفظ"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Aspect"
+msgstr "النسبة"
+
+msgid "Free"
+msgstr "حر"
+
+msgid "Padding"
+msgstr "الحشو"
+
+msgid "Radius"
+msgstr "نصف القطر"
+
+msgid "Shadow"
+msgstr "الظل"
+
+msgid "Strength"
+msgstr "القوة"
+
+msgid "Reset background"
+msgstr "إعادة تعيين الخلفية"
+
+msgid "Custom colour"
+msgstr "لون مخصص"
+
+msgid "History"
+msgstr "السجل"
+
+msgid "All"
+msgstr "الكل"
+
+msgid "Photos"
+msgstr "صور"
+
+msgid "Videos"
+msgstr "مقاطع فيديو"
+
+msgid "Today"
+msgstr "اليوم"
+
+msgid "Week"
+msgstr "هذا الأسبوع"
+
+msgid "Month"
+msgstr "هذا الشهر"
+
+msgid "No captures yet."
+msgstr "لا توجد لقطات بعد."
+
+msgid "Your screenshots and recordings show up here."
+msgstr "تظهر لقطات الشاشة والتسجيلات هنا."
+
+msgid "Nothing matches this filter"
+msgstr "لا شيء يطابق هذا الفلتر"
+
+msgid "Try a different type or date range."
+msgstr "جرّب نوعًا أو نطاقًا زمنيًا آخر."
+
+msgid "What to capture?"
+msgstr "ماذا تريد أن تلتقط؟"
+
+msgid "Press Esc to dismiss"
+msgstr "اضغط Esc للإغلاق"
+
+msgid "Capture area"
+msgstr "التقاط منطقة"
+
+msgid "Full screen"
+msgstr "الشاشة الكاملة"
+
+msgid "Window"
+msgstr "نافذة"
+
+msgid "Record screen"
+msgstr "تسجيل الشاشة"
+
+msgid "Record area"
+msgstr "تسجيل منطقة"
+
+msgid "Settings"
+msgstr "الإعدادات"
+
+msgid "Extracted text"
+msgstr "النص المستخرج"
+
+msgid "No text found"
+msgstr "لم يُعثر على نص"
+
+msgid "The image doesn't contain any recognizable characters."
+msgstr "لا تحتوي الصورة على أي حروف يمكن التعرف عليها."
+
+msgid "Copied"
+msgstr "تم النسخ"
+
+msgid "Recording"
+msgstr "التسجيل"
+
+msgid "Pause / resume"
+msgstr "إيقاف مؤقت / استئناف"
+
+msgid "Mute system audio"
+msgstr "كتم صوت النظام"
+
+msgid "Mute microphone"
+msgstr "كتم الميكروفون"
+
+msgid "Restart"
+msgstr "إعادة البدء"
+
+msgid "Discard"
+msgstr "تجاهل"
+
+msgid "Stop"
+msgstr "إيقاف"
+
+msgid "In conflict"
+msgstr "في تعارض"
+
+msgid "Active"
+msgstr "نشط"
+
+msgid "Press keys…"
+msgstr "اضغط المفاتيح…"
+
+msgid "General"
+msgstr "عام"
+
+msgid "Capture"
+msgstr "الالتقاط"
+
+msgid "Storage"
+msgstr "التخزين"
+
+msgid "Shortcuts"
+msgstr "اختصارات"
+
+msgid "About"
+msgstr "حول"
+
+msgid "Theme"
+msgstr "السمة"
+
+msgid "Light"
+msgstr "فاتح"
+
+msgid "Dark"
+msgstr "داكن"
+
+msgid "System"
+msgstr "النظام"
+
+msgid "Language"
+msgstr "اللغة"
+
+msgid "Interface language. Affects every Clipo window. Takes effect immediately."
+msgstr "لغة الواجهة. تؤثر على جميع نوافذ Clipo. تُطبّق فورًا."
+
+msgid "Launch Clipo at system startup"
+msgstr "تشغيل Clipo عند بدء النظام"
+
+msgid "Clipo lives in the system tray. With this on, it starts automatically at login."
+msgstr "يعمل Clipo في علبة النظام. عند تفعيل هذا الخيار، يبدأ تلقائيًا عند تسجيل الدخول."
+
+msgid "Open images with Clipo"
+msgstr "فتح الصور باستخدام Clipo"
+
+msgid "Tray icon left-click"
+msgstr "النقر الأيسر على الأيقونة"
+
+msgid "What a left-click on the tray icon does. Right-click always opens the menu."
+msgstr "ما يفعله النقر الأيسر على أيقونة شريط النظام. النقر الأيمن يفتح القائمة دائمًا."
+
+msgid "Area"
+msgstr "منطقة"
+
+msgid "Fullscreen"
+msgstr "ملء الشاشة"
+
+msgid "Menu"
+msgstr "القائمة"
+
+msgid "Timer"
+msgstr "المؤقت"
+
+msgid "Capture timer"
+msgstr "مؤقّت الالتقاط"
+
+msgid "Countdown before a timed capture."
+msgstr "العد التنازلي قبل الالتقاط المؤقّت."
+
+msgid "Show magnifier when selecting a region"
+msgstr "إظهار المكبّر عند تحديد منطقة"
+
+msgid "A 4× zoom under the cursor with the live width × height, for pixel-precise selections."
+msgstr "يعرض تكبير 4× للبكسلات تحت المؤشر مع العرض × الارتفاع الحاليين أسفله أثناء السحب. مفيد للتحديد الدقيق بالبكسل؛ معطّل افتراضيًا للحفاظ على وضوح التراكب."
+
+msgid "Auto-dismiss the capture panel"
+msgstr "إغلاق لوحة الالتقاط تلقائيًا"
+
+msgid "How long the post-capture panel stays before hiding."
+msgstr "مدة بقاء لوحة ما بعد الالتقاط قبل إخفائها."
+
+msgid "Captures folder"
+msgstr "مجلد اللقطات"
+
+msgid "Choose…"
+msgstr "اختيار…"
+
+msgid "Reset"
+msgstr "إعادة تعيين"
+
+msgid "Screenshot format"
+msgstr "تنسيق لقطة الشاشة"
+
+msgid "PNG is lossless (larger); JPEG is smaller but lossy. Recordings are always MP4."
+msgstr "يحتفظ PNG بكل بكسل (بدون فقدان، ملفات أكبر). أما JPEG فأصغر لكنه بفقدان — مناسب للمشاركة، وأقل ملاءمة للقطات الغنية بالنص. التسجيلات دائمًا بصيغة MP4."
+
+msgid "Cloud upload"
+msgstr "التحميل السحابي"
+
+msgid "Connected"
+msgstr "متصل"
+
+msgid "Set up"
+msgstr "إعداد"
+
+msgid "Capture system audio"
+msgstr "تسجيل صوت النظام"
+
+msgid "Records system sound; off makes a silent MP4."
+msgstr "يسجّل صوت النظام؛ عند إيقافه يكون ملف MP4 صامتًا."
+
+msgid "Capture microphone"
+msgstr "تسجيل الميكروفون"
+
+msgid "Also records your microphone, mixed with system audio into one track."
+msgstr "يسجّل أيضًا الميكروفون الافتراضي. عند تفعيل صوت النظام كذلك، يُدمج المساران في مسار واحد (عبر ffmpeg عند الإيقاف، دون أي تكلفة أثناء التسجيل)."
+
+msgid "Recording frame rate"
+msgstr "معدل إطارات التسجيل"
+
+msgid "30 fps for tutorials; 60 fps smoother but ~2× heavier."
+msgstr "30 إطارًا للدروس؛ 60 أكثر سلاسة لكن بضعف الحِمل تقريبًا."
+
+msgid "Countdown before recording"
+msgstr "العد التنازلي قبل التسجيل"
+
+msgid "A short countdown so you can switch windows first."
+msgstr "عدّ تنازلي قصير لتبديل النافذة أولًا."
+
+msgid "Record the cursor"
+msgstr "تسجيل المؤشر"
+
+msgid "Include the mouse pointer in the recording."
+msgstr "تضمين مؤشر الماوس في التسجيل."
+
+msgid "Show mouse clicks"
+msgstr "إظهار نقرات الفأرة"
+
+msgid "Marks each click with a brief ring while recording — handy for demos."
+msgstr "يرسم حلقة قصيرة متوسعة عند كل نقرة أثناء التسجيل. مفيد لمقاطع الفيديو التعليمية والتجريبية؛ عطّله للتسجيل العام."
+
+msgid "Global — click a shortcut to rebind it."
+msgstr "عام — انقر على اختصار لإعادة تعيينه."
+
+msgid "Restore defaults"
+msgstr "استعادة الإعدادات الافتراضية"
+
+msgid "Capture region"
+msgstr "التقاط منطقة"
+
+msgid "Capture fullscreen"
+msgstr "التقاط الشاشة الكاملة"
+
+msgid "Capture window"
+msgstr "التقاط نافذة"
+
+msgid "All-in-one menu"
+msgstr "قائمة شاملة"
+
+msgid "Extract text (OCR)"
+msgstr "استخراج النص (OCR)"
+
+msgid "While recording"
+msgstr "أثناء التسجيل"
+
+msgid "Stop recording"
+msgstr "إيقاف التسجيل"
+
+msgid "Restart recording"
+msgstr "إعادة بدء التسجيل"
+
+msgid "Native Windows screenshot + screen recording."
+msgstr "لقطات وتسجيل شاشة أصلي لنظام Windows."
+
+msgid "Updates"
+msgstr "التحديثات"
+
+msgid "Check whether a newer version is available."
+msgstr "تحقق مما إذا كان هناك إصدار أحدث."
+
+msgid "Installing…"
+msgstr "جارٍ التثبيت…"
+
+msgid "Update now"
+msgstr "تحديث الآن"
+
+msgid "Checking…"
+msgstr "جارٍ التحقق…"
+
+msgid "Check for updates"
+msgstr "التحقق من التحديثات"
+
+msgid "Diagnostic"
+msgstr "التشخيص"
+
+msgid "Copies the version block to the clipboard. Paste into a bug report for exact reproducibility."
+msgstr "ينسخ كتلة معلومات الإصدارات إلى الحافظة. ألصقها في تقرير الخلل لإعادة إنتاج دقيقة."
+
+msgid "Copy info"
+msgstr "نسخ المعلومات"
+
+msgid "Reset settings"
+msgstr "إعادة تعيين الإعدادات"
+
+msgid "Returns every preference (including custom shortcuts) to the factory state. Doesn't affect saved captures."
+msgstr "يعيد جميع التفضيلات (بما فيها الاختصارات المخصصة) إلى حالة المصنع. لا يؤثّر على اللقطات المحفوظة."
+
+msgid "Click to confirm"
+msgstr "انقر للتأكيد"
+
+msgid "Capture with timer"
+msgstr "التقاط بمؤقت"
+
+msgid "Record fullscreen"
+msgstr "تسجيل الشاشة الكاملة"
+
+msgid "Record region…"
+msgstr "تسجيل منطقة…"
+
+msgid "Pause recording"
+msgstr "إيقاف التسجيل مؤقتًا"
+
+msgid "Resume recording"
+msgstr "استئناف التسجيل"
+
+msgid "Discard recording"
+msgstr "تجاهل التسجيل"
+
+msgid "Unmute system audio"
+msgstr "إلغاء كتم صوت النظام"
+
+msgid "Unmute microphone"
+msgstr "إلغاء كتم الميكروفون"
+
+msgid "History…"
+msgstr "السجل…"
+
+msgid "Open captures folder"
+msgstr "فتح مجلد اللقطات"
+
+msgid "Settings…"
+msgstr "الإعدادات…"
+
+msgid "Quit Clipo"
+msgstr "إنهاء Clipo"
+
+msgid "Video preview isn't supported here yet."
+msgstr "معاينة الفيديو غير مدعومة هنا بعد."
+
+msgid "Open externally"
+msgstr "فتح خارجيًا"
+
+msgid "Previous"
+msgstr "السابق"
+
+msgid "Next"
+msgstr "التالي"
+
+msgid "No capturable windows"
+msgstr "لا توجد نوافذ قابلة للالتقاط"
+
+
+msgid "You're on the latest version."
+msgstr "أنت تستخدم أحدث إصدار."
+
+msgid "Version {} is available."
+msgstr "الإصدار {} متاح."
+
+msgid "Couldn't check: {}"
+msgstr "تعذّر التحقق: {}"
+
+msgid "Downloading update…"
+msgstr "جارٍ تنزيل التحديث…"
+
+msgid "Update failed: {}"
+msgstr "فشل التحديث: {}"
+
+msgid "Add Clipo to the \"Open with\" menu for images"
+msgstr "إضافة Clipo إلى قائمة \"فتح باستخدام\" للصور"
+
+msgid "Copy to clipboard"
+msgstr "نسخ إلى الحافظة"
+
+msgid "Copy every capture automatically"
+msgstr "نسخ كل لقطة تلقائيًا"
+
+msgid "Online save"
+msgstr "حفظ عبر الإنترنت"
+
+msgid "Bring your own keys — captures upload to your bucket and the public link is copied to the clipboard."
+msgstr "استخدم مفاتيحك الخاصة — تُرفع اللقطات إلى حاويتك ويُنسخ الرابط العام إلى الحافظة."
+
+msgid "Endpoint"
+msgstr "نقطة النهاية"
+
+msgid "Region"
+msgstr "المنطقة"
+
+msgid "Account ID"
+msgstr "معرّف الحساب"
+
+msgid "your R2 account id"
+msgstr "معرّف حساب R2 الخاص بك"
+
+msgid "Access Key ID"
+msgstr "معرّف مفتاح الوصول"
+
+msgid "access key"
+msgstr "مفتاح الوصول"
+
+msgid "Secret Access Key"
+msgstr "مفتاح الوصول السري"
+
+msgid "secret key"
+msgstr "المفتاح السري"
+
+msgid "Bucket"
+msgstr "الحاوية"
+
+msgid "bucket name"
+msgstr "اسم الحاوية"
+
+msgid "Public URL"
+msgstr "عنوان URL العام"
+
+msgid "Disconnect"
+msgstr "قطع الاتصال"
+
+msgid "Save & test"
+msgstr "حفظ واختبار"
+
+msgid "Uploading…"
+msgstr "جارٍ الرفع…"
+
+msgid "Upload failed: {}"
+msgstr "فشل الرفع: {}"
+
+msgid "GIF saved"
+msgstr "تم حفظ GIF"
+
+msgid "GIF failed: {}"
+msgstr "فشل إنشاء GIF: {}"
+
+msgid "Disconnected."
+msgstr "تم قطع الاتصال."
+
+msgid "Fill every field to enable upload."
+msgstr "املأ جميع الحقول لتمكين الرفع."
+
+msgid "Testing…"
+msgstr "جارٍ الاختبار…"
+
+msgid "Failed: {}"
+msgstr "فشل: {}"
+
+msgid "{} words · {} chars"
+msgstr "{} كلمة · {} حرف"
+
+msgid "Software encoder (compatibility)"
+msgstr "مُرمِّز برمجي (التوافق)"
+
+msgid "Encode on the CPU instead of the GPU. Slower and slightly lower quality, but works where the hardware encoder is unstable. Turns on automatically if a recording ever crashes."
+msgstr "يُرمّز باستخدام المعالج بدلاً من كرت الرسوميات. أبطأ وبجودة أقل قليلاً، لكنه يعمل عندما يكون المُرمّز العتادي غير مستقر. يُفعَّل تلقائياً إذا تعطّل التسجيل."
+
+msgid "Record"
+msgstr "تسجيل"
+
+msgid "Copied!"
+msgstr "تم النسخ!"

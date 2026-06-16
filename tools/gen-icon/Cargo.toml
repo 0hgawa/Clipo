@@ -1,0 +1,18 @@
+# One-off icon generator — NOT part of the app build (own workspace, never
+# referenced by ../../Cargo.toml). Rasterises the brand SVG natively at every
+# size into a multi-resolution .ico for the exe, plus a 32px RGBA for the tray.
+# Run: cargo run --release   (from this dir). Re-run only when the SVG changes.
+[package]
+name = "gen-icon"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+resvg = "0.45"
+ico = "0.5"
+
+[profile.release]
+opt-level = "s"

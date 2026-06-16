@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Close"
+msgstr "बंद करें"
+
+msgid "Copy link"
+msgstr "लिंक कॉपी करें"
+
+msgid "Upload"
+msgstr "अपलोड"
+
+msgid "Copy"
+msgstr "कॉपी करें"
+
+msgid "Edit"
+msgstr "संपादित करें"
+
+msgid "Extract text"
+msgstr "टेक्स्ट निकालें"
+
+msgid "Reveal in folder"
+msgstr "फ़ोल्डर में दिखाएँ"
+
+msgid "Delete"
+msgstr "हटाएँ"
+
+msgid "Export as GIF"
+msgstr "GIF के रूप में निर्यात करें"
+
+msgid "Minimize"
+msgstr "न्यूनतम करें"
+
+msgid "Restore"
+msgstr "पुनर्स्थापित करें"
+
+msgid "Maximize"
+msgstr "अधिकतम करें"
+
+msgid "Esc to cancel"
+msgstr "रद्द करने के लिए Esc"
+
+msgid "Move"
+msgstr "ले जाएँ"
+
+msgid "Arrow"
+msgstr "तीर"
+
+msgid "Rectangle"
+msgstr "आयत"
+
+msgid "Ellipse"
+msgstr "दीर्घवृत्त"
+
+msgid "Line"
+msgstr "रेखा"
+
+msgid "Highlight"
+msgstr "हाइलाइट"
+
+msgid "Pen"
+msgstr "पेन"
+
+msgid "Pixelate"
+msgstr "पिक्सेलेट"
+
+msgid "Text"
+msgstr "टेक्स्ट"
+
+msgid "Counter"
+msgstr "काउंटर"
+
+msgid "Crop"
+msgstr "क्रॉप"
+
+msgid "Resize"
+msgstr "आकार बदलें"
+
+msgid "Width"
+msgstr "चौड़ाई"
+
+msgid "Height"
+msgstr "ऊँचाई"
+
+msgid "Lock aspect"
+msgstr "अनुपात लॉक करें"
+
+msgid "Apply"
+msgstr "लागू करें"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgid "Aspect"
+msgstr "अनुपात"
+
+msgid "Free"
+msgstr "मुक्त"
+
+msgid "Padding"
+msgstr "पैडिंग"
+
+msgid "Radius"
+msgstr "त्रिज्या"
+
+msgid "Shadow"
+msgstr "छाया"
+
+msgid "Strength"
+msgstr "तीव्रता"
+
+msgid "Reset background"
+msgstr "पृष्ठभूमि रीसेट करें"
+
+msgid "Custom colour"
+msgstr "कस्टम रंग"
+
+msgid "History"
+msgstr "इतिहास"
+
+msgid "All"
+msgstr "सभी"
+
+msgid "Photos"
+msgstr "फ़ोटो"
+
+msgid "Videos"
+msgstr "वीडियो"
+
+msgid "Today"
+msgstr "आज"
+
+msgid "Week"
+msgstr "सप्ताह"
+
+msgid "Month"
+msgstr "महीना"
+
+msgid "No captures yet."
+msgstr "अभी तक कोई कैप्चर नहीं।"
+
+msgid "Your screenshots and recordings show up here."
+msgstr "आपके स्क्रीनशॉट और रिकॉर्डिंग यहाँ दिखाई देंगे।"
+
+msgid "Nothing matches this filter"
+msgstr "इस फ़िल्टर से कुछ मेल नहीं खाता"
+
+msgid "Try a different type or date range."
+msgstr "कोई अन्य प्रकार या तिथि सीमा आज़माएँ।"
+
+msgid "What to capture?"
+msgstr "क्या कैप्चर करना है?"
+
+msgid "Press Esc to dismiss"
+msgstr "खारिज करने के लिए Esc दबाएँ"
+
+msgid "Capture area"
+msgstr "क्षेत्र कैप्चर करें"
+
+msgid "Full screen"
+msgstr "पूर्ण स्क्रीन"
+
+msgid "Window"
+msgstr "विंडो"
+
+msgid "Record screen"
+msgstr "स्क्रीन रिकॉर्ड करें"
+
+msgid "Record area"
+msgstr "क्षेत्र रिकॉर्ड करें"
+
+msgid "Settings"
+msgstr "सेटिंग्स"
+
+msgid "Extracted text"
+msgstr "निकाला गया टेक्स्ट"
+
+msgid "No text found"
+msgstr "कोई टेक्स्ट नहीं मिला"
+
+msgid "The image doesn't contain any recognizable characters."
+msgstr "छवि में कोई पहचाने जा सकने वाले अक्षर नहीं हैं।"
+
+msgid "Copied"
+msgstr "कॉपी किया गया"
+
+msgid "Recording"
+msgstr "रिकॉर्डिंग"
+
+msgid "Pause / resume"
+msgstr "रोकें / जारी रखें"
+
+msgid "Mute system audio"
+msgstr "सिस्टम ऑडियो म्यूट करें"
+
+msgid "Mute microphone"
+msgstr "माइक्रोफ़ोन म्यूट करें"
+
+msgid "Restart"
+msgstr "पुनः आरंभ करें"
+
+msgid "Discard"
+msgstr "हटाएँ"
+
+msgid "Stop"
+msgstr "रोकें"
+
+msgid "In conflict"
+msgstr "टकराव"
+
+msgid "Active"
+msgstr "सक्रिय"
+
+msgid "Press keys…"
+msgstr "कुंजियाँ दबाएँ…"
+
+msgid "General"
+msgstr "सामान्य"
+
+msgid "Capture"
+msgstr "कैप्चर"
+
+msgid "Storage"
+msgstr "संग्रहण"
+
+msgid "Shortcuts"
+msgstr "शॉर्टकट"
+
+msgid "About"
+msgstr "के बारे में"
+
+msgid "Theme"
+msgstr "थीम"
+
+msgid "Light"
+msgstr "लाइट"
+
+msgid "Dark"
+msgstr "डार्क"
+
+msgid "System"
+msgstr "सिस्टम"
+
+msgid "Language"
+msgstr "भाषा"
+
+msgid "Interface language. Affects every Clipo window. Takes effect immediately."
+msgstr "इंटरफ़ेस की भाषा। Clipo की सभी विंडो को प्रभावित करती है। तुरंत लागू होती है।"
+
+msgid "Launch Clipo at system startup"
+msgstr "सिस्टम स्टार्टअप पर Clipo लॉन्च करें"
+
+msgid "Clipo lives in the system tray. With this on, it starts automatically at login."
+msgstr "Clipo सिस्टम ट्रे में रहता है। यह चालू होने पर लॉगिन पर अपने आप शुरू हो जाता है।"
+
+msgid "Open images with Clipo"
+msgstr "Clipo से छवियाँ खोलें"
+
+msgid "Tray icon left-click"
+msgstr "ट्रे आइकन पर बायाँ क्लिक"
+
+msgid "What a left-click on the tray icon does. Right-click always opens the menu."
+msgstr "ट्रे आइकन पर बायाँ क्लिक क्या करता है। दायाँ क्लिक हमेशा मेनू खोलता है।"
+
+msgid "Area"
+msgstr "क्षेत्र"
+
+msgid "Fullscreen"
+msgstr "पूर्ण स्क्रीन"
+
+msgid "Menu"
+msgstr "मेन्यू"
+
+msgid "Timer"
+msgstr "टाइमर"
+
+msgid "Capture timer"
+msgstr "कैप्चर टाइमर"
+
+msgid "Countdown before a timed capture."
+msgstr "समयबद्ध कैप्चर से पहले उलटी गिनती।"
+
+msgid "Show magnifier when selecting a region"
+msgstr "क्षेत्र चयन के दौरान मैग्निफायर दिखाएँ"
+
+msgid "A 4× zoom under the cursor with the live width × height, for pixel-precise selections."
+msgstr "खींचते समय कर्सर के नीचे के पिक्सेल का 4× ज़ूम और उसके नीचे वर्तमान चौड़ाई × ऊँचाई दिखाता है। पिक्सेल-सटीक चयन के लिए उपयोगी; ओवरले को साफ रखने के लिए डिफ़ॉल्ट रूप से बंद।"
+
+msgid "Auto-dismiss the capture panel"
+msgstr "कैप्चर पैनल स्वतः खारिज करें"
+
+msgid "How long the post-capture panel stays before hiding."
+msgstr "कैप्चर के बाद पैनल छिपने से पहले कितनी देर रहता है।"
+
+msgid "Captures folder"
+msgstr "कैप्चर फ़ोल्डर"
+
+msgid "Choose…"
+msgstr "चुनें…"
+
+msgid "Reset"
+msgstr "रीसेट करें"
+
+msgid "Screenshot format"
+msgstr "स्क्रीनशॉट प्रारूप"
+
+msgid "PNG is lossless (larger); JPEG is smaller but lossy. Recordings are always MP4."
+msgstr "PNG हर पिक्सेल रखता है (बिना हानि, बड़ी फ़ाइलें)। JPEG छोटा पर हानिकर है — साझा करने के लिए ठीक, ज़्यादा टेक्स्ट वाले शॉट्स के लिए कम। रिकॉर्डिंग हमेशा MP4 होती है।"
+
+msgid "Cloud upload"
+msgstr "क्लाउड अपलोड"
+
+msgid "Connected"
+msgstr "कनेक्टेड"
+
+msgid "Set up"
+msgstr "सेट करें"
+
+msgid "Capture system audio"
+msgstr "सिस्टम ऑडियो कैप्चर करें"
+
+msgid "Records system sound; off makes a silent MP4."
+msgstr "सिस्टम की आवाज़ रिकॉर्ड करता है; बंद करने पर MP4 मूक रहेगा।"
+
+msgid "Capture microphone"
+msgstr "माइक्रोफ़ोन कैप्चर करें"
+
+msgid "Also records your microphone, mixed with system audio into one track."
+msgstr "डिफ़ॉल्ट माइक्रोफ़ोन भी रिकॉर्ड करता है। सिस्टम ऑडियो भी चालू होने पर, दोनों ट्रैक एक में मिला दिए जाते हैं (रोकने पर ffmpeg द्वारा मिक्स, रिकॉर्डिंग के दौरान कोई लागत नहीं)।"
+
+msgid "Recording frame rate"
+msgstr "रिकॉर्डिंग फ़्रेम दर"
+
+msgid "30 fps for tutorials; 60 fps smoother but ~2× heavier."
+msgstr "ट्यूटोरियल के लिए 30 fps; 60 fps अधिक सहज, पर ~2× भार।"
+
+msgid "Countdown before recording"
+msgstr "रिकॉर्डिंग से पहले काउंटडाउन"
+
+msgid "A short countdown so you can switch windows first."
+msgstr "एक छोटा काउंटडाउन, ताकि आप पहले विंडो बदल सकें।"
+
+msgid "Record the cursor"
+msgstr "कर्सर रिकॉर्ड करें"
+
+msgid "Include the mouse pointer in the recording."
+msgstr "रिकॉर्डिंग में माउस पॉइंटर शामिल करें।"
+
+msgid "Show mouse clicks"
+msgstr "माउस क्लिक दिखाएँ"
+
+msgid "Marks each click with a brief ring while recording — handy for demos."
+msgstr "रिकॉर्डिंग के दौरान हर क्लिक पर एक छोटा फैलता हुआ रिंग बनाता है। ट्यूटोरियल और डेमो वीडियो के लिए उपयोगी; सामान्य स्क्रीन रिकॉर्डिंग के लिए बंद रखें।"
+
+msgid "Global — click a shortcut to rebind it."
+msgstr "ग्लोबल — पुनः असाइन करने के लिए शॉर्टकट पर क्लिक करें।"
+
+msgid "Restore defaults"
+msgstr "डिफ़ॉल्ट पुनर्स्थापित करें"
+
+msgid "Capture region"
+msgstr "क्षेत्र कैप्चर करें"
+
+msgid "Capture fullscreen"
+msgstr "पूर्ण स्क्रीन कैप्चर करें"
+
+msgid "Capture window"
+msgstr "विंडो कैप्चर करें"
+
+msgid "All-in-one menu"
+msgstr "ऑल-इन-वन मेनू"
+
+msgid "Extract text (OCR)"
+msgstr "टेक्स्ट निकालें (OCR)"
+
+msgid "While recording"
+msgstr "रिकॉर्डिंग के दौरान"
+
+msgid "Stop recording"
+msgstr "रिकॉर्डिंग रोकें"
+
+msgid "Restart recording"
+msgstr "रिकॉर्डिंग पुनः आरंभ करें"
+
+msgid "Native Windows screenshot + screen recording."
+msgstr "Windows के लिए नेटिव स्क्रीनशॉट + स्क्रीन रिकॉर्डिंग।"
+
+msgid "Updates"
+msgstr "अपडेट"
+
+msgid "Check whether a newer version is available."
+msgstr "जांचें कि कोई नया संस्करण उपलब्ध है या नहीं।"
+
+msgid "Installing…"
+msgstr "इंस्टॉल हो रहा है…"
+
+msgid "Update now"
+msgstr "अभी अपडेट करें"
+
+msgid "Checking…"
+msgstr "जाँच हो रही है…"
+
+msgid "Check for updates"
+msgstr "अपडेट जांचें"
+
+msgid "Diagnostic"
+msgstr "निदान"
+
+msgid "Copies the version block to the clipboard. Paste into a bug report for exact reproducibility."
+msgstr "वर्शन ब्लॉक को क्लिपबोर्ड पर कॉपी करता है। सटीक पुनरुत्पादन के लिए बग रिपोर्ट में पेस्ट करें।"
+
+msgid "Copy info"
+msgstr "जानकारी कॉपी करें"
+
+msgid "Reset settings"
+msgstr "सेटिंग्स रीसेट करें"
+
+msgid "Returns every preference (including custom shortcuts) to the factory state. Doesn't affect saved captures."
+msgstr "सभी प्राथमिकताओं (कस्टम शॉर्टकट सहित) को फ़ैक्टरी स्थिति पर लौटाता है। सहेजे गए कैप्चर पर असर नहीं पड़ता।"
+
+msgid "Click to confirm"
+msgstr "पुष्टि के लिए क्लिक करें"
+
+msgid "Capture with timer"
+msgstr "टाइमर के साथ कैप्चर"
+
+msgid "Record fullscreen"
+msgstr "पूर्ण स्क्रीन रिकॉर्ड करें"
+
+msgid "Record region…"
+msgstr "क्षेत्र रिकॉर्ड करें…"
+
+msgid "Pause recording"
+msgstr "रिकॉर्डिंग रोकें (पॉज़)"
+
+msgid "Resume recording"
+msgstr "रिकॉर्डिंग फिर से शुरू करें"
+
+msgid "Discard recording"
+msgstr "रिकॉर्डिंग हटाएँ"
+
+msgid "Unmute system audio"
+msgstr "सिस्टम ऑडियो अनम्यूट करें"
+
+msgid "Unmute microphone"
+msgstr "माइक्रोफ़ोन अनम्यूट करें"
+
+msgid "History…"
+msgstr "इतिहास…"
+
+msgid "Open captures folder"
+msgstr "कैप्चर फ़ोल्डर खोलें"
+
+msgid "Settings…"
+msgstr "सेटिंग्स…"
+
+msgid "Quit Clipo"
+msgstr "Clipo से बाहर निकलें"
+
+msgid "Video preview isn't supported here yet."
+msgstr "वीडियो पूर्वावलोकन यहाँ अभी समर्थित नहीं है।"
+
+msgid "Open externally"
+msgstr "बाहरी रूप से खोलें"
+
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Next"
+msgstr "अगला"
+
+msgid "No capturable windows"
+msgstr "कोई कैप्चर करने योग्य विंडो नहीं"
+
+
+msgid "You're on the latest version."
+msgstr "आप नवीनतम संस्करण पर हैं।"
+
+msgid "Version {} is available."
+msgstr "संस्करण {} उपलब्ध है।"
+
+msgid "Couldn't check: {}"
+msgstr "जाँच नहीं हो सकी: {}"
+
+msgid "Downloading update…"
+msgstr "अपडेट डाउनलोड हो रहा है…"
+
+msgid "Update failed: {}"
+msgstr "अपडेट विफल: {}"
+
+msgid "Add Clipo to the \"Open with\" menu for images"
+msgstr "छवियों के लिए \"इसके साथ खोलें\" मेनू में Clipo जोड़ें"
+
+msgid "Copy to clipboard"
+msgstr "क्लिपबोर्ड पर कॉपी करें"
+
+msgid "Copy every capture automatically"
+msgstr "हर कैप्चर अपने आप कॉपी करें"
+
+msgid "Online save"
+msgstr "ऑनलाइन सहेजें"
+
+msgid "Bring your own keys — captures upload to your bucket and the public link is copied to the clipboard."
+msgstr "अपनी कुंजियाँ उपयोग करें — कैप्चर आपके बकेट में अपलोड होते हैं और सार्वजनिक लिंक क्लिपबोर्ड पर कॉपी हो जाता है।"
+
+msgid "Endpoint"
+msgstr "एंडपॉइंट"
+
+msgid "Region"
+msgstr "क्षेत्र"
+
+msgid "Account ID"
+msgstr "खाता ID"
+
+msgid "your R2 account id"
+msgstr "आपका R2 खाता ID"
+
+msgid "Access Key ID"
+msgstr "एक्सेस कुंजी ID"
+
+msgid "access key"
+msgstr "एक्सेस कुंजी"
+
+msgid "Secret Access Key"
+msgstr "गुप्त एक्सेस कुंजी"
+
+msgid "secret key"
+msgstr "गुप्त कुंजी"
+
+msgid "Bucket"
+msgstr "बकेट"
+
+msgid "bucket name"
+msgstr "बकेट नाम"
+
+msgid "Public URL"
+msgstr "सार्वजनिक URL"
+
+msgid "Disconnect"
+msgstr "डिस्कनेक्ट करें"
+
+msgid "Save & test"
+msgstr "सहेजें और परखें"
+
+msgid "Uploading…"
+msgstr "अपलोड हो रहा है…"
+
+msgid "Upload failed: {}"
+msgstr "अपलोड विफल: {}"
+
+msgid "GIF saved"
+msgstr "GIF सहेजा गया"
+
+msgid "GIF failed: {}"
+msgstr "GIF विफल: {}"
+
+msgid "Disconnected."
+msgstr "डिस्कनेक्ट किया गया।"
+
+msgid "Fill every field to enable upload."
+msgstr "अपलोड सक्षम करने के लिए सभी फ़ील्ड भरें।"
+
+msgid "Testing…"
+msgstr "परीक्षण हो रहा है…"
+
+msgid "Failed: {}"
+msgstr "विफल: {}"
+
+msgid "{} words · {} chars"
+msgstr "{} शब्द · {} वर्ण"
+
+msgid "Software encoder (compatibility)"
+msgstr "सॉफ़्टवेयर एन्कोडर (संगतता)"
+
+msgid "Encode on the CPU instead of the GPU. Slower and slightly lower quality, but works where the hardware encoder is unstable. Turns on automatically if a recording ever crashes."
+msgstr "GPU के बजाय CPU पर एन्कोड करता है। धीमा और थोड़ी कम गुणवत्ता, लेकिन जहाँ हार्डवेयर एन्कोडर अस्थिर हो वहाँ काम करता है। रिकॉर्डिंग क्रैश होने पर अपने आप चालू हो जाता है।"
+
+msgid "Record"
+msgstr "रिकॉर्ड"
+
+msgid "Copied!"
+msgstr "कॉपी किया गया!"

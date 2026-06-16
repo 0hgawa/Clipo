@@ -1,0 +1,7 @@
+/target
+/tools/gen-icon/target
+
+# Installer build artifacts (the .nsi, build.ps1 and branding .bmp stay tracked;
+# the generated outputs do not).
+/installer/Clipo-Setup.exe
+/installer/latest.json

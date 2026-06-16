@@ -1,0 +1,17 @@
+import { ScrollArea } from "scroll-area.slint";
+
+// The body of a Settings tab: a content-height-driven column that scrolls when
+// it overflows the window. Every tab routes through this instead of pinning its
+// own height — a fixed-height column (`height: 100%`) squeezes each row back to
+// its min-height, so wrapped (translated) subtitles overflow and overlap. Here
+// the height follows the content and the excess scrolls. One place, all tabs.
+export component SettingsPane inherits ScrollArea {
+    in property <length> spacing: 12px;
+    content-height: col.preferred-height;
+    col := VerticalLayout {
+        padding: 16px;
+        spacing: root.spacing;
+        alignment: start;
+        @children
+    }
+}

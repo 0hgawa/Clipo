@@ -1,0 +1,7 @@
+<!-- @license lucide-static v1.17.0 - ISC — image + play (animated image → GIF export) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="9" cy="9" r="2"/>
+  <path d="m11 15-3.086-3.086a2 2 0 0 0-2.828 0L3 14"/>
+  <path d="M12.221 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7.221"/>
+  <path d="m16.221 16.541 4.778 2.736a.5.5 0 0 1 0 .866l-4.778 2.736A.5.5 0 0 1 15.5 22.5v-5.472a.5.5 0 0 1 .721-.434z"/>
+</svg>

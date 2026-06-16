@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Copy link"
+msgstr "复制链接"
+
+msgid "Upload"
+msgstr "上传"
+
+msgid "Copy"
+msgstr "复制"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Extract text"
+msgstr "提取文字"
+
+msgid "Reveal in folder"
+msgstr "在文件夹中显示"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Export as GIF"
+msgstr "导出为 GIF"
+
+msgid "Minimize"
+msgstr "最小化"
+
+msgid "Restore"
+msgstr "还原"
+
+msgid "Maximize"
+msgstr "最大化"
+
+msgid "Esc to cancel"
+msgstr "按 Esc 取消"
+
+msgid "Move"
+msgstr "移动"
+
+msgid "Arrow"
+msgstr "箭头"
+
+msgid "Rectangle"
+msgstr "矩形"
+
+msgid "Ellipse"
+msgstr "椭圆"
+
+msgid "Line"
+msgstr "直线"
+
+msgid "Highlight"
+msgstr "高亮"
+
+msgid "Pen"
+msgstr "画笔"
+
+msgid "Pixelate"
+msgstr "像素化"
+
+msgid "Text"
+msgstr "文字"
+
+msgid "Counter"
+msgstr "计数器"
+
+msgid "Crop"
+msgstr "裁剪"
+
+msgid "Resize"
+msgstr "调整大小"
+
+msgid "Width"
+msgstr "宽度"
+
+msgid "Height"
+msgstr "高度"
+
+msgid "Lock aspect"
+msgstr "锁定比例"
+
+msgid "Apply"
+msgstr "应用"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Aspect"
+msgstr "比例"
+
+msgid "Free"
+msgstr "自由"
+
+msgid "Padding"
+msgstr "内边距"
+
+msgid "Radius"
+msgstr "圆角"
+
+msgid "Shadow"
+msgstr "阴影"
+
+msgid "Strength"
+msgstr "强度"
+
+msgid "Reset background"
+msgstr "重置背景"
+
+msgid "Custom colour"
+msgstr "自定义颜色"
+
+msgid "History"
+msgstr "历史记录"
+
+msgid "All"
+msgstr "全部"
+
+msgid "Photos"
+msgstr "图片"
+
+msgid "Videos"
+msgstr "视频"
+
+msgid "Today"
+msgstr "今天"
+
+msgid "Week"
+msgstr "本周"
+
+msgid "Month"
+msgstr "本月"
+
+msgid "No captures yet."
+msgstr "暂无截图。"
+
+msgid "Your screenshots and recordings show up here."
+msgstr "您的截图和录制将显示在这里。"
+
+msgid "Nothing matches this filter"
+msgstr "没有符合此筛选的内容"
+
+msgid "Try a different type or date range."
+msgstr "试试其他类型或日期范围。"
+
+msgid "What to capture?"
+msgstr "要捕获什么？"
+
+msgid "Press Esc to dismiss"
+msgstr "按 Esc 关闭"
+
+msgid "Capture area"
+msgstr "捕获区域"
+
+msgid "Full screen"
+msgstr "全屏"
+
+msgid "Window"
+msgstr "窗口"
+
+msgid "Record screen"
+msgstr "录制屏幕"
+
+msgid "Record area"
+msgstr "录制区域"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Extracted text"
+msgstr "提取的文字"
+
+msgid "No text found"
+msgstr "未找到文字"
+
+msgid "The image doesn't contain any recognizable characters."
+msgstr "图像不包含任何可识别的字符。"
+
+msgid "Copied"
+msgstr "已复制"
+
+msgid "Recording"
+msgstr "录制"
+
+msgid "Pause / resume"
+msgstr "暂停 / 继续"
+
+msgid "Mute system audio"
+msgstr "静音系统声音"
+
+msgid "Mute microphone"
+msgstr "静音麦克风"
+
+msgid "Restart"
+msgstr "重新开始"
+
+msgid "Discard"
+msgstr "丢弃"
+
+msgid "Stop"
+msgstr "停止"
+
+msgid "In conflict"
+msgstr "冲突"
+
+msgid "Active"
+msgstr "已启用"
+
+msgid "Press keys…"
+msgstr "按下按键…"
+
+msgid "General"
+msgstr "常规"
+
+msgid "Capture"
+msgstr "捕获"
+
+msgid "Storage"
+msgstr "存储"
+
+msgid "Shortcuts"
+msgstr "快捷键"
+
+msgid "About"
+msgstr "关于"
+
+msgid "Theme"
+msgstr "主题"
+
+msgid "Light"
+msgstr "浅色"
+
+msgid "Dark"
+msgstr "深色"
+
+msgid "System"
+msgstr "系统"
+
+msgid "Language"
+msgstr "语言"
+
+msgid "Interface language. Affects every Clipo window. Takes effect immediately."
+msgstr "界面语言。影响所有 Clipo 窗口。立即生效。"
+
+msgid "Launch Clipo at system startup"
+msgstr "系统启动时运行 Clipo"
+
+msgid "Clipo lives in the system tray. With this on, it starts automatically at login."
+msgstr "Clipo 驻留在系统托盘中。启用后，登录时自动启动。"
+
+msgid "Open images with Clipo"
+msgstr "用 Clipo 打开图片"
+
+msgid "Tray icon left-click"
+msgstr "托盘图标左键单击"
+
+msgid "What a left-click on the tray icon does. Right-click always opens the menu."
+msgstr "左键单击托盘图标时执行的操作。右键单击始终打开菜单。"
+
+msgid "Area"
+msgstr "区域"
+
+msgid "Fullscreen"
+msgstr "全屏"
+
+msgid "Menu"
+msgstr "菜单"
+
+msgid "Timer"
+msgstr "定时器"
+
+msgid "Capture timer"
+msgstr "捕获定时器"
+
+msgid "Countdown before a timed capture."
+msgstr "定时捕获前的倒计时。"
+
+msgid "Show magnifier when selecting a region"
+msgstr "选择区域时显示放大镜"
+
+msgid "A 4× zoom under the cursor with the live width × height, for pixel-precise selections."
+msgstr "拖动时显示光标下像素的 4× 放大视图,并在下方显示当前宽度 × 高度。适合像素级精确选择；默认关闭以保持覆盖层简洁。"
+
+msgid "Auto-dismiss the capture panel"
+msgstr "自动关闭捕获面板"
+
+msgid "How long the post-capture panel stays before hiding."
+msgstr "捕获后面板在隐藏前停留的时间。"
+
+msgid "Captures folder"
+msgstr "截图文件夹"
+
+msgid "Choose…"
+msgstr "选择…"
+
+msgid "Reset"
+msgstr "重置"
+
+msgid "Screenshot format"
+msgstr "截图格式"
+
+msgid "PNG is lossless (larger); JPEG is smaller but lossy. Recordings are always MP4."
+msgstr "PNG 保留每个像素（无损，文件较大）。JPEG 更小但有损——适合分享，不太适合文字较多的截图。录制始终为 MP4。"
+
+msgid "Cloud upload"
+msgstr "云上传"
+
+msgid "Connected"
+msgstr "已连接"
+
+msgid "Set up"
+msgstr "设置"
+
+msgid "Capture system audio"
+msgstr "录制系统声音"
+
+msgid "Records system sound; off makes a silent MP4."
+msgstr "录制系统声音；关闭后 MP4 没有声音。"
+
+msgid "Capture microphone"
+msgstr "录制麦克风"
+
+msgid "Also records your microphone, mixed with system audio into one track."
+msgstr "同时录制默认麦克风。如果系统声音也已开启，两条轨道会合并为一条（停止时由 ffmpeg 混合，录制期间无开销）。"
+
+msgid "Recording frame rate"
+msgstr "录制帧率"
+
+msgid "30 fps for tutorials; 60 fps smoother but ~2× heavier."
+msgstr "教程用 30 fps；60 fps 更流畅，但负载约为 2 倍。"
+
+msgid "Countdown before recording"
+msgstr "录制前倒计时"
+
+msgid "A short countdown so you can switch windows first."
+msgstr "短暂倒计时，便于先切换窗口。"
+
+msgid "Record the cursor"
+msgstr "录制光标"
+
+msgid "Include the mouse pointer in the recording."
+msgstr "在录制中包含鼠标指针。"
+
+msgid "Show mouse clicks"
+msgstr "显示鼠标点击"
+
+msgid "Marks each click with a brief ring while recording — handy for demos."
+msgstr "录制时每次点击都绘制一个短暂扩展的环。适用于教程和演示视频；常规录制时关闭。"
+
+msgid "Global — click a shortcut to rebind it."
+msgstr "全局 — 点击快捷键以重新绑定。"
+
+msgid "Restore defaults"
+msgstr "恢复默认值"
+
+msgid "Capture region"
+msgstr "截取区域"
+
+msgid "Capture fullscreen"
+msgstr "截取全屏"
+
+msgid "Capture window"
+msgstr "截取窗口"
+
+msgid "All-in-one menu"
+msgstr "综合菜单"
+
+msgid "Extract text (OCR)"
+msgstr "提取文字（OCR）"
+
+msgid "While recording"
+msgstr "录制时"
+
+msgid "Stop recording"
+msgstr "停止录制"
+
+msgid "Restart recording"
+msgstr "重新开始录制"
+
+msgid "Native Windows screenshot + screen recording."
+msgstr "原生 Windows 截图与屏幕录制。"
+
+msgid "Updates"
+msgstr "更新"
+
+msgid "Check whether a newer version is available."
+msgstr "检查是否有更新版本。"
+
+msgid "Installing…"
+msgstr "正在安装…"
+
+msgid "Update now"
+msgstr "立即更新"
+
+msgid "Checking…"
+msgstr "正在检查…"
+
+msgid "Check for updates"
+msgstr "检查更新"
+
+msgid "Diagnostic"
+msgstr "诊断信息"
+
+msgid "Copies the version block to the clipboard. Paste into a bug report for exact reproducibility."
+msgstr "将版本信息块复制到剪贴板。粘贴到错误报告中以实现精确可复现性。"
+
+msgid "Copy info"
+msgstr "复制信息"
+
+msgid "Reset settings"
+msgstr "重置设置"
+
+msgid "Returns every preference (including custom shortcuts) to the factory state. Doesn't affect saved captures."
+msgstr "将所有偏好设置（包括自定义快捷键）恢复到出厂状态。不影响已保存的截图。"
+
+msgid "Click to confirm"
+msgstr "点击以确认"
+
+msgid "Capture with timer"
+msgstr "定时截图"
+
+msgid "Record fullscreen"
+msgstr "录制全屏"
+
+msgid "Record region…"
+msgstr "录制区域…"
+
+msgid "Pause recording"
+msgstr "暂停录制"
+
+msgid "Resume recording"
+msgstr "继续录制"
+
+msgid "Discard recording"
+msgstr "丢弃录制"
+
+msgid "Unmute system audio"
+msgstr "取消系统声音静音"
+
+msgid "Unmute microphone"
+msgstr "取消麦克风静音"
+
+msgid "History…"
+msgstr "历史记录…"
+
+msgid "Open captures folder"
+msgstr "打开截图文件夹"
+
+msgid "Settings…"
+msgstr "设置…"
+
+msgid "Quit Clipo"
+msgstr "退出 Clipo"
+
+msgid "Video preview isn't supported here yet."
+msgstr "此处暂不支持视频预览。"
+
+msgid "Open externally"
+msgstr "用外部程序打开"
+
+msgid "Previous"
+msgstr "上一张"
+
+msgid "Next"
+msgstr "下一张"
+
+msgid "No capturable windows"
+msgstr "没有可截取的窗口"
+
+
+msgid "You're on the latest version."
+msgstr "已是最新版本。"
+
+msgid "Version {} is available."
+msgstr "版本 {} 可用。"
+
+msgid "Couldn't check: {}"
+msgstr "无法检查：{}"
+
+msgid "Downloading update…"
+msgstr "正在下载更新…"
+
+msgid "Update failed: {}"
+msgstr "更新失败：{}"
+
+msgid "Add Clipo to the \"Open with\" menu for images"
+msgstr "将 Clipo 添加到图片的“打开方式”菜单"
+
+msgid "Copy to clipboard"
+msgstr "复制到剪贴板"
+
+msgid "Copy every capture automatically"
+msgstr "自动复制每次捕获"
+
+msgid "Online save"
+msgstr "在线保存"
+
+msgid "Bring your own keys — captures upload to your bucket and the public link is copied to the clipboard."
+msgstr "使用您自己的密钥 — 捕获会上传到您的存储桶，公共链接会复制到剪贴板。"
+
+msgid "Endpoint"
+msgstr "端点"
+
+msgid "Region"
+msgstr "区域"
+
+msgid "Account ID"
+msgstr "账户 ID"
+
+msgid "your R2 account id"
+msgstr "您的 R2 账户 ID"
+
+msgid "Access Key ID"
+msgstr "访问密钥 ID"
+
+msgid "access key"
+msgstr "访问密钥"
+
+msgid "Secret Access Key"
+msgstr "私有访问密钥"
+
+msgid "secret key"
+msgstr "私有密钥"
+
+msgid "Bucket"
+msgstr "存储桶"
+
+msgid "bucket name"
+msgstr "存储桶名称"
+
+msgid "Public URL"
+msgstr "公共 URL"
+
+msgid "Disconnect"
+msgstr "断开连接"
+
+msgid "Save & test"
+msgstr "保存并测试"
+
+msgid "Uploading…"
+msgstr "正在上传…"
+
+msgid "Upload failed: {}"
+msgstr "上传失败：{}"
+
+msgid "GIF saved"
+msgstr "已保存 GIF"
+
+msgid "GIF failed: {}"
+msgstr "GIF 失败：{}"
+
+msgid "Disconnected."
+msgstr "已断开连接。"
+
+msgid "Fill every field to enable upload."
+msgstr "填写所有字段以启用上传。"
+
+msgid "Testing…"
+msgstr "正在测试…"
+
+msgid "Failed: {}"
+msgstr "失败：{}"
+
+msgid "{} words · {} chars"
+msgstr "{} 个词 · {} 个字符"
+
+msgid "Software encoder (compatibility)"
+msgstr "软件编码器（兼容）"
+
+msgid "Encode on the CPU instead of the GPU. Slower and slightly lower quality, but works where the hardware encoder is unstable. Turns on automatically if a recording ever crashes."
+msgstr "使用 CPU 而非 GPU 进行编码。速度较慢、画质略低，但在硬件编码器不稳定时仍可工作。录制崩溃时会自动启用。"
+
+msgid "Record"
+msgstr "录制"
+
+msgid "Copied!"
+msgstr "已复制！"

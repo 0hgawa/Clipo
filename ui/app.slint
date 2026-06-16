@@ -1,0 +1,18 @@
+// Clipo — Slint UI. Each surface is its own borderless floating window, all in
+// one process. This file only
+// re-exports the window components; everything is split into theme.slint,
+// components.slint, and windows/*.slint and merged at compile time (no
+// runtime cost from the split).
+
+export { Theme } from "theme.slint";
+export { MenuWindow } from "windows/menu.slint";
+export { ActionsWindow } from "windows/actions.slint";
+export { OcrWindow } from "windows/ocr.slint";
+export { SettingsWindow } from "windows/settings.slint";
+export { HistoryWindow } from "windows/history.slint";
+export { ViewerWindow } from "windows/viewer.slint";
+export { WindowPickerWindow } from "windows/windowpicker.slint";
+export { CountdownWindow } from "windows/countdown.slint";
+export { RecordingBarWindow } from "windows/recording-bar.slint";
+export { EditorWindow } from "windows/editor.slint";
+export { TrayMenuWindow } from "windows/traymenu.slint";

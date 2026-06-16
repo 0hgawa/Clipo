@@ -1,0 +1,96 @@
+import { Theme, Icons } from "../theme.slint";
+import { Clickable, IconButton } from "../components.slint";
+
+// Recording bar: red dot + elapsed + Pause/Resume, Mute, Restart, Discard, Stop.
+// The Timer counts only while active and not paused.
+export component RecordingBarWindow inherits Window {
+    no-frame: true;
+    title: "Clipo Recording";
+    background: transparent;
+    default-font-size: Theme.text-body;
+    // 16px transparent margin around the 320×44 card so its drop shadow can float.
+    width: 352px;
+    height: 76px;
+    in property <bool> active;
+    in property <bool> paused;
+    in property <bool> audio-muted;
+    in property <bool> mic-muted;
+    in property <bool> audio-on;   // system-audio capture enabled → show the button
+    in property <bool> mic-on;     // mic capture enabled → show the button
+    in-out property <int> elapsed: 0;
+    callback stop();
+    callback pause-resume();
+    callback mute-audio();
+    callback mute-mic();
+    callback restart();
+    callback discard();
+    callback drag-move(length, length); // host moves the window by this delta
+
+    Timer {
+        interval: 1s;
+        running: root.active && !root.paused;
+        triggered => { root.elapsed += 1; }
+    }
+
+    Rectangle {
+        x: 16px;
+        y: 16px;
+        width: parent.width - 32px;
+        height: parent.height - 32px;
+        background: Theme.surface-0;
+        border-radius: Theme.radius-lg;
+        border-width: 1px;
+        border-color: Theme.border-subtle;
+        drop-shadow-blur: 24px;
+        drop-shadow-offset-y: 6px;
+        drop-shadow-color: #00000045;
+        clip: true;
+
+        // Drag handle: sits behind the controls (which consume their own clicks),
+        // so pressing the empty chrome — dot, elapsed, gap — drags the window.
+        // Moving by (mouse - pressed) keeps the grab point under the cursor.
+        TouchArea {
+            moved => { root.drag-move(self.mouse-x - self.pressed-x, self.mouse-y - self.pressed-y); }
+        }
+
+        HorizontalLayout {
+            padding-left: 12px;
+            padding-right: 6px;
+            spacing: 4px;
+            VerticalLayout { alignment: center; Rectangle { width: 10px; height: 10px; border-radius: Theme.radius-sm; background: #ff1744; } }
+            VerticalLayout {
+                alignment: center;
+                Text {
+                    text: "\{root.elapsed}s";
+                    color: Theme.fg;
+                    font-size: Theme.text-body;
+                    // Announce the elapsed time to screen readers as it ticks.
+                    accessible-role: text;
+                    accessible-label: @tr("Recording") + " \{root.elapsed}s";
+                }
+            }
+            Rectangle { }
+            VerticalLayout { alignment: center; IconButton { icon: root.paused ? Icons.play : Icons.pause; a11y-label: @tr("Pause / resume"); clicked => { root.pause-resume(); } } }
+            if root.audio-on: VerticalLayout { alignment: center; IconButton { icon: root.audio-muted ? Icons.volume-off : Icons.volume; a11y-label: @tr("Mute system audio"); clicked => { root.mute-audio(); } } }
+            if root.mic-on: VerticalLayout { alignment: center; IconButton { icon: root.mic-muted ? Icons.mic-off : Icons.mic; a11y-label: @tr("Mute microphone"); clicked => { root.mute-mic(); } } }
+            VerticalLayout { alignment: center; IconButton { icon: Icons.restart; a11y-label: @tr("Restart"); clicked => { root.restart(); } } }
+            VerticalLayout { alignment: center; IconButton { icon: Icons.discard; a11y-label: @tr("Discard"); clicked => { root.discard(); } } }
+            VerticalLayout {
+                alignment: center;
+                Rectangle {
+                    width: 64px;
+                    height: 28px;
+                    border-radius: Theme.radius-sm;
+                    background: sb.has-hover ? #ff5252 : #ff1744;
+                    HorizontalLayout {
+                        alignment: center;
+                        spacing: 5px;
+                        VerticalLayout { alignment: center; Rectangle { width: 9px; height: 9px; background: white; } }
+                        VerticalLayout { alignment: center; Text { text: @tr("Stop"); color: white; font-size: Theme.text-small; } }
+                    }
+                    sb := Clickable { clicked => { root.stop(); } }
+                }
+            }
+        }
+    }
+}

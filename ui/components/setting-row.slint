@@ -1,0 +1,30 @@
+import { Theme } from "../theme.slint";
+import { Toggle } from "toggle.slint";
+
+export component SettingRow inherits Rectangle {
+    in property <string> title;
+    in property <string> subtitle;
+    in-out property <bool> on;
+    callback toggled(bool);
+    // min (not fixed) so a long, wrapped subtitle (some translations run 2–3
+    // lines) grows the row instead of clipping; the tab scrolls if needed.
+    min-height: 56px;
+    HorizontalLayout {
+        padding-left: 4px;
+        padding-right: 4px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        spacing: 12px;
+        VerticalLayout {
+            horizontal-stretch: 1;
+            alignment: center;
+            spacing: 2px;
+            Text { text: root.title; color: Theme.fg; font-size: Theme.text-body; }
+            Text { text: root.subtitle; color: Theme.fg-subtle; font-size: Theme.text-small; wrap: word-wrap; }
+        }
+        VerticalLayout {
+            alignment: center;
+            Toggle { on <=> root.on; a11y-label: root.title; toggled(v) => { root.toggled(v); } }
+        }
+    }
+}

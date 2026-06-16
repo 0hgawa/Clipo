@@ -1,0 +1,23 @@
+import { Theme, Icons } from "../theme.slint";
+import { IconButton } from "icon-button.slint";
+
+// Window-control button: the shared IconButton at the slightly smaller glyph
+// size the title-bar chrome uses. Close passes `danger: true` for the red hover.
+component Ctl inherits IconButton {
+    icon-size: 14px;
+}
+
+// Standard window controls (minimize · maximize/restore · close), shared by
+// framed windows so the chrome stays consistent and lives in one place. The
+// host wires the callbacks; `is-maximized` swaps the maximize glyph to restore.
+export component WindowControls inherits HorizontalLayout {
+    in property <bool> is-maximized;
+    in property <bool> no-maximize; // dialogs (fixed content) get minimize + close only
+    callback minimize();
+    callback maximize();
+    callback close();
+    spacing: 2px;
+    Ctl { icon: Icons.minimize; a11y-label: @tr("Minimize"); clicked => { root.minimize(); } }
+    if !root.no-maximize: Ctl { icon: root.is-maximized ? Icons.restore : Icons.maximize; icon-size: 12px; a11y-label: root.is-maximized ? @tr("Restore") : @tr("Maximize"); clicked => { root.maximize(); } }
+    Ctl { icon: Icons.close; danger: true; a11y-label: @tr("Close"); clicked => { root.close(); } }
+}

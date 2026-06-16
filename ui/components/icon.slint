@@ -1,0 +1,11 @@
+import { Theme } from "../theme.slint";
+
+// Monochrome icon: the SVG acts as an alpha mask, tinted by `color`.
+export component Icon inherits Image {
+    in property <brush> color: Theme.fg-muted;
+    in property <length> size: 20px;
+    colorize: color;
+    width: size;
+    height: size;
+    image-fit: contain;
+}

@@ -1,0 +1,5 @@
+// One place for the hand cursor — every clickable uses this instead of
+// TouchArea, so the cursor rule lives in a single spot.
+export component Clickable inherits TouchArea {
+    mouse-cursor: pointer;
+}

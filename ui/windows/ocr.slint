@@ -1,0 +1,109 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon, Clickable, WindowControls, WindowShell, DragArea } from "../components.slint";
+import { ScrollArea } from "../components/scroll-area.slint";
+
+// OCR result — recognized text (scrollable) + count + copy.
+export component OcrWindow inherits Window {
+    no-frame: true;
+    title: "Clipo · OCR";
+    background: transparent;
+    default-font-size: Theme.text-body;
+    width: 520px;
+    height: 420px;
+    in property <string> text;
+    // Recognized-text stats, localized in-UI (set as counts, not a built
+    // sentence, so @tr applies). char-count 0 → no result yet, label hidden.
+    in property <int> word-count;
+    in property <int> char-count;
+    in property <bool> copied; // just copied → flash check + "Copied" on the button
+    callback dismiss();
+    callback minimize();
+    callback drag-move(length, length);
+    callback copy-text();
+    forward-focus: fs;
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.dismiss(); }
+            accept
+        }
+    }
+    WindowShell {
+        VerticalLayout {
+        Rectangle {
+            height: 44px;
+            border-width: 1px;
+            border-color: Theme.border-subtle;
+            DragArea { dragged(dx, dy) => { root.drag-move(dx, dy); } }
+            HorizontalLayout {
+                padding-left: 16px;
+                padding-right: 8px;
+                spacing: 8px;
+                VerticalLayout { alignment: center; Icon { source: Icons.scan-text; size: 15px; color: Theme.fg-muted; } }
+                VerticalLayout { alignment: center; Text { text: @tr("Extracted text"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; } }
+                Rectangle { }
+                VerticalLayout { alignment: center; WindowControls { no-maximize: true; minimize => { root.minimize(); } close => { root.dismiss(); } } }
+            }
+        }
+        Rectangle {
+            vertical-stretch: 1;
+            // Read-only TextInput (not a plain Text) so the recognised text is
+            // selectable + copyable; inside the themed ScrollArea so it scrolls
+            // with a visible scrollbar when it overflows.
+            if root.text != "": ScrollArea {
+                width: 100%;
+                height: 100%;
+                interactive: false; // let the TextInput own the drag (text selection)
+                content-height: txt.preferred-height + 32px;
+                txt := TextInput {
+                    x: 16px;
+                    y: 16px;
+                    width: parent.width - 40px;
+                    read-only: true;
+                    single-line: false;
+                    text: root.text;
+                    color: Theme.fg;
+                    font-size: Theme.text-body;
+                    wrap: word-wrap;
+                }
+            }
+            // Empty state — no readable text in the image.
+            if root.text == "": VerticalLayout {
+                width: 100%;
+                height: 100%;
+                alignment: center;
+                spacing: 8px;
+                HorizontalLayout { alignment: center; Icon { source: Icons.scan-text; size: 40px; color: Theme.fg-subtle; } }
+                Text { text: @tr("No text found"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; horizontal-alignment: center; }
+                Text { text: @tr("The image doesn't contain any recognizable characters."); color: Theme.fg-subtle; font-size: Theme.text-small; horizontal-alignment: center; }
+            }
+        }
+        if root.text != "": Rectangle {
+            height: 52px;
+            border-width: 1px;
+            border-color: Theme.border-subtle;
+            HorizontalLayout {
+                padding-left: 16px;
+                padding-right: 12px;
+                VerticalLayout { alignment: center; Text { text: root.char-count > 0 ? @tr("{} words · {} chars", root.word-count, root.char-count) : ""; color: Theme.fg-subtle; font-size: Theme.text-small; } }
+                Rectangle { }
+                VerticalLayout {
+                    alignment: center;
+                    Rectangle {
+                        width: 96px;
+                        height: 30px;
+                        border-radius: Theme.radius-sm;
+                        background: cp.has-hover ? Theme.accent-hover : Theme.accent;
+                        HorizontalLayout {
+                            alignment: center;
+                            spacing: 6px;
+                            VerticalLayout { alignment: center; Icon { source: root.copied ? Icons.check : Icons.copy; size: 13px; color: white; } }
+                            VerticalLayout { alignment: center; Text { text: root.copied ? @tr("Copied") : @tr("Copy"); color: white; font-size: Theme.text-small; } }
+                        }
+                        cp := Clickable { clicked => { root.copy-text(); } }
+                    }
+                }
+            }
+        }
+        }
+    }
+}

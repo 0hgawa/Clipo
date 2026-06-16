@@ -1,0 +1,5 @@
+# Statically link the MSVC C runtime so the .exe runs on a clean Windows without
+# the Visual C++ Redistributable (otherwise startup fails with "VCRUNTIME140.dll
+# was not found"). The runtime is baked into clipo.exe — no per-user install step.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]

@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Close"
+msgstr "Закрыть"
+
+msgid "Copy link"
+msgstr "Копировать ссылку"
+
+msgid "Upload"
+msgstr "Загрузить"
+
+msgid "Copy"
+msgstr "Копировать"
+
+msgid "Edit"
+msgstr "Изменить"
+
+msgid "Extract text"
+msgstr "Извлечь текст"
+
+msgid "Reveal in folder"
+msgstr "Показать в папке"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Export as GIF"
+msgstr "Экспортировать в GIF"
+
+msgid "Minimize"
+msgstr "Свернуть"
+
+msgid "Restore"
+msgstr "Восстановить"
+
+msgid "Maximize"
+msgstr "Развернуть"
+
+msgid "Esc to cancel"
+msgstr "Esc для отмены"
+
+msgid "Move"
+msgstr "Переместить"
+
+msgid "Arrow"
+msgstr "Стрелка"
+
+msgid "Rectangle"
+msgstr "Прямоугольник"
+
+msgid "Ellipse"
+msgstr "Эллипс"
+
+msgid "Line"
+msgstr "Линия"
+
+msgid "Highlight"
+msgstr "Выделение"
+
+msgid "Pen"
+msgstr "Перо"
+
+msgid "Pixelate"
+msgstr "Пикселизация"
+
+msgid "Text"
+msgstr "Текст"
+
+msgid "Counter"
+msgstr "Счётчик"
+
+msgid "Crop"
+msgstr "Обрезать"
+
+msgid "Resize"
+msgstr "Изменить размер"
+
+msgid "Width"
+msgstr "Ширина"
+
+msgid "Height"
+msgstr "Высота"
+
+msgid "Lock aspect"
+msgstr "Зафиксировать пропорции"
+
+msgid "Apply"
+msgstr "Применить"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Aspect"
+msgstr "Пропорции"
+
+msgid "Free"
+msgstr "Свободно"
+
+msgid "Padding"
+msgstr "Отступ"
+
+msgid "Radius"
+msgstr "Радиус"
+
+msgid "Shadow"
+msgstr "Тень"
+
+msgid "Strength"
+msgstr "Сила"
+
+msgid "Reset background"
+msgstr "Сбросить фон"
+
+msgid "Custom colour"
+msgstr "Свой цвет"
+
+msgid "History"
+msgstr "Журнал"
+
+msgid "All"
+msgstr "Все"
+
+msgid "Photos"
+msgstr "Фото"
+
+msgid "Videos"
+msgstr "Видео"
+
+msgid "Today"
+msgstr "Сегодня"
+
+msgid "Week"
+msgstr "Неделя"
+
+msgid "Month"
+msgstr "Месяц"
+
+msgid "No captures yet."
+msgstr "Снимков пока нет."
+
+msgid "Your screenshots and recordings show up here."
+msgstr "Ваши снимки и записи появятся здесь."
+
+msgid "Nothing matches this filter"
+msgstr "Ничего не соответствует фильтру"
+
+msgid "Try a different type or date range."
+msgstr "Попробуйте другой тип или период."
+
+msgid "What to capture?"
+msgstr "Что захватить?"
+
+msgid "Press Esc to dismiss"
+msgstr "Нажмите Esc, чтобы закрыть"
+
+msgid "Capture area"
+msgstr "Захват области"
+
+msgid "Full screen"
+msgstr "Весь экран"
+
+msgid "Window"
+msgstr "Окно"
+
+msgid "Record screen"
+msgstr "Запись экрана"
+
+msgid "Record area"
+msgstr "Запись области"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Extracted text"
+msgstr "Извлечённый текст"
+
+msgid "No text found"
+msgstr "Текст не найден"
+
+msgid "The image doesn't contain any recognizable characters."
+msgstr "Изображение не содержит распознаваемых символов."
+
+msgid "Copied"
+msgstr "Скопировано"
+
+msgid "Recording"
+msgstr "Запись"
+
+msgid "Pause / resume"
+msgstr "Пауза / продолжить"
+
+msgid "Mute system audio"
+msgstr "Отключить системный звук"
+
+msgid "Mute microphone"
+msgstr "Отключить микрофон"
+
+msgid "Restart"
+msgstr "Перезапустить"
+
+msgid "Discard"
+msgstr "Отменить"
+
+msgid "Stop"
+msgstr "Остановить"
+
+msgid "In conflict"
+msgstr "Конфликт"
+
+msgid "Active"
+msgstr "Активно"
+
+msgid "Press keys…"
+msgstr "Нажмите клавиши…"
+
+msgid "General"
+msgstr "Общие"
+
+msgid "Capture"
+msgstr "Захват"
+
+msgid "Storage"
+msgstr "Хранилище"
+
+msgid "Shortcuts"
+msgstr "Сочетания клавиш"
+
+msgid "About"
+msgstr "О программе"
+
+msgid "Theme"
+msgstr "Тема"
+
+msgid "Light"
+msgstr "Светлая"
+
+msgid "Dark"
+msgstr "Тёмная"
+
+msgid "System"
+msgstr "Система"
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "Interface language. Affects every Clipo window. Takes effect immediately."
+msgstr "Язык интерфейса. Влияет на все окна Clipo. Применяется сразу."
+
+msgid "Launch Clipo at system startup"
+msgstr "Запускать Clipo при старте системы"
+
+msgid "Clipo lives in the system tray. With this on, it starts automatically at login."
+msgstr "Clipo находится в области уведомлений. Если включено, запускается автоматически при входе в систему."
+
+msgid "Open images with Clipo"
+msgstr "Открывать изображения в Clipo"
+
+msgid "Tray icon left-click"
+msgstr "Левый клик по значку"
+
+msgid "What a left-click on the tray icon does. Right-click always opens the menu."
+msgstr "Что делает левый клик по значку в трее. Правый клик всегда открывает меню."
+
+msgid "Area"
+msgstr "Область"
+
+msgid "Fullscreen"
+msgstr "Весь экран"
+
+msgid "Menu"
+msgstr "Меню"
+
+msgid "Timer"
+msgstr "Таймер"
+
+msgid "Capture timer"
+msgstr "Таймер захвата"
+
+msgid "Countdown before a timed capture."
+msgstr "Обратный отсчёт перед захватом по таймеру."
+
+msgid "Show magnifier when selecting a region"
+msgstr "Показывать лупу при выборе области"
+
+msgid "A 4× zoom under the cursor with the live width × height, for pixel-precise selections."
+msgstr "Отображает увеличение пикселей под курсором в 4× и текущую ширину × высоту под ним при перетаскивании. Полезно для точного выбора по пикселям; по умолчанию выключено."
+
+msgid "Auto-dismiss the capture panel"
+msgstr "Автоматически закрывать панель захвата"
+
+msgid "How long the post-capture panel stays before hiding."
+msgstr "Сколько панель после захвата остаётся перед скрытием."
+
+msgid "Captures folder"
+msgstr "Папка снимков"
+
+msgid "Choose…"
+msgstr "Выбрать…"
+
+msgid "Reset"
+msgstr "Сбросить"
+
+msgid "Screenshot format"
+msgstr "Формат скриншота"
+
+msgid "PNG is lossless (larger); JPEG is smaller but lossy. Recordings are always MP4."
+msgstr "PNG сохраняет каждый пиксель (без потерь, файлы больше). JPEG меньше, но с потерями — годится для обмена, хуже для снимков с текстом. Записи всегда в MP4."
+
+msgid "Cloud upload"
+msgstr "Загрузка в облако"
+
+msgid "Connected"
+msgstr "Подключено"
+
+msgid "Set up"
+msgstr "Настроить"
+
+msgid "Capture system audio"
+msgstr "Записывать системный звук"
+
+msgid "Records system sound; off makes a silent MP4."
+msgstr "Записывает звук системы; выкл — MP4 без звука."
+
+msgid "Capture microphone"
+msgstr "Записывать микрофон"
+
+msgid "Also records your microphone, mixed with system audio into one track."
+msgstr "Также записывает микрофон по умолчанию. Если включён и системный звук, две дорожки сводятся в одну (ffmpeg при остановке, без нагрузки во время записи)."
+
+msgid "Recording frame rate"
+msgstr "Частота кадров записи"
+
+msgid "30 fps for tutorials; 60 fps smoother but ~2× heavier."
+msgstr "30 кадр/с для туториалов; 60 — плавнее, но ~2× нагрузка."
+
+msgid "Countdown before recording"
+msgstr "Обратный отсчёт перед записью"
+
+msgid "A short countdown so you can switch windows first."
+msgstr "Короткий отсчёт, чтобы успеть переключить окно."
+
+msgid "Record the cursor"
+msgstr "Записывать курсор"
+
+msgid "Include the mouse pointer in the recording."
+msgstr "Включать указатель мыши в запись."
+
+msgid "Show mouse clicks"
+msgstr "Показывать клики мыши"
+
+msgid "Marks each click with a brief ring while recording — handy for demos."
+msgstr "Рисует короткое расширяющееся кольцо при каждом клике во время записи. Полезно для обучающих и демонстрационных видео; отключите для обычной записи."
+
+msgid "Global — click a shortcut to rebind it."
+msgstr "Глобально — нажмите на сочетание, чтобы переназначить."
+
+msgid "Restore defaults"
+msgstr "Восстановить по умолчанию"
+
+msgid "Capture region"
+msgstr "Снимок области"
+
+msgid "Capture fullscreen"
+msgstr "Снимок всего экрана"
+
+msgid "Capture window"
+msgstr "Снимок окна"
+
+msgid "All-in-one menu"
+msgstr "Главное меню"
+
+msgid "Extract text (OCR)"
+msgstr "Извлечь текст (OCR)"
+
+msgid "While recording"
+msgstr "Во время записи"
+
+msgid "Stop recording"
+msgstr "Остановить запись"
+
+msgid "Restart recording"
+msgstr "Перезапустить запись"
+
+msgid "Native Windows screenshot + screen recording."
+msgstr "Нативные снимки экрана и запись экрана для Windows."
+
+msgid "Updates"
+msgstr "Обновления"
+
+msgid "Check whether a newer version is available."
+msgstr "Проверить наличие новой версии."
+
+msgid "Installing…"
+msgstr "Установка…"
+
+msgid "Update now"
+msgstr "Обновить"
+
+msgid "Checking…"
+msgstr "Проверка…"
+
+msgid "Check for updates"
+msgstr "Проверить обновления"
+
+msgid "Diagnostic"
+msgstr "Диагностика"
+
+msgid "Copies the version block to the clipboard. Paste into a bug report for exact reproducibility."
+msgstr "Копирует блок с версиями в буфер обмена. Вставьте в отчёт об ошибке для точной воспроизводимости."
+
+msgid "Copy info"
+msgstr "Копировать сведения"
+
+msgid "Reset settings"
+msgstr "Сбросить настройки"
+
+msgid "Returns every preference (including custom shortcuts) to the factory state. Doesn't affect saved captures."
+msgstr "Возвращает все настройки (включая пользовательские сочетания) к заводскому состоянию. Сохранённые снимки не затрагиваются."
+
+msgid "Click to confirm"
+msgstr "Нажмите для подтверждения"
+
+msgid "Capture with timer"
+msgstr "Снимок с таймером"
+
+msgid "Record fullscreen"
+msgstr "Запись всего экрана"
+
+msgid "Record region…"
+msgstr "Запись области…"
+
+msgid "Pause recording"
+msgstr "Приостановить запись"
+
+msgid "Resume recording"
+msgstr "Возобновить запись"
+
+msgid "Discard recording"
+msgstr "Отменить запись"
+
+msgid "Unmute system audio"
+msgstr "Включить системный звук"
+
+msgid "Unmute microphone"
+msgstr "Включить микрофон"
+
+msgid "History…"
+msgstr "Журнал…"
+
+msgid "Open captures folder"
+msgstr "Открыть папку снимков"
+
+msgid "Settings…"
+msgstr "Настройки…"
+
+msgid "Quit Clipo"
+msgstr "Выйти из Clipo"
+
+msgid "Video preview isn't supported here yet."
+msgstr "Предпросмотр видео здесь пока не поддерживается."
+
+msgid "Open externally"
+msgstr "Открыть во внешней программе"
+
+msgid "Previous"
+msgstr "Предыдущий"
+
+msgid "Next"
+msgstr "Следующий"
+
+msgid "No capturable windows"
+msgstr "Нет окон для захвата"
+
+
+msgid "You're on the latest version."
+msgstr "У вас последняя версия."
+
+msgid "Version {} is available."
+msgstr "Доступна версия {}."
+
+msgid "Couldn't check: {}"
+msgstr "Не удалось проверить: {}"
+
+msgid "Downloading update…"
+msgstr "Загрузка обновления…"
+
+msgid "Update failed: {}"
+msgstr "Не удалось обновить: {}"
+
+msgid "Add Clipo to the \"Open with\" menu for images"
+msgstr "Добавить Clipo в меню «Открыть с помощью» для изображений"
+
+msgid "Copy to clipboard"
+msgstr "Копировать в буфер обмена"
+
+msgid "Copy every capture automatically"
+msgstr "Автоматически копировать каждый снимок"
+
+msgid "Online save"
+msgstr "Сохранение онлайн"
+
+msgid "Bring your own keys — captures upload to your bucket and the public link is copied to the clipboard."
+msgstr "Используйте свои ключи — снимки загружаются в ваш бакет, а публичная ссылка копируется в буфер обмена."
+
+msgid "Endpoint"
+msgstr "Конечная точка"
+
+msgid "Region"
+msgstr "Регион"
+
+msgid "Account ID"
+msgstr "ID аккаунта"
+
+msgid "your R2 account id"
+msgstr "ваш ID аккаунта R2"
+
+msgid "Access Key ID"
+msgstr "ID ключа доступа"
+
+msgid "access key"
+msgstr "ключ доступа"
+
+msgid "Secret Access Key"
+msgstr "Секретный ключ доступа"
+
+msgid "secret key"
+msgstr "секретный ключ"
+
+msgid "Bucket"
+msgstr "Бакет"
+
+msgid "bucket name"
+msgstr "имя бакета"
+
+msgid "Public URL"
+msgstr "Публичный URL"
+
+msgid "Disconnect"
+msgstr "Отключить"
+
+msgid "Save & test"
+msgstr "Сохранить и проверить"
+
+msgid "Uploading…"
+msgstr "Загрузка…"
+
+msgid "Upload failed: {}"
+msgstr "Не удалось загрузить: {}"
+
+msgid "GIF saved"
+msgstr "GIF сохранён"
+
+msgid "GIF failed: {}"
+msgstr "Не удалось создать GIF: {}"
+
+msgid "Disconnected."
+msgstr "Отключено."
+
+msgid "Fill every field to enable upload."
+msgstr "Заполните все поля, чтобы включить загрузку."
+
+msgid "Testing…"
+msgstr "Проверка…"
+
+msgid "Failed: {}"
+msgstr "Ошибка: {}"
+
+msgid "{} words · {} chars"
+msgstr "{} слов · {} символов"
+
+msgid "Software encoder (compatibility)"
+msgstr "Программный кодировщик (совместимость)"
+
+msgid "Encode on the CPU instead of the GPU. Slower and slightly lower quality, but works where the hardware encoder is unstable. Turns on automatically if a recording ever crashes."
+msgstr "Кодирование на ЦП вместо ГП. Медленнее и немного ниже качество, но работает там, где аппаратный кодировщик нестабилен. Включается автоматически, если запись завершилась сбоем."
+
+msgid "Record"
+msgstr "Запись"
+
+msgid "Copied!"
+msgstr "Скопировано!"

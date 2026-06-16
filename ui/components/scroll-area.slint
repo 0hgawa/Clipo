@@ -1,0 +1,28 @@
+import { Scrollbar } from "scrollbar.slint";
+
+// A Flickable with a thin themed scrollbar overlaid on the right. The scrollable
+// content is injected as @children; the host passes its content-height (the
+// content's preferred-height) so the viewport and thumb size correctly.
+export component ScrollArea inherits Rectangle {
+    in property <length> content-height;
+    // false → no drag-to-scroll, so a selectable child (read-only TextInput) gets
+    // the drag for text selection instead of the Flickable stealing it. Wheel +
+    // scrollbar still scroll.
+    in property <bool> interactive: true;
+    fl := Flickable {
+        width: 100%;
+        height: 100%;
+        interactive: root.interactive;
+        viewport-width: self.width;
+        viewport-height: root.content-height;
+        @children
+    }
+    Scrollbar {
+        x: parent.width - self.width - 2px;
+        y: 0;
+        height: 100%;
+        content-height: root.content-height;
+        view-height: fl.height;
+        pos <=> fl.viewport-y;
+    }
+}

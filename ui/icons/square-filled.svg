@@ -1,0 +1,4 @@
+<!-- Filled square — the Stop glyph, matching the recording bar's solid square -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <rect width="18" height="18" x="3" y="3" rx="2" fill="#000000" />
+</svg>

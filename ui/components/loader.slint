@@ -1,0 +1,22 @@
+import { Icon } from "icon.slint";
+import { Icons } from "../theme.slint";
+
+// A continuously spinning loader glyph for the in-progress state. The rotation
+// lives on a child Icon (transform on a root element isn't applied), and it
+// only animates while the component exists, so callers gate it behind an
+// `if busy:` and it costs nothing the rest of the time.
+export component Loader inherits Rectangle {
+    in property <length> size: 16px;
+    in property <brush> tint;
+    width: root.size;
+    height: root.size;
+    property <angle> spin: 0deg;
+    init => { self.spin = 360deg; }
+    animate spin { duration: 0.8s; iteration-count: -1; easing: linear; }
+    Icon {
+        source: Icons.loader;
+        size: root.size;
+        color: root.tint;
+        transform-rotation: root.spin;
+    }
+}

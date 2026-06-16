@@ -1,0 +1,107 @@
+// Design tokens (Fluent dark) + the Lucide icon set, shared by every surface.
+// Globals are singletons across the whole compiled program.
+
+export global Theme {
+    // Toggled by the Settings appearance selector (singleton → all windows
+    // re-theme live).
+    in-out property <bool> dark: true;
+    // Light: soft-gray canvas + white cards (elevation by contrast), the way
+    // modern light themes (Material 3 / Linear / macOS) read best.
+    out property <color> surface-0: dark ? #101013 : #f4f4f5; // canvas / window panel (Zen-style deep dark)
+    out property <color> surface-1: dark ? #202020 : #ffffff; // cards (pop white)
+    out property <color> surface-2: dark ? #2b2b2b : #e9e9ec; // hover tint
+    out property <color> surface-3: dark ? #3a3a3a : #dcdce0; // pressed / strong fill
+    out property <color> surface-input: dark ? #161616 : #ffffff;
+    out property <color> surface-media: dark ? #282828 : #e7e7ea;
+    out property <color> border-subtle: dark ? #262626 : #e4e4e7;
+    out property <color> border-strong: dark ? #3d3d3d : #cfcfd4;
+    out property <color> fg: dark ? #f5f5f5 : #1a1a1a;
+    out property <color> fg-muted: dark ? #a5a5a5 : #595959;
+    out property <color> fg-subtle: dark ? #8a8a8a : #6e6e6e;
+    out property <color> accent: dark ? #6366f1 : #4f46e5;
+    out property <color> accent-hover: dark ? #818cf8 : #4338ca;
+    out property <color> accent-bg: dark ? #6366f12e : #6366f11f;
+    // Destructive actions (close · delete · quit · reset). One red everywhere so
+    // "this is irreversible" reads consistently; the recording indicator keeps
+    // its own brighter brand red (#ff1744) since it means "live", not "danger".
+    out property <color> danger: #e5484d;
+    // Subtle danger tint for badges (same low-alpha treatment as accent-bg).
+    out property <color> danger-bg: dark ? #e5484d2e : #e5484d1f;
+    // Success — the "active" status pill on a live shortcut. Same pairing.
+    out property <color> ok: #30a46c;
+    out property <color> ok-bg: dark ? #30a46c2e : #30a46c1f;
+
+    // Typography scale, named by role. These are the repeated sizes; a few
+    // genuine one-offs (the 68px countdown, etc.) stay inline.
+    out property <length> text-tiny: 11px;    // badges
+    out property <length> text-small: 12px;   // captions, secondary labels
+    out property <length> text-body: 13px;    // default body / controls
+    out property <length> text-title: 14px;   // window/section titles
+    out property <length> text-heading: 16px; // prompts (e.g. all-in-one header)
+
+    // Corner-radius scale. Pills/circles that track their own height (a 22px
+    // badge → 11px, a 46px chevron → 23px) keep their literal radius.
+    out property <length> radius-xs: 2px;  // square-ish glyphs
+    out property <length> radius-sm: 6px;  // buttons, chips, inputs
+    out property <length> radius-md: 8px;  // list rows, segmented
+    out property <length> radius-lg: 10px; // popups (tray menu, bar)
+    out property <length> radius-xl: 12px; // panels / grouped cards
+}
+
+// Real Lucide SVGs, embedded at compile time. Paths are relative to this
+// file (ui/), so they resolve to ui/icons/.
+export global Icons {
+    out property <image> crop: @image-url("icons/crop.svg");
+    out property <image> monitor: @image-url("icons/monitor.svg");
+    out property <image> app-window: @image-url("icons/app-window.svg");
+    out property <image> video: @image-url("icons/video.svg");
+    out property <image> gif: @image-url("icons/image-play.svg");
+    out property <image> timer: @image-url("icons/timer.svg");
+    out property <image> scan-text: @image-url("icons/scan-text.svg");
+    out property <image> settings: @image-url("icons/settings.svg");
+    out property <image> photo: @image-url("icons/image.svg");
+    out property <image> pencil: @image-url("icons/pencil.svg");
+    out property <image> folder-open: @image-url("icons/folder-open.svg");
+    out property <image> copy: @image-url("icons/copy.svg");
+    out property <image> close: @image-url("icons/x.svg");
+    out property <image> play: @image-url("icons/play.svg");
+    out property <image> chevron-left: @image-url("icons/chevron-left.svg");
+    out property <image> chevron-right: @image-url("icons/chevron-right.svg");
+    out property <image> pause: @image-url("icons/pause.svg");
+    out property <image> restart: @image-url("icons/rotate-ccw.svg");
+    out property <image> discard: @image-url("icons/trash-2.svg");
+    out property <image> volume: @image-url("icons/volume-2.svg");
+    out property <image> volume-off: @image-url("icons/volume-x.svg");
+    out property <image> arrow: @image-url("icons/arrow-up-right.svg");
+    out property <image> square: @image-url("icons/square.svg");
+    out property <image> square-filled: @image-url("icons/square-filled.svg");
+    out property <image> save: @image-url("icons/save.svg");
+    out property <image> minimize: @image-url("icons/minus.svg");
+    out property <image> maximize: @image-url("icons/maximize.svg");
+    out property <image> restore: @image-url("icons/restore.svg");
+    out property <image> upload: @image-url("icons/upload.svg");
+    out property <image> grid: @image-url("icons/grid.svg");
+    out property <image> log-out: @image-url("icons/log-out.svg");
+    out property <image> circle: @image-url("icons/circle.svg");
+    out property <image> line: @image-url("icons/line.svg");
+    out property <image> highlighter: @image-url("icons/highlighter.svg");
+    out property <image> redo: @image-url("icons/rotate-cw.svg");
+    out property <image> paint-bucket: @image-url("icons/paint-bucket.svg");
+    out property <image> text: @image-url("icons/type.svg");
+    out property <image> move-arrows: @image-url("icons/move.svg");
+    out property <image> check: @image-url("icons/check.svg");
+    out property <image> eye-off: @image-url("icons/eye-off.svg");
+    out property <image> resize: @image-url("icons/scaling.svg");
+    out property <image> mic: @image-url("icons/mic.svg");
+    out property <image> mic-off: @image-url("icons/mic-off.svg");
+    out property <image> hash: @image-url("icons/hash.svg");
+    out property <image> pen: @image-url("icons/pen.svg");
+    out property <image> keyboard: @image-url("icons/keyboard.svg");
+    out property <image> info: @image-url("icons/info.svg");
+    out property <image> sun: @image-url("icons/sun.svg");
+    out property <image> moon: @image-url("icons/moon.svg");
+    out property <image> contrast: @image-url("icons/contrast.svg");
+    out property <image> focus: @image-url("icons/focus.svg");
+    out property <image> link: @image-url("icons/link.svg");
+    out property <image> loader: @image-url("icons/loader.svg");
+}

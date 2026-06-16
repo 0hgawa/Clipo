@@ -1,0 +1,12 @@
+// Drag handle for borderless windows: place it behind a header's content so
+// pressing the empty chrome (title, gaps) moves the window, while buttons drawn
+// on top keep their own clicks. Moving by (mouse - pressed) keeps the grab point
+// under the cursor for a stable drag; double-click toggles maximize.
+export component DragArea inherits TouchArea {
+    callback dragged(length, length);
+    callback toggle-maximize();
+    width: 100%;
+    height: 100%;
+    moved => { root.dragged(self.mouse-x - self.pressed-x, self.mouse-y - self.pressed-y); }
+    double-clicked => { root.toggle-maximize(); }
+}

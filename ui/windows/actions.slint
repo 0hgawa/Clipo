@@ -1,0 +1,158 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon, Clickable, IconButton, UploadStatus } from "../components.slint";
+
+// Post-capture action: the shared IconButton at the card's roomier footprint.
+// Small and quiet so the screenshot preview stays the hero of the card.
+component Act inherits IconButton {
+    width: 42px;
+    height: 34px;
+    border-radius: Theme.radius-md;
+    icon-size: 16px;
+}
+
+// Post-capture toast: a floating card parked bottom-right. The capture preview
+// is the hero (click → viewer / external player); a compact icon row carries
+// the actions — image actions for screenshots, playback actions for video.
+export component ActionsWindow inherits Window {
+    no-frame: true;
+    title: "Clipo Capture";
+    background: transparent;
+    default-font-size: Theme.text-body;
+    width: 360px;
+    // Height tuned so the hero preview (card width 328 − the 32px shadow margin,
+    // minus the 42px action row) lands on a 16:9 box: 328×9/16 = 184.5.
+    height: 258.5px;
+    callback dismiss();
+    callback copy();
+    callback ocr();
+    callback reveal();
+    callback open-viewer();
+    callback open-external();
+    callback edit();
+    // Fired when the pointer enters/leaves the card, so the host can pause the
+    // auto-dismiss while the user is hovering it.
+    callback hover-changed(bool);
+    callback upload();
+    callback export-gif();
+    in property <image> thumbnail;
+    in property <bool> is-video;
+    in property <bool> upload-ready;
+    in property <bool> gif-ready; // ffmpeg present → offer GIF export on videos
+    // Upload feedback: status code (see UploadStatus) shown over the preview;
+    // 0 hides it, the error kinds turn it red. `upload-detail` carries the error.
+    in property <int> upload-status;
+    in property <string> upload-detail;
+    in property <bool> upload-busy; // mid-upload → show the spinner
+    in property <bool> gif-busy;    // mid GIF export → spin the GIF button
+    in property <bool> copied;      // just copied the image → flash a check on Copy
+    forward-focus: fs;
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.dismiss(); }
+            accept
+        }
+    }
+    // 16px transparent margin so the card's drop shadow can float. Kept as its
+    // own chrome (not WindowShell) — the post-capture card is a special surface:
+    // borderless (the full-bleed photo mustn't be framed) and tuned to a 16:9
+    // hero, like the countdown HUD / recording pill.
+    Rectangle {
+        x: 16px;
+        y: 16px;
+        width: parent.width - 32px;
+        height: parent.height - 32px;
+        background: Theme.surface-0;
+        border-radius: Theme.radius-xl;
+        drop-shadow-blur: 16px;
+        drop-shadow-offset-y: 4px;
+        drop-shadow-color: #00000040;
+        clip: true;
+        // Wraps the whole card so its has-hover tracks the pointer over the
+        // entire toast (incl. the buttons); the host pauses auto-dismiss on it.
+        ta := TouchArea {
+            changed has-hover => { root.hover-changed(ta.has-hover); }
+        VerticalLayout {
+            // Hero preview — click opens the viewer (image) or external player (video).
+            Rectangle {
+                vertical-stretch: 1;
+                background: Theme.surface-media;
+                clip: true;
+                if (root.thumbnail.width <= 0): VerticalLayout {
+                    alignment: center;
+                    HorizontalLayout { alignment: center; Icon { source: Icons.photo; size: 30px; color: Theme.fg-subtle; } }
+                }
+                // contain: preview the capture in its real aspect ratio (the
+                // surface-media background fills the letterbox), not cropped.
+                Image { source: root.thumbnail; image-fit: contain; width: 100%; height: 100%; }
+                hero := Clickable {
+                    clicked => {
+                        if (root.is-video) { root.open-external(); } else { root.open-viewer(); }
+                    }
+                }
+                // Play badge marks a video poster.
+                if root.is-video: Rectangle {
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 28px;
+                    x: (parent.width - self.width) / 2;
+                    y: (parent.height - self.height) / 2;
+                    background: #000000a6;
+                    Icon { source: Icons.play; size: 24px; color: white; x: (parent.width - self.width) / 2 + 2px; y: (parent.height - self.height) / 2; }
+                }
+                // Close (top-right), subtle so it doesn't compete with the photo.
+                Rectangle {
+                    x: parent.width - self.width - 8px;
+                    y: 8px;
+                    width: 26px;
+                    height: 26px;
+                    border-radius: Theme.radius-xl;
+                    background: ct.has-hover ? #000000cc : #00000073;
+                    Icon {
+                        source: Icons.close;
+                        size: 13px;
+                        color: white;
+                        x: (parent.width - self.width) / 2;
+                        y: (parent.height - self.height) / 2;
+                    }
+                    ct := Clickable { clicked => { root.dismiss(); } }
+                }
+                // Upload status banner over the preview's bottom edge.
+                if root.upload-status != 0: Rectangle {
+                    y: parent.height - self.height;
+                    width: 100%;
+                    height: 30px;
+                    background: UploadStatus.failed(root.upload-status) ? #b91c1ce6 : #000000cc;
+                    HorizontalLayout {
+                        padding-left: 12px;
+                        padding-right: 12px;
+                        VerticalLayout {
+                            alignment: center;
+                            Text { text: UploadStatus.text(root.upload-status, root.upload-detail); color: white; font-size: Theme.text-small; overflow: elide; }
+                        }
+                    }
+                }
+            }
+            // Action row — image actions vs. video playback actions.
+            Rectangle {
+                height: 42px;
+                if !root.is-video: HorizontalLayout {
+                    padding-left: 6px;
+                    padding-right: 6px;
+                    alignment: space-around;
+                    VerticalLayout { alignment: center; Act { icon: root.copied ? Icons.check : Icons.copy; a11y-label: @tr("Copy"); clicked => { root.copy(); } } }
+                    if root.upload-ready: VerticalLayout { alignment: center; Act { icon: Icons.upload; busy: root.upload-busy; a11y-label: @tr("Upload"); clicked => { root.upload(); } } }
+                    VerticalLayout { alignment: center; Act { icon: Icons.pencil; a11y-label: @tr("Edit"); clicked => { root.edit(); } } }
+                    VerticalLayout { alignment: center; Act { icon: Icons.scan-text; a11y-label: @tr("Extract text"); clicked => { root.ocr(); } } }
+                    VerticalLayout { alignment: center; Act { icon: Icons.folder-open; a11y-label: @tr("Reveal in folder"); clicked => { root.reveal(); } } }
+                }
+                if root.is-video: HorizontalLayout {
+                    alignment: center;
+                    spacing: 10px;
+                    if root.gif-ready: VerticalLayout { alignment: center; Act { icon: Icons.gif; busy: root.gif-busy; a11y-label: @tr("Export as GIF"); clicked => { root.export-gif(); } } }
+                    VerticalLayout { alignment: center; Act { icon: Icons.folder-open; a11y-label: @tr("Reveal in folder"); clicked => { root.reveal(); } } }
+                }
+            }
+        }
+        }
+    }
+}

@@ -1,0 +1,175 @@
+# Single-app workspace: the native shell (this root package) plus the two
+# capture-engine crates it consumes, vendored under crates/. The engine used to
+# live in a sibling repo and was reached via a relative path dep; bringing it
+# in-repo makes this project fully self-contained.
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+# Inherited by the engine crates via `*.workspace = true` (they were authored as
+# workspace members). The root package below keeps its own edition (2021).
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+license = "Apache-2.0"
+authors = ["Ohgawa"]
+
+[workspace.dependencies]
+clipo-core = { path = "crates/clipo-core" }
+clipo-capture = { path = "crates/clipo-capture" }
+clipo-overlay = { path = "crates/clipo-overlay" }
+thiserror = "2"
+tracing = "0.1"
+serde = { version = "1", features = ["derive"] }
+parking_lot = "0.12"
+flume = { version = "0.11", default-features = false }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+windows-capture = "2"
+windows = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_Graphics_Direct3D",
+    "Win32_Graphics_Direct3D11",
+    "Win32_Graphics_Dwm",
+    "Win32_Graphics_Dxgi",
+    "Win32_Graphics_Dxgi_Common",
+    "Win32_Graphics_Gdi",
+    "Win32_Media",
+    "Win32_Media_Audio",
+    "Win32_Media_MediaFoundation",
+    "Win32_Networking_WinHttp",
+    "Win32_Security",
+    "Win32_System_Com",
+    "Win32_System_Com_StructuredStorage",
+    "Win32_System_Variant",
+    "Win32_System_DataExchange",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Memory",
+    "Win32_System_Ole",
+    "Win32_System_SystemInformation",
+    "Win32_System_Threading",
+    "Win32_UI_HiDpi",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_UI_Shell",
+    "Win32_UI_WindowsAndMessaging",
+    "Foundation_Collections",
+    "Graphics_Imaging",
+    "Media_Ocr",
+    "Storage_Streams",
+] }
+
+# Inherited by the engine crates via `[lints] workspace = true`.
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+doc_markdown = "allow"
+too_long_first_doc_paragraph = "allow"
+
+[package]
+name = "clipo"
+version = "0.1.0"
+edition = "2021"
+description = "Clipo — native Windows screenshot + screen recording (Slint). Tray + floating windows, one process."
+authors = ["Ohgawa"]
+license = "Apache-2.0"
+
+[dependencies]
+slint = { version = "1", features = ["raw-window-handle-06"] }
+raw-window-handle = "0.6"
+# The capture engine (DXGI/D3D11), vendored in-repo under crates/ so this
+# project is self-contained — no reaching into sibling folders.
+clipo-core = { workspace = true }
+clipo-capture = { workspace = true }
+clipo-overlay = { workspace = true }
+dirs = "5"
+arboard = "3"
+# Local-calendar date bucketing for the history (Today/Yesterday/month names).
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+# Recoverable delete — captures go to the Recycle Bin, not gone for good.
+trash = "5"
+# Native folder picker for the capture-folder setting.
+rfd = "0.15"
+# Lightweight pure-Rust glyph rasterizer for the editor's text tool.
+ab_glyph = "0.2"
+# GIF frame decoding for the viewer's in-app animation (gif feature only).
+image = { version = "0.25", default-features = false, features = ["gif"] }
+# Bring-your-own-keys S3/R2 upload: hand-rolled AWS SigV4 over WinHTTP.
+sha2 = "0.10"
+hmac = "0.12"
+# Decode the base64 PNG data URLs the engine returns for window-picker icons.
+base64 = "0.22"
+# Verify the minisign signature of a downloaded update installer before running
+# it. Verify-only (no signing, no extra deps) — keeps the binary lean.
+minisign-verify = "0.2"
+# Swap the running exe in place for the downloaded update (the rename-self
+# trick) so a self-update fetches just the app binary, not the full installer.
+self-replace = "1"
+thiserror = "2"
+winreg = "0.52"
+# Structured logging. Default level is warn; set CLIPO_LOG=debug for dev.
+# No env-filter feature on purpose — a plain level filter avoids pulling in
+# the regex engine (~300-500 KiB), keeping the binary lean.
+tracing = "0.1"
+tracing-subscriber = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tiny-skia = "0.11"
+tray-icon = "0.20"
+# Global hotkeys (region/fullscreen/window/record/menu), same ecosystem as tray-icon.
+global-hotkey = "0.6"
+windows = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_Graphics_Gdi",
+    "Win32_Graphics_Dwm",
+    "Win32_UI_Shell",
+    "Win32_System_Threading",
+    "Win32_System_LibraryLoader",
+    "Win32_Networking_WinHttp",
+    "Win32_System_SystemInformation",
+    "Win32_System_Pipes",
+    "Win32_System_IO",
+    "Win32_Storage_FileSystem",
+] }
+
+[build-dependencies]
+slint-build = "1"
+# Embeds app.rc (the brand .ico) as the exe/taskbar icon — compile-time only.
+embed-resource = "3"
+
+# Strict bar: pedantic + nursery, with noisy-lint allowances (doc/naming lints
+# that don't earn their keep here).
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+doc_markdown = "allow"
+too_long_first_doc_paragraph = "allow"
+# This app does its image compositing and window/coordinate math natively, so
+# deliberate pixel/coord casts are everywhere — the cast family is noise here,
+# not a smell. Same for short math
+# identifiers (r/g/b/x/y/w/h) and the inherently bool-heavy Settings struct.
+cast_possible_truncation = "allow"
+cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+cast_possible_wrap = "allow"
+many_single_char_names = "allow"
+struct_excessive_bools = "allow"
+too_many_lines = "allow"
+
+# Lean release — the whole point of going native.
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true
+panic = "abort"
+codegen-units = 1

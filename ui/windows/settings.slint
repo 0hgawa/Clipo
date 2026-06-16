@@ -1,0 +1,809 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon, CloseButton, SettingRow, Segmented, WindowControls, WindowShell, DragArea, ScrollArea, SettingsPane, Dropdown, UploadStatus } from "../components.slint";
+import { LineEdit, Palette } from "std-widgets.slint";
+
+// Single-line text field. Built on Slint's LineEdit (not a raw TextInput) so it
+// gets clipboard shortcuts (Ctrl+C/X/V) and the right-click Copy/Paste menu for
+// free; Palette.color-scheme (synced to the theme when the modal opens) keeps
+// it dark/light-correct.
+component Field inherits VerticalLayout {
+    in property <string> label;
+    in property <string> placeholder;
+    in-out property <string> text;
+    spacing: 4px;
+    Text { text: root.label; color: Theme.fg-subtle; font-size: Theme.text-small; }
+    LineEdit {
+        placeholder-text: root.placeholder;
+        text <=> root.text;
+        font-size: Theme.text-small;
+    }
+}
+
+// Sidebar nav item (Win11 / macOS settings style): icon + label, the active one
+// gets an accent-tinted fill and accent ink.
+component NavItem inherits Rectangle {
+    in property <image> icon;
+    in property <string> label;
+    in property <bool> active;
+    callback clicked;
+    height: 38px;
+    border-radius: Theme.radius-sm;
+    background: root.active ? Theme.accent-bg : (ta.has-hover ? Theme.surface-2 : transparent);
+    HorizontalLayout {
+        padding-left: 10px;
+        padding-right: 10px;
+        spacing: 10px;
+        VerticalLayout {
+            alignment: center;
+            Icon { source: root.icon; size: 16px; color: root.active ? Theme.accent : Theme.fg-muted; }
+        }
+        VerticalLayout {
+            alignment: center;
+            Text {
+                text: root.label;
+                color: root.active ? Theme.accent : Theme.fg;
+                font-size: Theme.text-body;
+                font-weight: root.active ? 600 : 400;
+            }
+        }
+    }
+    ta := TouchArea { mouse-cursor: pointer; clicked => { root.clicked(); } }
+}
+
+// A small metadata pill (version / commit / date) for the About tab.
+component Badge inherits Rectangle {
+    in property <string> text;
+    height: 22px;
+    width: bt.width + 16px;
+    border-radius: Theme.radius-xl;
+    background: Theme.surface-2;
+    bt := Text {
+        text: root.text;
+        color: Theme.fg-muted;
+        font-size: Theme.text-small;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+    }
+}
+
+// A settings row: title (+ optional subtitle) on the left, the injected control
+// (@children) on the right. 56px tall — the shared M3 list-item rhythm used by
+// every tab so spacing stays harmonious.
+component Row inherits Rectangle {
+    in property <string> title;
+    in property <string> subtitle;
+    min-height: 56px;
+    HorizontalLayout {
+        padding-left: 4px;
+        padding-right: 4px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        spacing: 12px;
+        VerticalLayout {
+            horizontal-stretch: 1;
+            alignment: center;
+            spacing: 2px;
+            Text { text: root.title; color: Theme.fg; font-size: Theme.text-body; }
+            if root.subtitle != "": Text { text: root.subtitle; color: Theme.fg-subtle; font-size: Theme.text-small; wrap: word-wrap; }
+        }
+        VerticalLayout { alignment: center; @children }
+    }
+}
+
+// Grouped settings card — a rounded surface panel; the rows inside are
+// separated by inset dividers. macOS / Fluent settings grouping.
+component Card inherits Rectangle {
+    background: Theme.surface-1;
+    border-radius: Theme.radius-xl;
+    VerticalLayout {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        @children
+    }
+}
+
+// One appearance-mode card (Light / Dark / System): icon over label. The
+// active mode gets an accent ring + tint, like a Win11/VS Code theme picker.
+component ThemeOption inherits Rectangle {
+    in property <image> icon;
+    in property <string> label;
+    in property <int> index;
+    in property <int> selected;
+    callback clicked(int);
+    property <bool> active: root.index == root.selected;
+    // Equal preferred-width + stretch → all three cards stay the same width,
+    // regardless of how long each (translated) label is.
+    preferred-width: 100px;
+    horizontal-stretch: 1;
+    height: 74px;
+    border-radius: Theme.radius-md;
+    border-width: root.active ? 2px : 1px;
+    border-color: root.active ? Theme.accent : (ta.has-hover ? Theme.accent : Theme.border-subtle);
+    background: root.active ? Theme.accent-bg : (ta.has-hover ? Theme.surface-3 : Theme.surface-2);
+    accessible-role: button;
+    accessible-label: root.label;
+    accessible-action-default => { root.clicked(root.index); }
+    ta := TouchArea { mouse-cursor: pointer; clicked => { root.clicked(root.index); } }
+    VerticalLayout {
+        alignment: center;
+        spacing: 6px;
+        HorizontalLayout {
+            alignment: center;
+            Icon { source: root.icon; size: 22px; color: root.active ? Theme.accent : Theme.fg-muted; }
+        }
+        Text {
+            text: root.label;
+            color: root.active ? Theme.accent : Theme.fg;
+            font-size: Theme.text-small;
+            font-weight: root.active ? 600 : 400;
+            horizontal-alignment: center;
+        }
+    }
+}
+
+// One shortcut row: action label + a clickable combo chip. Clicking arms the
+// row; the window's FocusScope then captures the next key combo.
+component ShortcutRow inherits Rectangle {
+    in property <string> label;
+    in property <string> combo;
+    in property <bool> recording;
+    in property <bool> readonly; // recording F-keys are fixed — display only
+    in property <bool> conflict; // combo is taken (by another app or row) → won't fire
+    callback clicked;
+    height: 48px;
+    HorizontalLayout {
+        padding-left: 4px;
+        padding-right: 4px;
+        spacing: 8px;
+        VerticalLayout { alignment: center; Text { text: root.label; color: Theme.fg; font-size: Theme.text-body; } }
+        Rectangle { }
+        // Status pill (editable rows only): green when the combo is live, red
+        // when the OS refused it — so a bound key that silently does nothing is
+        // visible, like the recording bar is honest about its state.
+        if !root.readonly && !root.recording: VerticalLayout {
+            alignment: center;
+            Rectangle {
+                height: 22px;
+                width: cft.width + 18px;
+                border-radius: 11px;
+                background: root.conflict ? Theme.danger-bg : Theme.ok-bg;
+                cft := Text {
+                    text: root.conflict ? @tr("In conflict") : @tr("Active");
+                    color: root.conflict ? Theme.danger : Theme.ok;
+                    font-size: Theme.text-tiny;
+                    font-weight: 600;
+                    x: (parent.width - self.width) / 2;
+                    y: (parent.height - self.height) / 2;
+                }
+            }
+        }
+        VerticalLayout {
+            alignment: center;
+            Rectangle {
+                height: 28px;
+                width: cap.width + 20px;
+                border-radius: Theme.radius-sm;
+                background: root.recording ? Theme.accent-bg : (!root.readonly && ta.has-hover ? Theme.surface-3 : Theme.surface-2);
+                border-width: root.recording ? 1px : 0px;
+                border-color: Theme.accent;
+                cap := Text {
+                    text: root.recording ? @tr("Press keys…") : root.combo;
+                    color: root.recording ? Theme.accent : Theme.fg-muted;
+                    font-size: Theme.text-small;
+                    x: (parent.width - self.width) / 2;
+                    y: (parent.height - self.height) / 2;
+                }
+                ta := TouchArea {
+                    mouse-cursor: root.readonly ? default : pointer;
+                    clicked => { if (!root.readonly) { root.clicked(); } }
+                }
+            }
+        }
+    }
+}
+
+export component SettingsWindow inherits Window {
+    no-frame: true;
+    title: "Clipo · Settings";
+    background: transparent;
+    default-font-size: Theme.text-body;
+    // The host (show_fitted) sets the real size via set_size, fitted to the
+    // monitor; keep min small so it can shrink on tiny screens without forcing
+    // overflow. preferred is a fallback only.
+    preferred-width: 1040px;
+    preferred-height: 680px;
+    min-width: 420px;
+    min-height: 320px;
+    callback dismiss();
+    callback minimize();
+    callback drag-move(length, length);
+    callback theme-changed(int);
+    callback apply-upload();
+    callback pick-folder();
+    callback reset-folder();
+    callback image-format-changed(int);
+    callback provider-changed(int);
+    callback disconnect-upload();
+    // (row, ctrl, shift, alt, key-text) — host validates + re-registers.
+    callback rebind(int, bool, bool, bool, string);
+    callback reset-shortcuts();
+    callback copy-diagnostic();
+    callback reset-all();
+    callback check-updates();
+    callback install-update();
+    // General toggles.
+    callback toggle-autostart(bool);
+    callback toggle-highlight-cursor(bool);
+    callback toggle-record-cursor(bool);
+    callback toggle-open-with(bool);
+    callback toggle-copy-clipboard(bool);
+    callback set-tray-left-click(int);    // 0 region · 1 fullscreen · 2 menu · 3 timer · 4 record
+    callback set-timer(int);              // 0 → 3s · 1 → 5s · 2 → 10s
+    callback set-dismiss(int);            // 0 → 5s · 1 → 7s · 2 → 10s
+    callback set-language(int);           // index into the language list
+    callback toggle-magnifier(bool);
+    in-out property <int> language-idx;
+    in-out property <bool> autostart;
+    in-out property <bool> highlight-cursor;
+    in-out property <bool> rec-cursor: true;
+    in-out property <bool> open-with-images;
+    in-out property <bool> copy-clipboard: true;
+    in-out property <bool> magnifier: true;
+    in-out property <int> tray-left-click; // 0 region · 1 fullscreen · 2 menu · 3 timer · 4 record
+    in-out property <int> timer-idx;       // 0 → 3s · 1 → 5s · 2 → 10s
+    in-out property <int> dismiss-idx;     // 0 → 5s · 1 → 7s · 2 → 10s
+    // Recording toggles.
+    callback toggle-rec-audio(bool);
+    callback toggle-rec-mic(bool);
+    callback set-rec-fps(int);            // 0 → 30 fps · 1 → 60 fps
+    callback toggle-rec-countdown(bool);
+    callback toggle-rec-software(bool);
+    in-out property <bool> rec-audio: true;
+    in-out property <bool> rec-mic;
+    in-out property <int> rec-fps-idx;    // 0 = 30 · 1 = 60
+    in-out property <bool> rec-countdown;
+    in-out property <bool> rec-software;
+    in property <bool> system-dark;
+    in-out property <int> upload-status; // status code (see UploadStatus); 0 = hidden
+    in property <string> upload-detail;  // error message for the failure kinds
+    in-out property <int> tab: 0; // 0 general · 1 storage · 2 recording · 3 shortcuts · 4 about · 5 capture
+    in-out property <int> theme-mode: 0; // 0 system · 1 light · 2 dark
+    // Storage
+    in property <string> capture-folder;
+    in-out property <int> image-format; // 0 PNG · 1 JPG
+    in property <bool> upload-configured;
+    in-out property <bool> upload-editing; // cloud-upload modal open
+    in-out property <int> upload-provider; // 0 R2 · 1 S3
+    in-out property <string> s3-endpoint;
+    in-out property <string> s3-region;
+    in-out property <string> r2-account-id;
+    in-out property <string> r2-access-key;
+    in-out property <string> r2-secret;
+    in-out property <string> r2-bucket;
+    in-out property <string> r2-public-url;
+    // Combo chips (set by the host) + which row is armed for rebinding (-1 none).
+    in property <string> sc-region;
+    in property <string> sc-fullscreen;
+    in property <string> sc-window;
+    in property <string> sc-record;
+    in property <string> sc-menu;
+    in property <string> sc-ocr;
+    // Per editable row: true when the OS refused the combo or two rows clash.
+    in property <[bool]> sc-conflicts;
+    in-out property <int> recording: -1;
+    // About tab — build identity (set by the host).
+    in property <string> app-version;
+    in property <string> app-commit;
+    in property <string> app-commit-date;
+    in-out property <bool> reset-armed; // two-step factory reset
+    // Update state, localized in-UI (set as a code, not a pre-built sentence, so
+    // @tr applies): 0 idle · 1 checking · 2 up-to-date · 3 available · 4 check
+    // failed · 5 downloading · 6 install failed.
+    in property <int> update-status;
+    in property <string> update-detail; // version (kind 3) or error text (kind 4/6)
+    forward-focus: fs;
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (root.recording >= 0) {
+                if (event.text == Key.Escape) {
+                    root.recording = -1;
+                } else if (event.text != Key.Shift && event.text != Key.Control && event.text != Key.Alt) {
+                    // A real key (with whatever modifiers are held) — try to bind.
+                    root.rebind(root.recording, event.modifiers.control, event.modifiers.shift, event.modifiers.alt, event.text);
+                    root.recording = -1;
+                }
+            } else if (event.text == Key.Escape) {
+                if (root.upload-editing) {
+                    root.upload-editing = false;
+                } else {
+                    root.dismiss();
+                }
+            }
+            accept
+        }
+    }
+    WindowShell {
+        VerticalLayout {
+        // ── Title bar ──
+        Rectangle {
+            height: 44px;
+            DragArea { dragged(dx, dy) => { root.drag-move(dx, dy); } }
+            HorizontalLayout {
+                padding-left: 16px;
+                padding-right: 8px;
+                VerticalLayout { alignment: center; Text { text: @tr("Settings"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; } }
+                Rectangle { }
+                VerticalLayout { alignment: center; WindowControls { no-maximize: true; minimize => { root.minimize(); } close => { root.dismiss(); } } }
+            }
+        }
+        // ── Body: left sidebar nav + content (Win11 / macOS settings layout) ──
+        HorizontalLayout {
+            vertical-stretch: 1;
+            // Sidebar
+            Rectangle {
+                width: 188px;
+                VerticalLayout {
+                    padding: 8px;
+                    spacing: 2px;
+                    alignment: start;
+                    NavItem { icon: Icons.settings; label: @tr("General"); active: root.tab == 0; clicked => { root.tab = 0; } }
+                    NavItem { icon: Icons.crop; label: @tr("Capture"); active: root.tab == 5; clicked => { root.tab = 5; } }
+                    NavItem { icon: Icons.video; label: @tr("Recording"); active: root.tab == 2; clicked => { root.tab = 2; } }
+                    NavItem { icon: Icons.folder-open; label: @tr("Storage"); active: root.tab == 1; clicked => { root.tab = 1; } }
+                    NavItem { icon: Icons.keyboard; label: @tr("Shortcuts"); active: root.tab == 3; clicked => { root.tab = 3; } }
+                    NavItem { icon: Icons.info; label: @tr("About"); active: root.tab == 4; clicked => { root.tab = 4; } }
+                }
+            }
+            // Content (stretches to fill the rest)
+            Rectangle {
+                horizontal-stretch: 1;
+                if root.tab == 0: SettingsPane {
+                Rectangle {
+                    VerticalLayout {
+                        padding-left: 2px;
+                        padding-right: 2px;
+                        spacing: 10px;
+                        Text { text: @tr("Theme"); color: Theme.fg; font-size: Theme.text-body; }
+                        HorizontalLayout {
+                            spacing: 8px;
+                            ThemeOption {
+                                icon: Icons.sun; label: @tr("Light"); index: 1; selected: root.theme-mode;
+                                clicked(i) => { root.theme-mode = i; Theme.dark = false; root.theme-changed(i); }
+                            }
+                            ThemeOption {
+                                icon: Icons.moon; label: @tr("Dark"); index: 2; selected: root.theme-mode;
+                                clicked(i) => { root.theme-mode = i; Theme.dark = true; root.theme-changed(i); }
+                            }
+                            ThemeOption {
+                                icon: Icons.contrast; label: @tr("System"); index: 0; selected: root.theme-mode;
+                                clicked(i) => { root.theme-mode = i; Theme.dark = root.system-dark; root.theme-changed(i); }
+                            }
+                        }
+                    }
+                }
+                Card {
+                Rectangle {
+                    min-height: 56px;
+                    HorizontalLayout {
+                        padding-left: 4px;
+                        padding-right: 4px;
+                        padding-top: 8px;
+                        padding-bottom: 8px;
+                        spacing: 12px;
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            alignment: center;
+                            spacing: 2px;
+                            Text { text: @tr("Language"); color: Theme.fg; font-size: Theme.text-body; }
+                            Text { text: @tr("Interface language. Affects every Clipo window. Takes effect immediately."); color: Theme.fg-subtle; font-size: Theme.text-small; wrap: word-wrap; }
+                        }
+                        VerticalLayout {
+                            alignment: center;
+                            Dropdown {
+                                options: ["English", "Português", "Español", "Français", "Deutsch", "Italiano", "日本語", "한국어", "中文", "Русский", "हिन्दी", "العربية"];
+                                current <=> root.language-idx;
+                                changed(i) => { root.set-language(i); }
+                            }
+                        }
+                    }
+                }
+                Rectangle { height: 1px; background: Theme.border-subtle; }
+                SettingRow { title: @tr("Launch Clipo at system startup"); subtitle: @tr("Clipo lives in the system tray. With this on, it starts automatically at login."); on <=> root.autostart; toggled(v) => { root.toggle-autostart(v); } }
+                Rectangle { height: 1px; background: Theme.border-subtle; }
+                SettingRow { title: @tr("Open images with Clipo"); subtitle: @tr("Add Clipo to the \"Open with\" menu for images"); on <=> root.open-with-images; toggled(v) => { root.toggle-open-with(v); } }
+                }
+            }
+            if root.tab == 5: SettingsPane {
+                Card {
+                    Row {
+                        title: @tr("Tray icon left-click");
+                        subtitle: @tr("What a left-click on the tray icon does. Right-click always opens the menu.");
+                        Dropdown {
+                            options: [@tr("Area"), @tr("Fullscreen"), @tr("Menu"), @tr("Timer"), @tr("Record")];
+                            current <=> root.tray-left-click;
+                            changed(i) => { root.set-tray-left-click(i); }
+                        }
+                    }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    Row {
+                        title: @tr("Capture timer");
+                        subtitle: @tr("Countdown before a timed capture.");
+                        Segmented {
+                            options: ["3s", "5s", "10s"];
+                            selected <=> root.timer-idx;
+                            changed(i) => { root.set-timer(i); }
+                        }
+                    }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    SettingRow { title: @tr("Show magnifier when selecting a region"); subtitle: @tr("A 4× zoom under the cursor with the live width × height, for pixel-precise selections."); on <=> root.magnifier; toggled(v) => { root.toggle-magnifier(v); } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    Row {
+                        title: @tr("Auto-dismiss the capture panel");
+                        subtitle: @tr("How long the post-capture panel stays before hiding.");
+                        Segmented {
+                            options: ["3s", "5s", "10s"];
+                            selected <=> root.dismiss-idx;
+                            changed(i) => { root.set-dismiss(i); }
+                        }
+                    }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    SettingRow { title: @tr("Copy to clipboard"); subtitle: @tr("Copy every capture automatically"); on <=> root.copy-clipboard; toggled(v) => { root.toggle-copy-clipboard(v); } }
+                }
+            }
+            if root.tab == 1: SettingsPane {
+                Card {
+                Row {
+                    title: @tr("Captures folder");
+                    subtitle: root.capture-folder;
+                    HorizontalLayout {
+                        spacing: 6px;
+                        Rectangle {
+                            width: cf.width + 26px;
+                            height: 32px;
+                            border-radius: Theme.radius-sm;
+                            background: cft.has-hover ? Theme.surface-3 : Theme.surface-2;
+                            cf := Text { text: @tr("Choose…"); color: Theme.fg; font-size: Theme.text-small; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                            cft := TouchArea { mouse-cursor: pointer; clicked => { root.pick-folder(); } }
+                        }
+                        Rectangle {
+                            width: rf.width + 22px;
+                            height: 32px;
+                            border-radius: Theme.radius-sm;
+                            background: rft.has-hover ? Theme.surface-3 : Theme.surface-2;
+                            rf := Text { text: @tr("Reset"); color: Theme.fg-muted; font-size: Theme.text-small; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                            rft := TouchArea { mouse-cursor: pointer; clicked => { root.reset-folder(); } }
+                        }
+                    }
+                }
+                Rectangle { height: 1px; background: Theme.border-subtle; }
+                Row {
+                    title: @tr("Screenshot format");
+                    subtitle: @tr("PNG is lossless (larger); JPEG is smaller but lossy. Recordings are always MP4.");
+                    Segmented {
+                        options: [@tr("PNG"), @tr("JPG")];
+                        selected <=> root.image-format;
+                        changed(i) => { root.image-format-changed(i); }
+                    }
+                }
+                }
+                // Cloud upload sits in its own card — it's a connect/configure
+                // action, separate from the local capture settings above.
+                Card {
+                Row {
+                    title: @tr("Cloud upload");
+                    subtitle: root.upload-configured ? "Captures upload and the link is copied." : "Upload captures to your own S3 / R2 bucket.";
+                    HorizontalLayout {
+                        spacing: 8px;
+                        VerticalLayout {
+                            alignment: center;
+                            if root.upload-configured: Rectangle {
+                                height: 22px;
+                                width: cb.width + 18px;
+                                border-radius: 11px;
+                                background: Theme.ok-bg;
+                                cb := Text {
+                                    text: @tr("Connected");
+                                    color: Theme.ok;
+                                    font-size: Theme.text-tiny;
+                                    font-weight: 600;
+                                    x: (parent.width - self.width) / 2;
+                                    y: (parent.height - self.height) / 2;
+                                }
+                            }
+                        }
+                        Rectangle {
+                            width: os.width + 28px;
+                            height: 32px;
+                            border-radius: Theme.radius-sm;
+                            background: ost.has-hover ? Theme.surface-3 : Theme.surface-2;
+                            os := Text { text: root.upload-configured ? @tr("Edit") : @tr("Set up"); color: Theme.fg; font-size: Theme.text-small; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                            ost := TouchArea { mouse-cursor: pointer; clicked => {
+                                // Match LineEdit's std-widget chrome to our theme.
+                                Palette.color-scheme = Theme.dark ? ColorScheme.dark : ColorScheme.light;
+                                root.upload-status = 0;
+                                root.upload-editing = true;
+                            } }
+                        }
+                    }
+                }
+                }
+            }
+            if root.tab == 2: SettingsPane {
+                Card {
+                    SettingRow { title: @tr("Capture system audio"); subtitle: @tr("Records system sound; off makes a silent MP4."); on <=> root.rec-audio; toggled(v) => { root.toggle-rec-audio(v); } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    SettingRow { title: @tr("Capture microphone"); subtitle: @tr("Also records your microphone, mixed with system audio into one track."); on <=> root.rec-mic; toggled(v) => { root.toggle-rec-mic(v); } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    Rectangle {
+                        min-height: 56px;
+                        HorizontalLayout {
+                            padding-left: 4px;
+                            padding-right: 4px;
+                            padding-top: 8px;
+                            padding-bottom: 8px;
+                            spacing: 12px;
+                            VerticalLayout {
+                                horizontal-stretch: 1;
+                                alignment: center;
+                                spacing: 2px;
+                                Text { text: @tr("Recording frame rate"); color: Theme.fg; font-size: Theme.text-body; }
+                                Text { text: @tr("30 fps for tutorials; 60 fps smoother but ~2× heavier."); color: Theme.fg-subtle; font-size: Theme.text-small; wrap: word-wrap; }
+                            }
+                            VerticalLayout {
+                                alignment: center;
+                                Segmented { options: [@tr("30 fps"), @tr("60 fps")]; selected <=> root.rec-fps-idx; changed(i) => { root.set-rec-fps(i); } }
+                            }
+                        }
+                    }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    SettingRow { title: @tr("Countdown before recording"); subtitle: @tr("A short countdown so you can switch windows first."); on <=> root.rec-countdown; toggled(v) => { root.toggle-rec-countdown(v); } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    SettingRow { title: @tr("Record the cursor"); subtitle: @tr("Include the mouse pointer in the recording."); on <=> root.rec-cursor; toggled(v) => { root.toggle-record-cursor(v); } }
+                    SettingRow { title: @tr("Show mouse clicks"); subtitle: @tr("Marks each click with a brief ring while recording — handy for demos."); on <=> root.highlight-cursor; toggled(v) => { root.toggle-highlight-cursor(v); } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    SettingRow { title: @tr("Software encoder (compatibility)"); subtitle: @tr("Encode on the CPU instead of the GPU. Slower and slightly lower quality, but works where the hardware encoder is unstable. Turns on automatically if a recording ever crashes."); on <=> root.rec-software; toggled(v) => { root.toggle-rec-software(v); } }
+                }
+            }
+            if root.tab == 3: SettingsPane {
+                spacing: 8px;
+                HorizontalLayout {
+                    spacing: 8px;
+                    VerticalLayout { alignment: center; Text { text: @tr("Global — click a shortcut to rebind it."); color: Theme.fg-subtle; font-size: Theme.text-small; } }
+                    Rectangle { }
+                    Rectangle {
+                        width: rb.width + 24px;
+                        height: 28px;
+                        border-radius: Theme.radius-sm;
+                        background: rt.has-hover ? Theme.surface-3 : Theme.surface-2;
+                        rb := Text {
+                            text: @tr("Restore defaults");
+                            color: Theme.fg-muted;
+                            font-size: Theme.text-small;
+                            x: (parent.width - self.width) / 2;
+                            y: (parent.height - self.height) / 2;
+                        }
+                        rt := TouchArea { mouse-cursor: pointer; clicked => { root.reset-shortcuts(); } }
+                    }
+                }
+                Card {
+                    ShortcutRow { label: @tr("Capture region"); combo: root.sc-region; conflict: root.sc-conflicts[0]; recording: root.recording == 0; clicked => { root.recording = 0; } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("Capture fullscreen"); combo: root.sc-fullscreen; conflict: root.sc-conflicts[1]; recording: root.recording == 1; clicked => { root.recording = 1; } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("Capture window"); combo: root.sc-window; conflict: root.sc-conflicts[2]; recording: root.recording == 2; clicked => { root.recording = 2; } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("Record screen"); combo: root.sc-record; conflict: root.sc-conflicts[3]; recording: root.recording == 3; clicked => { root.recording = 3; } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("All-in-one menu"); combo: root.sc-menu; conflict: root.sc-conflicts[4]; recording: root.recording == 4; clicked => { root.recording = 4; } }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("Extract text (OCR)"); combo: root.sc-ocr; conflict: root.sc-conflicts[5]; recording: root.recording == 5; clicked => { root.recording = 5; } }
+                }
+                Text { text: @tr("While recording"); color: Theme.fg-subtle; font-size: Theme.text-small; }
+                Card {
+                    ShortcutRow { label: @tr("Stop recording"); combo: "F8"; readonly: true; }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("Pause / resume"); combo: "F9"; readonly: true; }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("Restart recording"); combo: "F10"; readonly: true; }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("Mute system audio"); combo: "F7"; readonly: true; }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    ShortcutRow { label: @tr("Mute microphone"); combo: "F6"; readonly: true; }
+                }
+            }
+            if root.tab == 4: SettingsPane {
+                spacing: 2px;
+                VerticalLayout {
+                    spacing: 3px;
+                    Text { text: "Clipo"; color: Theme.fg; font-size: 22px; font-weight: 700; }
+                    Text { text: @tr("Native Windows screenshot + screen recording."); color: Theme.fg-subtle; font-size: Theme.text-small; }
+                }
+                Rectangle { height: 12px; }
+                HorizontalLayout {
+                    spacing: 6px;
+                    Badge { text: "v" + root.app-version; }
+                    if root.app-commit != "": Badge { text: root.app-commit; }
+                    if root.app-commit-date != "": Badge { text: root.app-commit-date; }
+                    Rectangle { }
+                }
+                Rectangle { height: 12px; }
+                Card {
+                    Row {
+                        title: @tr("Updates");
+                        subtitle:
+                            root.update-status == 1 ? @tr("Checking…")
+                            : root.update-status == 2 ? @tr("You're on the latest version.")
+                            : root.update-status == 3 ? @tr("Version {} is available.", root.update-detail)
+                            : root.update-status == 4 ? @tr("Couldn't check: {}", root.update-detail)
+                            : root.update-status == 5 ? @tr("Downloading update…")
+                            : root.update-status == 6 ? @tr("Update failed: {}", root.update-detail)
+                            : @tr("Check whether a newer version is available.");
+                        Rectangle {
+                            width: ut.width + 28px;
+                            height: 32px;
+                            border-radius: Theme.radius-sm;
+                            background: uta.has-hover ? Theme.surface-3 : Theme.surface-2;
+                            ut := Text {
+                                text: root.update-status == 5 ? @tr("Installing…") : (root.update-status == 3 ? @tr("Update now") : (root.update-status == 1 ? @tr("Checking…") : @tr("Check for updates")));
+                                color: root.update-status == 3 ? Theme.accent : Theme.fg;
+                                font-size: Theme.text-small;
+                                x: (parent.width - self.width) / 2;
+                                y: (parent.height - self.height) / 2;
+                            }
+                            uta := TouchArea {
+                                mouse-cursor: pointer;
+                                clicked => {
+                                    if (root.update-status == 5) {
+                                        // downloading/installing — ignore
+                                    } else if (root.update-status == 3) {
+                                        root.install-update();
+                                    } else if (root.update-status != 1) {
+                                        root.check-updates();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    Row {
+                        title: @tr("Diagnostic");
+                        subtitle: @tr("Copies the version block to the clipboard. Paste into a bug report for exact reproducibility.");
+                        Rectangle {
+                            // `copied` flips true on click; the Timer reverts it, so
+                            // the button briefly confirms the otherwise-silent copy.
+                            property <bool> copied;
+                            width: ci.width + 28px;
+                            height: 32px;
+                            border-radius: Theme.radius-sm;
+                            background: cit.has-hover ? Theme.surface-3 : Theme.surface-2;
+                            ci := Text { text: parent.copied ? @tr("Copied!") : @tr("Copy info"); color: parent.copied ? Theme.ok : Theme.fg; font-size: Theme.text-small; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                            cit := TouchArea { mouse-cursor: pointer; clicked => { root.copy-diagnostic(); parent.copied = true; } }
+                            Timer { interval: 1.5s; running: parent.copied; triggered => { parent.copied = false; } }
+                        }
+                    }
+                    Rectangle { height: 1px; background: Theme.border-subtle; }
+                    Row {
+                        title: @tr("Reset settings");
+                        subtitle: @tr("Returns every preference (including custom shortcuts) to the factory state. Doesn't affect saved captures.");
+                        Rectangle {
+                            width: rs.width + 28px;
+                            height: 32px;
+                            border-radius: Theme.radius-sm;
+                            background: rst.has-hover ? Theme.surface-3 : Theme.surface-2;
+                            rs := Text { text: root.reset-armed ? @tr("Click to confirm") : @tr("Restore defaults"); color: root.reset-armed ? Theme.danger : Theme.fg; font-size: Theme.text-small; font-weight: root.reset-armed ? 600 : 400; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                            rst := TouchArea {
+                                mouse-cursor: pointer;
+                                clicked => {
+                                    if (root.reset-armed) {
+                                        root.reset-all();
+                                        root.reset-armed = false;
+                                    } else {
+                                        root.reset-armed = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        }
+    }
+
+    // Cloud-upload config modal — overlays everything; provider toggle +
+    // bring-your-own-keys fields. Backdrop click, Close, or Esc dismisses.
+    if root.upload-editing: Rectangle {
+        width: 100%;
+        height: 100%;
+        background: #00000099;
+        TouchArea { clicked => { root.upload-editing = false; } }
+        Rectangle {
+            width: 520px;
+            height: Math.min(548px, parent.height - 24px);
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2;
+            background: Theme.surface-0;
+            border-radius: Theme.radius-xl;
+            border-width: 1px;
+            border-color: Theme.border-subtle;
+            drop-shadow-blur: 32px;
+            drop-shadow-color: #00000066;
+            clip: true;
+            // Swallow clicks on empty card areas so they don't dismiss via the backdrop.
+            TouchArea { }
+            VerticalLayout {
+                Rectangle {
+                    height: 46px;
+                    HorizontalLayout {
+                        padding-left: 16px;
+                        padding-right: 8px;
+                        VerticalLayout { alignment: center; Text { text: @tr("Online save"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; } }
+                        Rectangle { }
+                        VerticalLayout { alignment: center; CloseButton { clicked => { root.upload-editing = false; } } }
+                    }
+                }
+                Rectangle { height: 1px; background: Theme.border-subtle; }
+                // Scrollable body — header above and footer below stay pinned.
+                ScrollArea {
+                    vertical-stretch: 1;
+                    content-height: body.preferred-height;
+                    body := VerticalLayout {
+                        padding: 16px;
+                        spacing: 10px;
+                        Text { text: @tr("Bring your own keys — captures upload to your bucket and the public link is copied to the clipboard."); color: Theme.fg-subtle; font-size: Theme.text-small; wrap: word-wrap; }
+                        HorizontalLayout {
+                            alignment: start;
+                            Segmented {
+                                options: ["Cloudflare R2", "S3"];
+                                selected <=> root.upload-provider;
+                                changed(i) => { root.provider-changed(i); }
+                            }
+                        }
+                        if root.upload-provider == 1: Field { label: @tr("Endpoint"); placeholder: "https://s3.us-east-1.amazonaws.com"; text <=> root.s3-endpoint; }
+                        if root.upload-provider == 1: Field { label: @tr("Region"); placeholder: "us-east-1"; text <=> root.s3-region; }
+                        if root.upload-provider == 0: Field { label: @tr("Account ID"); placeholder: @tr("your R2 account id"); text <=> root.r2-account-id; }
+                        Field { label: @tr("Access Key ID"); placeholder: @tr("access key"); text <=> root.r2-access-key; }
+                        Field { label: @tr("Secret Access Key"); placeholder: @tr("secret key"); text <=> root.r2-secret; }
+                        Field { label: @tr("Bucket"); placeholder: @tr("bucket name"); text <=> root.r2-bucket; }
+                        Field { label: @tr("Public URL"); placeholder: "https://pub-….r2.dev"; text <=> root.r2-public-url; }
+                    }
+                }
+                Rectangle { height: 1px; background: Theme.border-subtle; }
+                Rectangle {
+                    height: 52px;
+                    HorizontalLayout {
+                        padding-left: 12px;
+                        padding-right: 12px;
+                        spacing: 8px;
+                        VerticalLayout {
+                            alignment: center;
+                            Rectangle {
+                                width: dc.width + 24px;
+                                height: 32px;
+                                border-radius: Theme.radius-sm;
+                                background: dct.has-hover ? Theme.surface-2 : transparent;
+                                dc := Text { text: @tr("Disconnect"); color: Theme.fg-muted; font-size: Theme.text-small; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                                dct := TouchArea { mouse-cursor: pointer; clicked => { root.disconnect-upload(); } }
+                            }
+                        }
+                        VerticalLayout { horizontal-stretch: 1; alignment: center; Text { text: UploadStatus.text(root.upload-status, root.upload-detail); color: Theme.fg-subtle; font-size: Theme.text-small; wrap: word-wrap; } }
+                        VerticalLayout {
+                            alignment: center;
+                            Rectangle {
+                                width: sv.width + 26px;
+                                height: 32px;
+                                border-radius: Theme.radius-sm;
+                                background: svt.has-hover ? Theme.accent-hover : Theme.accent;
+                                sv := Text { text: @tr("Save & test"); color: white; font-size: Theme.text-small; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                                svt := TouchArea { mouse-cursor: pointer; clicked => { root.apply-upload(); } }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        }
+    }
+}

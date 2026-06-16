@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Close"
+msgstr "Fechar"
+
+msgid "Copy link"
+msgstr "Copiar link"
+
+msgid "Upload"
+msgstr "Enviar"
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Extract text"
+msgstr "Extrair texto"
+
+msgid "Reveal in folder"
+msgstr "Mostrar na pasta"
+
+msgid "Delete"
+msgstr "Excluir"
+
+msgid "Export as GIF"
+msgstr "Exportar como GIF"
+
+msgid "Minimize"
+msgstr "Minimizar"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid "Maximize"
+msgstr "Maximizar"
+
+msgid "Esc to cancel"
+msgstr "Esc para cancelar"
+
+msgid "Move"
+msgstr "Mover"
+
+msgid "Arrow"
+msgstr "Seta"
+
+msgid "Rectangle"
+msgstr "Retângulo"
+
+msgid "Ellipse"
+msgstr "Elipse"
+
+msgid "Line"
+msgstr "Linha"
+
+msgid "Highlight"
+msgstr "Marca-texto"
+
+msgid "Pen"
+msgstr "Caneta"
+
+msgid "Pixelate"
+msgstr "Pixelizar"
+
+msgid "Text"
+msgstr "Texto"
+
+msgid "Counter"
+msgstr "Contador"
+
+msgid "Crop"
+msgstr "Recortar"
+
+msgid "Resize"
+msgstr "Redimensionar"
+
+msgid "Width"
+msgstr "Largura"
+
+msgid "Height"
+msgstr "Altura"
+
+msgid "Lock aspect"
+msgstr "Travar proporção"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Save"
+msgstr "Salvar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Aspect"
+msgstr "Proporção"
+
+msgid "Free"
+msgstr "Livre"
+
+msgid "Padding"
+msgstr "Espaçamento"
+
+msgid "Radius"
+msgstr "Raio"
+
+msgid "Shadow"
+msgstr "Sombra"
+
+msgid "Strength"
+msgstr "Intensidade"
+
+msgid "Reset background"
+msgstr "Redefinir fundo"
+
+msgid "Custom colour"
+msgstr "Cor personalizada"
+
+msgid "History"
+msgstr "Histórico"
+
+msgid "All"
+msgstr "Tudo"
+
+msgid "Photos"
+msgstr "Fotos"
+
+msgid "Videos"
+msgstr "Vídeos"
+
+msgid "Today"
+msgstr "Hoje"
+
+msgid "Week"
+msgstr "Semana"
+
+msgid "Month"
+msgstr "Mês"
+
+msgid "No captures yet."
+msgstr "Nenhuma captura ainda."
+
+msgid "Your screenshots and recordings show up here."
+msgstr "Suas capturas e gravações aparecem aqui."
+
+msgid "Nothing matches this filter"
+msgstr "Nada corresponde a este filtro"
+
+msgid "Try a different type or date range."
+msgstr "Tente outro tipo ou período."
+
+msgid "What to capture?"
+msgstr "O que capturar?"
+
+msgid "Press Esc to dismiss"
+msgstr "Pressione Esc para dispensar"
+
+msgid "Capture area"
+msgstr "Capturar área"
+
+msgid "Full screen"
+msgstr "Tela inteira"
+
+msgid "Window"
+msgstr "Janela"
+
+msgid "Record screen"
+msgstr "Gravar tela"
+
+msgid "Record area"
+msgstr "Gravar área"
+
+msgid "Settings"
+msgstr "Configurações"
+
+msgid "Extracted text"
+msgstr "Texto extraído"
+
+msgid "No text found"
+msgstr "Nenhum texto encontrado"
+
+msgid "The image doesn't contain any recognizable characters."
+msgstr "A imagem não contém caracteres reconhecíveis."
+
+msgid "Copied"
+msgstr "Copiado"
+
+msgid "Recording"
+msgstr "Gravação"
+
+msgid "Pause / resume"
+msgstr "Pausar / retomar"
+
+msgid "Mute system audio"
+msgstr "Silenciar áudio do sistema"
+
+msgid "Mute microphone"
+msgstr "Silenciar microfone"
+
+msgid "Restart"
+msgstr "Reiniciar"
+
+msgid "Discard"
+msgstr "Descartar"
+
+msgid "Stop"
+msgstr "Parar"
+
+msgid "In conflict"
+msgstr "Em conflito"
+
+msgid "Active"
+msgstr "Ativo"
+
+msgid "Press keys…"
+msgstr "Pressione as teclas…"
+
+msgid "General"
+msgstr "Geral"
+
+msgid "Capture"
+msgstr "Captura"
+
+msgid "Storage"
+msgstr "Armazenamento"
+
+msgid "Shortcuts"
+msgstr "Atalhos"
+
+msgid "About"
+msgstr "Sobre"
+
+msgid "Theme"
+msgstr "Tema"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "Dark"
+msgstr "Escuro"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Interface language. Affects every Clipo window. Takes effect immediately."
+msgstr "Idioma da interface. Afeta todas as janelas do Clipo. Aplica imediatamente."
+
+msgid "Launch Clipo at system startup"
+msgstr "Iniciar Clipo com o sistema"
+
+msgid "Clipo lives in the system tray. With this on, it starts automatically at login."
+msgstr "Clipo vive na bandeja do sistema. Com isso ligado, inicia automaticamente ao fazer login."
+
+msgid "Open images with Clipo"
+msgstr "Abrir imagens com o Clipo"
+
+msgid "Tray icon left-click"
+msgstr "Clique esquerdo no ícone"
+
+msgid "What a left-click on the tray icon does. Right-click always opens the menu."
+msgstr "O que o clique esquerdo no ícone da bandeja faz. O clique direito sempre abre o menu."
+
+msgid "Area"
+msgstr "Área"
+
+msgid "Fullscreen"
+msgstr "Tela cheia"
+
+msgid "Timer"
+msgstr "Temporizador"
+
+msgid "Capture timer"
+msgstr "Temporizador de captura"
+
+msgid "Countdown before a timed capture."
+msgstr "Contagem regressiva antes de uma captura temporizada."
+
+msgid "Show magnifier when selecting a region"
+msgstr "Mostrar lupa ao selecionar área"
+
+msgid "A 4× zoom under the cursor with the live width × height, for pixel-precise selections."
+msgstr "Um zoom 4× sob o cursor com a largura × altura ao vivo, pra seleções precisas."
+
+msgid "Auto-dismiss the capture panel"
+msgstr "Dispensar o painel de captura automaticamente"
+
+msgid "How long the post-capture panel stays before hiding."
+msgstr "Quanto tempo o painel pós-captura permanece antes de ocultar."
+
+msgid "Captures folder"
+msgstr "Pasta de capturas"
+
+msgid "Choose…"
+msgstr "Escolher…"
+
+msgid "Reset"
+msgstr "Restaurar"
+
+msgid "Screenshot format"
+msgstr "Formato da captura"
+
+msgid "PNG is lossless (larger); JPEG is smaller but lossy. Recordings are always MP4."
+msgstr "PNG é sem perdas (maior); JPEG é menor mas com perdas. Gravações são sempre MP4."
+
+msgid "Cloud upload"
+msgstr "Upload na nuvem"
+
+msgid "Connected"
+msgstr "Conectado"
+
+msgid "Set up"
+msgstr "Configurar"
+
+msgid "Capture system audio"
+msgstr "Capturar áudio do sistema"
+
+msgid "Records system sound; off makes a silent MP4."
+msgstr "Grava o som do sistema; desligado, o MP4 fica mudo."
+
+msgid "Capture microphone"
+msgstr "Capturar microfone"
+
+msgid "Also records your microphone, mixed with system audio into one track."
+msgstr "Grava também o microfone, mixado com o áudio do sistema numa faixa só."
+
+msgid "Recording frame rate"
+msgstr "Taxa de quadros da gravação"
+
+msgid "30 fps for tutorials; 60 fps smoother but ~2× heavier."
+msgstr "30 fps pra tutoriais; 60 fps é mais fluido, mas ~2× a carga."
+
+msgid "Countdown before recording"
+msgstr "Contagem regressiva antes de gravar"
+
+msgid "A short countdown so you can switch windows first."
+msgstr "Uma contagem curta pra você trocar de janela antes."
+
+msgid "Record the cursor"
+msgstr "Gravar o cursor"
+
+msgid "Include the mouse pointer in the recording."
+msgstr "Incluir o ponteiro do mouse na gravação."
+
+msgid "Show mouse clicks"
+msgstr "Mostrar cliques do mouse"
+
+msgid "Marks each click with a brief ring while recording — handy for demos."
+msgstr "Marca cada clique com um anel durante a gravação — bom pra demos."
+
+msgid "Global — click a shortcut to rebind it."
+msgstr "Global — clique num atalho para reconfigurá-lo."
+
+msgid "Restore defaults"
+msgstr "Restaurar padrões"
+
+msgid "Capture region"
+msgstr "Capturar região"
+
+msgid "Capture fullscreen"
+msgstr "Capturar tela inteira"
+
+msgid "Capture window"
+msgstr "Capturar janela"
+
+msgid "All-in-one menu"
+msgstr "Menu completo"
+
+msgid "Extract text (OCR)"
+msgstr "Extrair texto (OCR)"
+
+msgid "While recording"
+msgstr "Durante a gravação"
+
+msgid "Stop recording"
+msgstr "Parar gravação"
+
+msgid "Restart recording"
+msgstr "Reiniciar gravação"
+
+msgid "Native Windows screenshot + screen recording."
+msgstr "Screenshot + screen recording nativo pra Windows."
+
+msgid "Updates"
+msgstr "Atualizações"
+
+msgid "Check whether a newer version is available."
+msgstr "Verifique se há uma versão mais nova."
+
+msgid "Installing…"
+msgstr "Instalando…"
+
+msgid "Update now"
+msgstr "Atualizar agora"
+
+msgid "Checking…"
+msgstr "Verificando…"
+
+msgid "Check for updates"
+msgstr "Procurar atualizações"
+
+msgid "Diagnostic"
+msgstr "Diagnóstico"
+
+msgid "Copies the version block to the clipboard. Paste into a bug report for exact reproducibility."
+msgstr "Copia o bloco de versões pro clipboard. Cole num relatório de bug pra reprodutibilidade exata."
+
+msgid "Copy info"
+msgstr "Copiar info"
+
+msgid "Reset settings"
+msgstr "Restaurar configurações"
+
+msgid "Returns every preference (including custom shortcuts) to the factory state. Doesn't affect saved captures."
+msgstr "Devolve todas as preferências (incluindo atalhos personalizados) ao estado de fábrica. Não afeta capturas já salvas."
+
+msgid "Click to confirm"
+msgstr "Clique para confirmar"
+
+msgid "Capture with timer"
+msgstr "Capturar com timer"
+
+msgid "Record fullscreen"
+msgstr "Gravar tela inteira"
+
+msgid "Record region…"
+msgstr "Gravar região…"
+
+msgid "Pause recording"
+msgstr "Pausar gravação"
+
+msgid "Resume recording"
+msgstr "Retomar gravação"
+
+msgid "Discard recording"
+msgstr "Descartar gravação"
+
+msgid "Unmute system audio"
+msgstr "Reativar áudio do sistema"
+
+msgid "Unmute microphone"
+msgstr "Reativar microfone"
+
+msgid "History…"
+msgstr "Histórico…"
+
+msgid "Open captures folder"
+msgstr "Abrir pasta de capturas"
+
+msgid "Settings…"
+msgstr "Configurações…"
+
+msgid "Quit Clipo"
+msgstr "Sair do Clipo"
+
+msgid "Video preview isn't supported here yet."
+msgstr "A pré-visualização de vídeo ainda não é suportada aqui."
+
+msgid "Open externally"
+msgstr "Abrir externamente"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Next"
+msgstr "Próxima"
+
+msgid "No capturable windows"
+msgstr "Nenhuma janela capturável"
+
+
+msgid "You're on the latest version."
+msgstr "Você está na versão mais recente."
+
+msgid "Version {} is available."
+msgstr "A versão {} está disponível."
+
+msgid "Couldn't check: {}"
+msgstr "Não foi possível verificar: {}"
+
+msgid "Downloading update…"
+msgstr "Baixando atualização…"
+
+msgid "Update failed: {}"
+msgstr "Falha na atualização: {}"
+
+msgid "Add Clipo to the \"Open with\" menu for images"
+msgstr "Adicionar o Clipo ao menu \"Abrir com\" para imagens"
+
+msgid "Copy to clipboard"
+msgstr "Copiar para a área de transferência"
+
+msgid "Copy every capture automatically"
+msgstr "Copiar automaticamente cada captura"
+
+msgid "Online save"
+msgstr "Salvar online"
+
+msgid "Bring your own keys — captures upload to your bucket and the public link is copied to the clipboard."
+msgstr "Use suas próprias chaves — as capturas são enviadas para o seu bucket e o link público é copiado para a área de transferência."
+
+msgid "Endpoint"
+msgstr "Endpoint"
+
+msgid "Region"
+msgstr "Região"
+
+msgid "Account ID"
+msgstr "ID da conta"
+
+msgid "your R2 account id"
+msgstr "seu ID de conta R2"
+
+msgid "Access Key ID"
+msgstr "ID da chave de acesso"
+
+msgid "access key"
+msgstr "chave de acesso"
+
+msgid "Secret Access Key"
+msgstr "Chave de acesso secreta"
+
+msgid "secret key"
+msgstr "chave secreta"
+
+msgid "Bucket"
+msgstr "Bucket"
+
+msgid "bucket name"
+msgstr "nome do bucket"
+
+msgid "Public URL"
+msgstr "URL pública"
+
+msgid "Disconnect"
+msgstr "Desconectar"
+
+msgid "Save & test"
+msgstr "Salvar e testar"
+
+msgid "Uploading…"
+msgstr "Enviando…"
+
+msgid "Upload failed: {}"
+msgstr "Falha no envio: {}"
+
+msgid "GIF saved"
+msgstr "GIF salvo"
+
+msgid "GIF failed: {}"
+msgstr "Falha no GIF: {}"
+
+msgid "Disconnected."
+msgstr "Desconectado."
+
+msgid "Fill every field to enable upload."
+msgstr "Preencha todos os campos para habilitar o envio."
+
+msgid "Testing…"
+msgstr "Testando…"
+
+msgid "Failed: {}"
+msgstr "Falhou: {}"
+
+msgid "{} words · {} chars"
+msgstr "{} palavras · {} caracteres"
+
+msgid "Software encoder (compatibility)"
+msgstr "Codificador por software (compatibilidade)"
+
+msgid "Encode on the CPU instead of the GPU. Slower and slightly lower quality, but works where the hardware encoder is unstable. Turns on automatically if a recording ever crashes."
+msgstr "Codifica na CPU em vez da GPU. Mais lento e com qualidade um pouco menor, mas funciona quando o codificador de hardware está instável. Liga automaticamente se uma gravação travar."
+
+msgid "Record"
+msgstr "Gravar"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Copied!"
+msgstr "Copiado!"

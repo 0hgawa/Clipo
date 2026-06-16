@@ -1,0 +1,586 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Close"
+msgstr "閉じる"
+
+msgid "Copy link"
+msgstr "リンクをコピー"
+
+msgid "Upload"
+msgstr "アップロード"
+
+msgid "Copy"
+msgstr "コピー"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Extract text"
+msgstr "テキストを抽出"
+
+msgid "Reveal in folder"
+msgstr "フォルダーで表示"
+
+msgid "Delete"
+msgstr "削除"
+
+msgid "Export as GIF"
+msgstr "GIF としてエクスポート"
+
+msgid "Minimize"
+msgstr "最小化"
+
+msgid "Restore"
+msgstr "元に戻す"
+
+msgid "Maximize"
+msgstr "最大化"
+
+msgid "Esc to cancel"
+msgstr "Esc キーでキャンセル"
+
+msgid "Move"
+msgstr "移動"
+
+msgid "Arrow"
+msgstr "矢印"
+
+msgid "Rectangle"
+msgstr "四角形"
+
+msgid "Ellipse"
+msgstr "楕円"
+
+msgid "Line"
+msgstr "線"
+
+msgid "Highlight"
+msgstr "ハイライト"
+
+msgid "Pen"
+msgstr "ペン"
+
+msgid "Pixelate"
+msgstr "モザイク"
+
+msgid "Text"
+msgstr "テキスト"
+
+msgid "Counter"
+msgstr "カウンター"
+
+msgid "Crop"
+msgstr "切り抜き"
+
+msgid "Resize"
+msgstr "サイズ変更"
+
+msgid "Width"
+msgstr "幅"
+
+msgid "Height"
+msgstr "高さ"
+
+msgid "Lock aspect"
+msgstr "縦横比を固定"
+
+msgid "Apply"
+msgstr "適用"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Aspect"
+msgstr "縦横比"
+
+msgid "Free"
+msgstr "自由"
+
+msgid "Padding"
+msgstr "余白"
+
+msgid "Radius"
+msgstr "半径"
+
+msgid "Shadow"
+msgstr "影"
+
+msgid "Strength"
+msgstr "強さ"
+
+msgid "Reset background"
+msgstr "背景をリセット"
+
+msgid "Custom colour"
+msgstr "カスタムカラー"
+
+msgid "History"
+msgstr "履歴"
+
+msgid "All"
+msgstr "すべて"
+
+msgid "Photos"
+msgstr "画像"
+
+msgid "Videos"
+msgstr "動画"
+
+msgid "Today"
+msgstr "今日"
+
+msgid "Week"
+msgstr "今週"
+
+msgid "Month"
+msgstr "今月"
+
+msgid "No captures yet."
+msgstr "まだキャプチャはありません。"
+
+msgid "Your screenshots and recordings show up here."
+msgstr "スクリーンショットと録画がここに表示されます。"
+
+msgid "Nothing matches this filter"
+msgstr "この絞り込みに一致するものはありません"
+
+msgid "Try a different type or date range."
+msgstr "別の種類または期間をお試しください。"
+
+msgid "What to capture?"
+msgstr "何をキャプチャしますか？"
+
+msgid "Press Esc to dismiss"
+msgstr "Escで閉じる"
+
+msgid "Capture area"
+msgstr "範囲をキャプチャ"
+
+msgid "Full screen"
+msgstr "全画面"
+
+msgid "Window"
+msgstr "ウィンドウ"
+
+msgid "Record screen"
+msgstr "画面を録画"
+
+msgid "Record area"
+msgstr "範囲を録画"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "Extracted text"
+msgstr "抽出されたテキスト"
+
+msgid "No text found"
+msgstr "テキストが見つかりません"
+
+msgid "The image doesn't contain any recognizable characters."
+msgstr "画像に認識可能な文字が含まれていません。"
+
+msgid "Copied"
+msgstr "コピーしました"
+
+msgid "Recording"
+msgstr "録画"
+
+msgid "Pause / resume"
+msgstr "一時停止 / 再開"
+
+msgid "Mute system audio"
+msgstr "システム音声をミュート"
+
+msgid "Mute microphone"
+msgstr "マイクをミュート"
+
+msgid "Restart"
+msgstr "やり直し"
+
+msgid "Discard"
+msgstr "破棄"
+
+msgid "Stop"
+msgstr "停止"
+
+msgid "In conflict"
+msgstr "競合"
+
+msgid "Active"
+msgstr "有効"
+
+msgid "Press keys…"
+msgstr "キーを押してください…"
+
+msgid "General"
+msgstr "一般"
+
+msgid "Capture"
+msgstr "キャプチャ"
+
+msgid "Storage"
+msgstr "ストレージ"
+
+msgid "Shortcuts"
+msgstr "ショートカット"
+
+msgid "About"
+msgstr "情報"
+
+msgid "Theme"
+msgstr "テーマ"
+
+msgid "Light"
+msgstr "ライト"
+
+msgid "Dark"
+msgstr "ダーク"
+
+msgid "System"
+msgstr "システム"
+
+msgid "Language"
+msgstr "言語"
+
+msgid "Interface language. Affects every Clipo window. Takes effect immediately."
+msgstr "インターフェイスの言語です。Clipo のすべてのウィンドウに影響します。すぐに反映されます。"
+
+msgid "Launch Clipo at system startup"
+msgstr "システム起動時に Clipo を起動"
+
+msgid "Clipo lives in the system tray. With this on, it starts automatically at login."
+msgstr "Clipo は通知領域に常駐します。これを有効にすると、ログイン時に自動的に起動します。"
+
+msgid "Open images with Clipo"
+msgstr "画像を Clipo で開く"
+
+msgid "Tray icon left-click"
+msgstr "トレイアイコンの左クリック"
+
+msgid "What a left-click on the tray icon does. Right-click always opens the menu."
+msgstr "トレイアイコンを左クリックしたときの動作。右クリックは常にメニューを開きます。"
+
+msgid "Area"
+msgstr "範囲"
+
+msgid "Fullscreen"
+msgstr "全画面"
+
+msgid "Menu"
+msgstr "メニュー"
+
+msgid "Timer"
+msgstr "タイマー"
+
+msgid "Capture timer"
+msgstr "キャプチャタイマー"
+
+msgid "Countdown before a timed capture."
+msgstr "タイマー撮影前のカウントダウン。"
+
+msgid "Show magnifier when selecting a region"
+msgstr "範囲選択時にルーペを表示"
+
+msgid "A 4× zoom under the cursor with the live width × height, for pixel-precise selections."
+msgstr "ドラッグ中、カーソル下のピクセルを 4× ズームで表示し、その下に現在の幅 × 高さを表示します。ピクセル単位の選択に便利です。既定はオフです。"
+
+msgid "Auto-dismiss the capture panel"
+msgstr "キャプチャパネルを自動的に閉じる"
+
+msgid "How long the post-capture panel stays before hiding."
+msgstr "キャプチャ後パネルが消えるまでの表示時間。"
+
+msgid "Captures folder"
+msgstr "キャプチャフォルダー"
+
+msgid "Choose…"
+msgstr "選択…"
+
+msgid "Reset"
+msgstr "リセット"
+
+msgid "Screenshot format"
+msgstr "スクリーンショットの形式"
+
+msgid "PNG is lossless (larger); JPEG is smaller but lossy. Recordings are always MP4."
+msgstr "PNG はすべてのピクセルを保持します（可逆、ファイルは大きめ）。JPEG は小さいですが非可逆で、共有には向きますが文字の多い画面には不向きです。録画は常に MP4 です。"
+
+msgid "Cloud upload"
+msgstr "クラウドアップロード"
+
+msgid "Connected"
+msgstr "接続済み"
+
+msgid "Set up"
+msgstr "設定"
+
+msgid "Capture system audio"
+msgstr "システム音声を録音"
+
+msgid "Records system sound; off makes a silent MP4."
+msgstr "システム音を録音します。オフにすると MP4 は無音になります。"
+
+msgid "Capture microphone"
+msgstr "マイクを録音"
+
+msgid "Also records your microphone, mixed with system audio into one track."
+msgstr "既定のマイクも録音します。システム音声もオンの場合、2 つのトラックは 1 つに結合されます (停止時に ffmpeg がミックスするため、録画中の負荷はありません)。"
+
+msgid "Recording frame rate"
+msgstr "録画のフレームレート"
+
+msgid "30 fps for tutorials; 60 fps smoother but ~2× heavier."
+msgstr "チュートリアルは 30 fps、60 fps は滑らかですが負荷は約 2 倍です。"
+
+msgid "Countdown before recording"
+msgstr "録画前のカウントダウン"
+
+msgid "A short countdown so you can switch windows first."
+msgstr "短いカウントダウンで、先にウィンドウを切り替えられます。"
+
+msgid "Record the cursor"
+msgstr "カーソルを記録する"
+
+msgid "Include the mouse pointer in the recording."
+msgstr "録画にマウスポインターを含める。"
+
+msgid "Show mouse clicks"
+msgstr "マウスクリックを表示"
+
+msgid "Marks each click with a brief ring while recording — handy for demos."
+msgstr "録画中、クリックのたびに広がるリングを短時間表示します。チュートリアルやデモ動画に便利です。通常の録画ではオフにします。"
+
+msgid "Global — click a shortcut to rebind it."
+msgstr "グローバル — ショートカットをクリックして再設定。"
+
+msgid "Restore defaults"
+msgstr "既定にリセット"
+
+msgid "Capture region"
+msgstr "範囲をキャプチャ"
+
+msgid "Capture fullscreen"
+msgstr "全画面をキャプチャ"
+
+msgid "Capture window"
+msgstr "ウィンドウをキャプチャ"
+
+msgid "All-in-one menu"
+msgstr "オールインワンメニュー"
+
+msgid "Extract text (OCR)"
+msgstr "テキストを抽出 (OCR)"
+
+msgid "While recording"
+msgstr "録画中"
+
+msgid "Stop recording"
+msgstr "録画を停止"
+
+msgid "Restart recording"
+msgstr "録画をやり直し"
+
+msgid "Native Windows screenshot + screen recording."
+msgstr "Windows ネイティブのスクリーンショットと画面録画。"
+
+msgid "Updates"
+msgstr "アップデート"
+
+msgid "Check whether a newer version is available."
+msgstr "新しいバージョンがあるか確認します。"
+
+msgid "Installing…"
+msgstr "インストール中…"
+
+msgid "Update now"
+msgstr "今すぐ更新"
+
+msgid "Checking…"
+msgstr "確認中…"
+
+msgid "Check for updates"
+msgstr "アップデートを確認"
+
+msgid "Diagnostic"
+msgstr "診断情報"
+
+msgid "Copies the version block to the clipboard. Paste into a bug report for exact reproducibility."
+msgstr "バージョン情報をクリップボードにコピーします。バグ報告に貼り付けると正確な再現に役立ちます。"
+
+msgid "Copy info"
+msgstr "情報をコピー"
+
+msgid "Reset settings"
+msgstr "設定をリセット"
+
+msgid "Returns every preference (including custom shortcuts) to the factory state. Doesn't affect saved captures."
+msgstr "カスタムショートカットを含むすべての設定を出荷時の状態に戻します。保存済みのキャプチャには影響しません。"
+
+msgid "Click to confirm"
+msgstr "クリックして確認"
+
+msgid "Capture with timer"
+msgstr "タイマー付きキャプチャ"
+
+msgid "Record fullscreen"
+msgstr "全画面を録画"
+
+msgid "Record region…"
+msgstr "範囲を録画…"
+
+msgid "Pause recording"
+msgstr "録画を一時停止"
+
+msgid "Resume recording"
+msgstr "録画を再開"
+
+msgid "Discard recording"
+msgstr "録画を破棄"
+
+msgid "Unmute system audio"
+msgstr "システム音声のミュートを解除"
+
+msgid "Unmute microphone"
+msgstr "マイクのミュートを解除"
+
+msgid "History…"
+msgstr "履歴…"
+
+msgid "Open captures folder"
+msgstr "キャプチャフォルダーを開く"
+
+msgid "Settings…"
+msgstr "設定…"
+
+msgid "Quit Clipo"
+msgstr "Clipo を終了"
+
+msgid "Video preview isn't supported here yet."
+msgstr "動画プレビューはまだここでは対応していません。"
+
+msgid "Open externally"
+msgstr "外部で開く"
+
+msgid "Previous"
+msgstr "前へ"
+
+msgid "Next"
+msgstr "次へ"
+
+msgid "No capturable windows"
+msgstr "キャプチャ可能なウィンドウがありません"
+
+
+msgid "You're on the latest version."
+msgstr "最新バージョンです。"
+
+msgid "Version {} is available."
+msgstr "バージョン {} が利用可能です。"
+
+msgid "Couldn't check: {}"
+msgstr "確認できませんでした: {}"
+
+msgid "Downloading update…"
+msgstr "更新をダウンロードしています…"
+
+msgid "Update failed: {}"
+msgstr "更新に失敗しました: {}"
+
+msgid "Add Clipo to the \"Open with\" menu for images"
+msgstr "画像の「プログラムから開く」メニューに Clipo を追加"
+
+msgid "Copy to clipboard"
+msgstr "クリップボードにコピー"
+
+msgid "Copy every capture automatically"
+msgstr "すべてのキャプチャを自動的にコピー"
+
+msgid "Online save"
+msgstr "オンライン保存"
+
+msgid "Bring your own keys — captures upload to your bucket and the public link is copied to the clipboard."
+msgstr "自分のキーを使用 — キャプチャは自分のバケットにアップロードされ、公開リンクがクリップボードにコピーされます。"
+
+msgid "Endpoint"
+msgstr "エンドポイント"
+
+msgid "Region"
+msgstr "リージョン"
+
+msgid "Account ID"
+msgstr "アカウント ID"
+
+msgid "your R2 account id"
+msgstr "R2 アカウント ID"
+
+msgid "Access Key ID"
+msgstr "アクセスキー ID"
+
+msgid "access key"
+msgstr "アクセスキー"
+
+msgid "Secret Access Key"
+msgstr "シークレットアクセスキー"
+
+msgid "secret key"
+msgstr "シークレットキー"
+
+msgid "Bucket"
+msgstr "バケット"
+
+msgid "bucket name"
+msgstr "バケット名"
+
+msgid "Public URL"
+msgstr "公開 URL"
+
+msgid "Disconnect"
+msgstr "切断"
+
+msgid "Save & test"
+msgstr "保存してテスト"
+
+msgid "Uploading…"
+msgstr "アップロード中…"
+
+msgid "Upload failed: {}"
+msgstr "アップロードに失敗しました: {}"
+
+msgid "GIF saved"
+msgstr "GIF を保存しました"
+
+msgid "GIF failed: {}"
+msgstr "GIF の作成に失敗しました: {}"
+
+msgid "Disconnected."
+msgstr "切断しました。"
+
+msgid "Fill every field to enable upload."
+msgstr "すべての項目を入力するとアップロードできます。"
+
+msgid "Testing…"
+msgstr "テスト中…"
+
+msgid "Failed: {}"
+msgstr "失敗しました: {}"
+
+msgid "{} words · {} chars"
+msgstr "{} 単語 · {} 文字"
+
+msgid "Software encoder (compatibility)"
+msgstr "ソフトウェアエンコーダー（互換性）"
+
+msgid "Encode on the CPU instead of the GPU. Slower and slightly lower quality, but works where the hardware encoder is unstable. Turns on automatically if a recording ever crashes."
+msgstr "GPU の代わりに CPU でエンコードします。低速で品質はやや低下しますが、ハードウェアエンコーダーが不安定な環境でも動作します。録画がクラッシュすると自動的に有効になります。"
+
+msgid "Record"
+msgstr "録画"
+
+msgid "Copied!"
+msgstr "コピーしました！"

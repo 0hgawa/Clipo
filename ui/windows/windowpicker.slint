@@ -1,0 +1,111 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon, WindowShell, DragArea, CloseButton } from "../components.slint";
+import { ScrollArea } from "../components/scroll-area.slint";
+
+// One capturable top-level window in the list. No id field — the row's index
+// maps back to the enumerated window on the Rust side (HWNDs are i64, wider
+// than Slint's i32 `int`).
+struct WinRow {
+    title: string,
+    resolution: string,
+    icon: image,
+    has-icon: bool,
+}
+
+// Window picker: a scrollable list of every running top-level window (icon +
+// title + resolution). Click a row → `picked(id)`; Rust focuses + captures it.
+// Esc / close dismiss. Icons stream in after the list shows — Rust sets each
+// row's `icon` as its background loader resolves it (rows render a placeholder
+// glyph until then).
+export component WindowPickerWindow inherits Window {
+    no-frame: true;
+    background: transparent;
+    default-font-size: Theme.text-body;
+    in property <[WinRow]> windows;
+    callback picked(int);
+    callback dismiss();
+    callback drag-move(length, length);
+    forward-focus: fs;
+
+    property <length> row-height: 52px;
+
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.dismiss(); }
+            accept
+        }
+    }
+
+    WindowShell {
+        VerticalLayout {
+            // ── Title bar ──
+            Rectangle {
+                height: 44px;
+                DragArea { dragged(dx, dy) => { root.drag-move(dx, dy); } }
+                HorizontalLayout {
+                    padding-left: 16px;
+                    padding-right: 8px;
+                    VerticalLayout { alignment: center; Text { text: @tr("Capture window"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; } }
+                    VerticalLayout { alignment: center; Text { text: " \{root.windows.length}"; color: Theme.fg-subtle; font-size: Theme.text-small; } }
+                    Rectangle { }
+                    VerticalLayout { alignment: center; CloseButton { clicked => { root.dismiss(); } } }
+                }
+            }
+
+            // ── Empty state ──
+            if root.windows.length == 0: VerticalLayout {
+                vertical-stretch: 1;
+                alignment: center;
+                spacing: 8px;
+                HorizontalLayout { alignment: center; Icon { source: Icons.app-window; size: 32px; color: Theme.fg-subtle; } }
+                HorizontalLayout { alignment: center; Text { text: @tr("No capturable windows"); color: Theme.fg-subtle; font-size: Theme.text-body; } }
+            }
+
+            // ── List ──
+            if root.windows.length > 0: ScrollArea {
+                vertical-stretch: 1;
+                content-height: root.windows.length * root.row-height;
+                VerticalLayout {
+                    padding: 4px;
+                    for w[i] in root.windows: Rectangle {
+                        height: root.row-height;
+                        ta := TouchArea {
+                            mouse-cursor: pointer;
+                            clicked => { root.picked(i); }
+                        }
+                        Rectangle {
+                            x: 4px;
+                            width: parent.width - 8px;
+                            y: 3px;
+                            height: parent.height - 6px;
+                            border-radius: Theme.radius-sm;
+                            background: ta.has-hover ? Theme.surface-3 : transparent;
+                        }
+                        HorizontalLayout {
+                            padding-left: 14px;
+                            padding-right: 14px;
+                            spacing: 12px;
+                            // Real per-window icon, OR the app glyph when the
+                            // window exposes none — never both (no placeholder
+                            // bleeding out behind a transparent/undersized icon).
+                            VerticalLayout {
+                                alignment: center;
+                                Rectangle {
+                                    width: 30px;
+                                    height: 30px;
+                                    if w.has-icon: Image { source: w.icon; width: 30px; height: 30px; image-fit: contain; }
+                                    if !w.has-icon: Icon { source: Icons.app-window; size: 22px; color: Theme.fg-muted; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                                }
+                            }
+                            VerticalLayout {
+                                alignment: center;
+                                Text { text: w.title; color: Theme.fg; font-size: Theme.text-body; overflow: elide; }
+                                if w.resolution != "": Text { text: w.resolution; color: Theme.fg-subtle; font-size: Theme.text-small; }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

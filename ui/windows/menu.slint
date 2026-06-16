@@ -1,0 +1,70 @@
+import { Theme, Icons } from "../theme.slint";
+import { MenuCard, WindowShell } from "../components.slint";
+
+export component MenuWindow inherits Window {
+    no-frame: true;
+    title: "Clipo";
+    // Transparent window + rounded card → real rounded corners.
+    background: transparent;
+    default-font-size: Theme.text-body;
+    width: 730px;
+    height: 350px;
+    callback dismiss();
+    callback capture-fullscreen();
+    callback capture-region();
+    callback capture-window();
+    callback capture-timer();
+    callback capture-ocr();
+    callback capture-record();
+    callback capture-record-region();
+    callback open-history();
+    callback open-settings();
+    forward-focus: fs;
+
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.dismiss(); }
+            accept
+        }
+    }
+
+    // Shared window chrome (rounded + 1px border + shadow + margin).
+    WindowShell {
+        VerticalLayout {
+            padding: 22px;
+            padding-bottom: 26px;
+            spacing: 16px;
+            VerticalLayout {
+                spacing: 4px;
+                Text {
+                    text: @tr("What to capture?");
+                    color: Theme.fg;
+                    font-size: Theme.text-heading;
+                    font-weight: 600;
+                    horizontal-alignment: center;
+                }
+                Text {
+                    text: @tr("Press Esc to dismiss");
+                    color: Theme.fg-subtle;
+                    font-size: Theme.text-small;
+                    horizontal-alignment: center;
+                }
+            }
+            GridLayout {
+                spacing: 12px;
+                Row {
+                    MenuCard { label: @tr("Capture area"); icon: Icons.crop; clicked => { root.capture-region(); } }
+                    MenuCard { label: @tr("Full screen"); icon: Icons.monitor; clicked => { root.capture-fullscreen(); } }
+                    MenuCard { label: @tr("Window"); icon: Icons.app-window; clicked => { root.capture-window(); } }
+                    MenuCard { label: @tr("Extract text"); icon: Icons.scan-text; clicked => { root.capture-ocr(); } }
+                }
+                Row {
+                    MenuCard { label: @tr("Record screen"); icon: Icons.video; clicked => { root.capture-record(); } }
+                    MenuCard { label: @tr("Record area"); icon: Icons.focus; clicked => { root.capture-record-region(); } }
+                    MenuCard { label: @tr("History"); icon: Icons.photo; clicked => { root.open-history(); } }
+                    MenuCard { label: @tr("Settings"); icon: Icons.settings; clicked => { root.open-settings(); } }
+                }
+            }
+        }
+    }
+}

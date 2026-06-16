@@ -1,0 +1,1014 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon, Clickable, IconButton, WindowControls, Slider, Toggle, Segmented, Dropdown, WindowShell } from "../components.slint";
+
+component ToolBtn inherits Rectangle {
+    in property <image> icon;
+    in property <bool> selected;
+    in property <string> a11y-label;
+    callback clicked;
+    width: 34px;
+    height: 30px;
+    border-radius: Theme.radius-sm;
+    background: selected ? Theme.accent-bg : (t.has-hover ? Theme.surface-2 : transparent);
+    accessible-role: button;
+    accessible-label: root.a11y-label;
+    accessible-checked: root.selected;
+    accessible-action-default => { root.clicked(); }
+    Icon { source: root.icon; size: 16px; color: selected ? Theme.accent-hover : Theme.fg-muted; }
+    t := Clickable { clicked => { root.clicked(); } }
+}
+
+component Swatch inherits Rectangle {
+    in property <color> swatch;
+    in property <bool> selected;
+    callback clicked;
+    width: 26px;
+    height: 26px;
+    border-radius: Theme.radius-md;
+    background: swatch;
+    border-width: selected ? 2.5px : 1px;
+    border-color: selected ? Theme.accent : Theme.border-strong;
+    Clickable { clicked => { root.clicked(); } }
+}
+
+// Background preset swatch — a solid/gradient tile, optionally with a centered
+// glyph (× for "none", eye-off for "blur"). Current = accent ring.
+component BgChip inherits Rectangle {
+    in property <brush> swatch;
+    in property <image> glyph;
+    in property <bool> has-glyph;
+    in property <bool> selected;
+    callback clicked;
+    horizontal-stretch: 1;          // fill the row width evenly
+    height: self.width;             // keep square
+    border-radius: self.width * 0.26;
+    background: root.swatch;
+    border-width: root.selected ? 2.5px : 1px;
+    border-color: root.selected ? Theme.accent : Theme.border-strong;
+    if root.has-glyph: Icon { source: root.glyph; size: 16px; color: Theme.fg-muted; }
+    Clickable { clicked => { root.clicked(); } }
+}
+
+// Crop handle, centred on (cx, cy): a round dot for corners, a pill for edges
+// (horizontal on top/bottom, vertical on left/right).
+component CropHandle inherits Rectangle {
+    in property <length> cx;
+    in property <length> cy;
+    in property <bool> pill-h;
+    in property <bool> pill-v;
+    width: root.pill-h ? 22px : (root.pill-v ? 8px : 12px);
+    height: root.pill-h ? 8px : (root.pill-v ? 22px : 12px);
+    x: root.cx - self.width / 2;
+    y: root.cy - self.height / 2;
+    border-radius: root.pill-h || root.pill-v ? 4px : 6px;
+    background: white;
+    border-width: 1.5px;
+    border-color: Theme.accent;
+}
+
+// Scale-preset button for the resize popover.
+component RzBtn inherits Rectangle {
+    in property <string> label;
+    in property <float> scale;
+    in property <bool> active;       // the preset matching the current W×H
+    callback picked(float);
+    horizontal-stretch: 1;          // share the row width evenly (no overflow)
+    height: 34px;
+    border-radius: Theme.radius-md;
+    background: root.active ? Theme.accent-bg : (a.has-hover ? Theme.surface-3 : Theme.surface-2);
+    t := Text { text: root.label; color: root.active ? Theme.accent-hover : Theme.fg; font-size: Theme.text-small; font-weight: root.active ? 600 : 400; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+    a := Clickable { clicked => { root.picked(root.scale); } }
+}
+
+// CleanShot-style annotation editor: arrow / rectangle / ellipse / line /
+// highlighter / pixelate, 4 colours, 3 thicknesses, undo+redo, copy/save. Live
+// shape = Slint overlay; committed shapes are rasterized full-res in Rust.
+export component EditorWindow inherits Window {
+    no-frame: true;
+    title: "Clipo · Editor";
+    background: transparent;
+    default-font-size: Theme.text-body;
+    // preferred (not fixed) so the maximize button can resize to the work area.
+    preferred-width: 1000px;
+    preferred-height: 690px;
+    min-width: 640px;
+    min-height: 460px;
+    in property <image> source;
+    in property <image> checker;
+    in-out property <bool> is-maximized;
+    in-out property <float> zoom: 1.0; // multiplier on the fit-to-window scale
+    in-out property <int> tool: 0; // 0 arrow · 1 rect · 2 ellipse · 3 line · 4 highlighter · 5 pixelate
+    in-out property <color> draw-color: #ff1744;
+    in-out property <float> stroke: 6; // stroke width in screen px (slider)
+    in-out property <bool> fill: false; // rect/ellipse filled with a translucent wash
+    // ── Background frame (CleanShot-style) — Rust owns the applied state ──
+    in property <bool> bg-on;
+    in property <int> bg-preset;             // applied preset (0 none·1-8 presets·9 custom)
+    in property <color> bg-color: #6366f1;   // current custom solid colour (display)
+    in-out property <int> bg-pad-idx: 2;     // segmented index into [0,16,32,64,96]
+    in-out property <int> bg-rad-idx: 2;     // segmented index into [0,8,16,24,32]
+    in property <int> bg-padding: 32;        // px (Rust-owned; drives the GPU frame)
+    in property <int> bg-radius: 16;         // px (Rust-owned; card corner radius)
+    in-out property <bool> bg-shadow: true;
+    in-out property <float> bg-shadow-strength: 60; // 0..100
+    in-out property <int> bg-aspect;         // 0 free·1 1:1·2 16:9·3 9:16·4 4:3
+    callback bg-off();
+    callback pick-bg-preset(int);            // slate/snow/gradient/blur swatch
+    callback bg-solid(color, bool);          // custom solid (colour, sync-hsv)
+    callback set-bg-padding(int);
+    callback set-bg-radius(int);
+    callback set-bg-shadow(bool);
+    callback set-bg-strength(float);
+    callback set-bg-aspect(int);
+    callback reset-bg();
+    // Crop tool: the pending region (widget px) + whether one is defined.
+    callback crop-apply(length, length, length, length, length, length, float);
+    in-out property <bool> crop-armed;          // a crop rect is seeded/active
+    // Crop rect edges in widget px (drag handles or move the box).
+    property <length> crop-l;
+    property <length> crop-t;
+    property <length> crop-r;
+    property <length> crop-b;
+    // Move-gesture snapshot + the handle being dragged (1-8 edges/corners·9 move·0 idle).
+    property <length> crop-l0;
+    property <length> crop-t0;
+    property <length> crop-w0;
+    property <length> crop-h0;
+    property <int> crop-handle;
+    callback resize-to(float, float);
+    // Custom-colour picker working state (UI-owned while dragging) + hex buffer.
+    in-out property <string> bg-hex;
+    in-out property <float> bg-hue;
+    in-out property <float> bg-sat: 1;
+    in-out property <float> bg-val: 1;
+    callback bg-hex-commit(string);    // parse a typed hex string → custom solid
+    callback bg-open-picker();         // sync HSV from the current solid before the picker
+    in-out property <bool> bg-open;    // background panel overlay shown
+    in-out property <bool> bg-cp-open; // custom-colour picker sub-view open
+    in property <image> bg-blur-image; // blurred miniature for the blur preset backdrop
+    // Live backdrop fill brush (GPU): solid / gradient per preset, custom colour.
+    property <brush> bg-fill-brush:
+        root.bg-preset == 1 ? #0f172a
+        : root.bg-preset == 2 ? #f8fafc
+        : root.bg-preset == 3 ? @linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%)
+        : root.bg-preset == 4 ? @linear-gradient(135deg, #34d399 0%, #06b6d4 100%)
+        : root.bg-preset == 5 ? @linear-gradient(135deg, #fb923c 0%, #ec4899 100%)
+        : root.bg-preset == 6 ? @linear-gradient(135deg, #a855f7 0%, #2563eb 100%)
+        : root.bg-preset == 7 ? @linear-gradient(135deg, #f43f5e 0%, #7c2d12 100%)
+        : root.bg-preset == 9 ? root.bg-color
+        : #00000000;
+    in property <int> base-w;
+    in property <int> base-h;
+    in-out property <string> rz-w;
+    in-out property <string> rz-h;
+    in-out property <bool> rz-lock: true; // keep aspect ratio while typing
+    // Selection box + handles (move tool). Geometry is in screenshot px; the
+    // sw2w* helpers map it to widget space (matching the displayed photo).
+    in property <bool> sel-active;
+    in property <int> sel-kind;
+    in property <float> sel-x1;
+    in property <float> sel-y1;
+    in property <float> sel-x2;
+    in property <float> sel-y2;
+    property <bool> sel-box: root.sel-kind == 1 || root.sel-kind == 2 || root.sel-kind == 5;
+    property <bool> sel-line: root.sel-kind == 0 || root.sel-kind == 3 || root.sel-kind == 4;
+    // Frame geometry (base photo + padding, aspect-expanded). Drives the fit and
+    // the GPU background layers; Rust's map_shot mirrors this exactly so drawn
+    // coordinates stay aligned.
+    property <float> bg-ar: root.bg-aspect == 1 ? 1.0 : root.bg-aspect == 2 ? 16.0 / 9.0 : root.bg-aspect == 3 ? 9.0 / 16.0 : root.bg-aspect == 4 ? 4.0 / 3.0 : 0;
+    property <float> pw: root.base-w + 2 * root.bg-padding;
+    property <float> ph: root.base-h + 2 * root.bg-padding;
+    property <float> frame-w: !root.bg-on ? root.base-w : (root.bg-ar == 0 ? root.pw : (root.pw / root.ph < root.bg-ar ? Math.round(root.ph * root.bg-ar) : root.pw));
+    property <float> frame-h: !root.bg-on ? root.base-h : (root.bg-ar == 0 ? root.ph : (root.pw / root.ph < root.bg-ar ? root.ph : Math.round(root.pw / root.bg-ar)));
+    property <float> shot-scale: stage.fit * root.zoom;
+    property <length> frame-x: (stage.width - root.frame-w * root.shot-scale * 1px) / 2;
+    property <length> frame-y: (stage.height - root.frame-h * root.shot-scale * 1px) / 2;
+    property <length> photo-x: root.frame-x + (root.frame-w - root.base-w) / 2 * root.shot-scale * 1px;
+    property <length> photo-y: root.frame-y + (root.frame-h - root.base-h) / 2 * root.shot-scale * 1px;
+    function sw2wx(sx: float) -> length { return root.photo-x + sx * root.shot-scale * 1px; }
+    function sw2wy(sy: float) -> length { return root.photo-y + sy * root.shot-scale * 1px; }
+    // Base-image bounds in widget px — the crop rect can't leave these.
+    property <length> crop-ix0: root.sw2wx(0);
+    property <length> crop-iy0: root.sw2wy(0);
+    property <length> crop-ix1: root.sw2wx(root.base-w);
+    property <length> crop-iy1: root.sw2wy(root.base-h);
+    property <length> draw-width: root.stroke * 1px;
+    // Which contextual style controls the selected tool needs (pixelate/move use none).
+    property <bool> has-style: root.tool != 5 && root.tool != 7; // colour + size
+    property <bool> has-fill: root.tool == 1 || root.tool == 2;  // rect / ellipse only
+    // Shift constrains the drag: square for box tools, 45° snap for line tools.
+    in-out property <bool> shift-held;
+    callback delete-selected();
+    property <length> sdx: ta.mouse-x - ta.pressed-x;
+    property <length> sdy: ta.mouse-y - ta.pressed-y;
+    property <length> ssq: Math.max(Math.abs(root.sdx), Math.abs(root.sdy));
+    property <bool> s-horiz: Math.abs(root.sdx) > Math.abs(root.sdy) * 2.414;
+    property <bool> s-vert: Math.abs(root.sdy) > Math.abs(root.sdx) * 2.414;
+    // Effective drag end-point (raw, or constrained while Shift is held).
+    property <length> end-x: !root.shift-held ? ta.mouse-x
+        : (root.tool == 1 || root.tool == 2 || root.tool == 5) ? ta.pressed-x + (root.sdx < 0px ? -root.ssq : root.ssq)
+        : (root.s-vert ? ta.pressed-x : (root.s-horiz ? ta.mouse-x : ta.pressed-x + (root.sdx < 0px ? -root.ssq : root.ssq)));
+    property <length> end-y: !root.shift-held ? ta.mouse-y
+        : (root.tool == 1 || root.tool == 2 || root.tool == 5) ? ta.pressed-y + (root.sdy < 0px ? -root.ssq : root.ssq)
+        : (root.s-horiz ? ta.pressed-y : (root.s-vert ? ta.mouse-y : ta.pressed-y + (root.sdy < 0px ? -root.ssq : root.ssq)));
+    // Text tool: an inline editor at the click point until Enter commits it.
+    in-out property <bool> text-editing;
+    in-out property <length> text-x;
+    in-out property <length> text-y;
+    in-out property <string> text-buffer;
+    in-out property <int> text-size-idx: 2;  // index into [16,24,32,48,64]
+    property <int> text-size: root.text-size-idx == 0 ? 16 : root.text-size-idx == 1 ? 24 : root.text-size-idx == 2 ? 32 : root.text-size-idx == 3 ? 48 : 64;
+    in-out property <int> text-font;      // 0 sans · 1 serif · 2 mono · 3 impact
+    property <string> text-font-name: root.text-font == 1 ? "Times New Roman" : root.text-font == 2 ? "Consolas" : root.text-font == 3 ? "Impact" : "Segoe UI";
+    property <bool> has-text: root.tool == 6;
+    callback dismiss();
+    callback minimize();
+    callback maximize();
+    callback add-shape(int, length, length, length, length, length, length, color, float, float, bool);
+    callback add-text(length, length, length, length, string, color, float, int, float);
+    callback add-badge(length, length, length, length, color, float, float);
+    callback pen-start(length, length, length, length, color, float, float);
+    callback pen-extend(length, length, length, length, float);
+    callback pen-commit();
+    callback pick-move(length, length, length, length, float);
+    callback drag-move(length, length, length, length, float);
+    callback undo();
+    callback redo();
+    callback save();
+    callback copy();
+    // Switching tools finalizes any text in progress (otherwise the inline
+    // editor lingers and reappears over later shapes).
+    changed tool => {
+        if (root.text-editing) {
+            root.add-text(root.text-x, root.text-y, stage.width, stage.height, root.text-buffer, root.draw-color, root.text-size, root.text-font, root.zoom);
+            root.text-editing = false;
+        }
+        // Entering crop seeds the rect to the full image so handles are usable
+        // immediately. Leaving crop clears it.
+        if (root.tool == 8) {
+            root.crop-l = root.crop-ix0;
+            root.crop-t = root.crop-iy0;
+            root.crop-r = root.crop-ix1;
+            root.crop-b = root.crop-iy1;
+            root.crop-armed = true;
+        } else {
+            root.crop-armed = false;
+        }
+    }
+    forward-focus: fs;
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Shift) {
+                root.shift-held = true;
+            } else if (event.text == Key.Return) {
+                if (root.tool == 8 && root.crop-armed) {
+                    root.crop-apply(root.crop-l, root.crop-t, root.crop-r - root.crop-l, root.crop-b - root.crop-t, ta.width, ta.height, root.zoom);
+                    root.tool = 0;
+                }
+            } else if (event.text == Key.Escape) {
+                if (root.tool == 8) {
+                    root.tool = 0;
+                } else {
+                    root.dismiss();
+                }
+            } else if (event.text == Key.Delete || event.text == Key.Backspace) {
+                root.delete-selected();
+            }
+            accept
+        }
+        key-released(event) => {
+            if (event.text == Key.Shift) { root.shift-held = false; }
+            accept
+        }
+    }
+    WindowShell {
+        is-maximized: root.is-maximized;
+        VerticalLayout {
+            Rectangle {
+                height: 52px;
+                border-width: 1px;
+                border-color: Theme.border-subtle;
+                HorizontalLayout {
+                    padding-left: 12px;
+                    padding-right: 8px;
+                    spacing: 4px;
+                    // Tools scroll horizontally when the window is too narrow to
+                    // fit them all, so the fixed cluster on the right (Copy / Save /
+                    // window controls) is never pushed off-screen and clipped.
+                    Rectangle {
+                        horizontal-stretch: 1;
+                        clip: true;
+                        Flickable {
+                            width: 100%;
+                            height: 100%;
+                            viewport-width: tools.preferred-width;
+                            viewport-height: self.height;
+                            tools := HorizontalLayout {
+                                spacing: 4px;
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.move-arrows; a11y-label: @tr("Move"); selected: root.tool == 7; clicked => { root.tool = 7; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.arrow; a11y-label: @tr("Arrow"); selected: root.tool == 0; clicked => { root.tool = 0; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.square; a11y-label: @tr("Rectangle"); selected: root.tool == 1; clicked => { root.tool = 1; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.circle; a11y-label: @tr("Ellipse"); selected: root.tool == 2; clicked => { root.tool = 2; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.line; a11y-label: @tr("Line"); selected: root.tool == 3; clicked => { root.tool = 3; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.highlighter; a11y-label: @tr("Highlight"); selected: root.tool == 4; clicked => { root.tool = 4; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.pen; a11y-label: @tr("Pen"); selected: root.tool == 10; clicked => { root.tool = 10; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.grid; a11y-label: @tr("Pixelate"); selected: root.tool == 5; clicked => { root.tool = 5; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.text; a11y-label: @tr("Text"); selected: root.tool == 6; clicked => { root.tool = 6; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.hash; a11y-label: @tr("Counter"); selected: root.tool == 9; clicked => { root.tool = 9; } } }
+                                VerticalLayout { alignment: center; ToolBtn { icon: Icons.crop; a11y-label: @tr("Crop"); selected: root.tool == 8; clicked => { root.tool = 8; } } }
+                                // Background frame — toggle + popover (backdrops + padding).
+                                VerticalLayout {
+                                    alignment: center;
+                                    bgtrig := Rectangle {
+                                        width: 34px;
+                                        height: 30px;
+                                        border-radius: Theme.radius-sm;
+                                        background: root.bg-on ? Theme.accent-bg : (bgtt.has-hover ? Theme.surface-2 : transparent);
+                                        Icon { source: Icons.photo; size: 16px; color: root.bg-on ? Theme.accent-hover : Theme.fg-muted; }
+                                        bgtt := Clickable { clicked => { root.bg-cp-open = false; root.bg-open = !root.bg-open; } }
+                                    }
+                                }
+                                // Resize — popover with scale presets.
+                                VerticalLayout {
+                                    alignment: center;
+                                    Rectangle {
+                                        width: 34px;
+                                        height: 30px;
+                                        border-radius: Theme.radius-sm;
+                                        background: rzt.has-hover ? Theme.surface-2 : transparent;
+                                        Icon { source: Icons.resize; size: 16px; color: Theme.fg-muted; }
+                                        rzt := Clickable { clicked => { rzpop.show(); } }
+                                        rzpop := PopupWindow {
+                                            x: -110px;
+                                            y: 34px;
+                                            close-policy: close-on-click-outside;
+                                            Rectangle {
+                                                width: 328px;
+                                                background: Theme.surface-1;
+                                                border-radius: Theme.radius-xl;
+                                                border-width: 1px;
+                                                border-color: Theme.border-subtle;
+                                                VerticalLayout {
+                                                    padding: 14px;
+                                                    spacing: 12px;
+                                                    HorizontalLayout {
+                                                        VerticalLayout { alignment: center; Text { text: @tr("Resize"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; } }
+                                                        Rectangle { }
+                                                        VerticalLayout { alignment: center; Text { text: "\{root.base-w} × \{root.base-h}"; color: Theme.fg-subtle; font-size: Theme.text-small; } }
+                                                    }
+                                                    HorizontalLayout {
+                                                        spacing: 5px;
+                                                        RzBtn { label: "25%"; scale: 0.25; active: root.rz-w == "\{Math.round(root.base-w * 0.25)}" && root.rz-h == "\{Math.round(root.base-h * 0.25)}"; picked(s) => { root.rz-w = "\{Math.round(root.base-w * s)}"; root.rz-h = "\{Math.round(root.base-h * s)}"; } }
+                                                        RzBtn { label: "50%"; scale: 0.5; active: root.rz-w == "\{Math.round(root.base-w * 0.5)}" && root.rz-h == "\{Math.round(root.base-h * 0.5)}"; picked(s) => { root.rz-w = "\{Math.round(root.base-w * s)}"; root.rz-h = "\{Math.round(root.base-h * s)}"; } }
+                                                        RzBtn { label: "75%"; scale: 0.75; active: root.rz-w == "\{Math.round(root.base-w * 0.75)}" && root.rz-h == "\{Math.round(root.base-h * 0.75)}"; picked(s) => { root.rz-w = "\{Math.round(root.base-w * s)}"; root.rz-h = "\{Math.round(root.base-h * s)}"; } }
+                                                        RzBtn { label: "100%"; scale: 1.0; active: root.rz-w == "\{root.base-w}" && root.rz-h == "\{root.base-h}"; picked(s) => { root.rz-w = "\{Math.round(root.base-w * s)}"; root.rz-h = "\{Math.round(root.base-h * s)}"; } }
+                                                        RzBtn { label: "150%"; scale: 1.5; active: root.rz-w == "\{Math.round(root.base-w * 1.5)}" && root.rz-h == "\{Math.round(root.base-h * 1.5)}"; picked(s) => { root.rz-w = "\{Math.round(root.base-w * s)}"; root.rz-h = "\{Math.round(root.base-h * s)}"; } }
+                                                        RzBtn { label: "200%"; scale: 2.0; active: root.rz-w == "\{Math.round(root.base-w * 2.0)}" && root.rz-h == "\{Math.round(root.base-h * 2.0)}"; picked(s) => { root.rz-w = "\{Math.round(root.base-w * s)}"; root.rz-h = "\{Math.round(root.base-h * s)}"; } }
+                                                    }
+                                                    HorizontalLayout {
+                                                        spacing: 10px;
+                                                        VerticalLayout { alignment: center; Text { text: @tr("Width"); color: Theme.fg-muted; font-size: Theme.text-body; width: 52px; } }
+                                                        VerticalLayout {
+                                                            horizontal-stretch: 1;
+                                                            alignment: center;
+                                                            Rectangle {
+                                                                height: 36px;
+                                                                border-radius: Theme.radius-md;
+                                                                background: Theme.surface-input;
+                                                                border-width: 1px;
+                                                                border-color: ww.has-focus ? Theme.accent : Theme.border-strong;
+                                                                clip: true;
+                                                                ww := TextInput { x: 10px; width: parent.width - 20px; height: 100%; text <=> root.rz-w; color: Theme.fg; font-size: Theme.text-body; single-line: true; vertical-alignment: center; edited => { if (root.rz-lock && root.base-w > 0) { root.rz-h = "\{Math.round(self.text.to-float() * root.base-h / root.base-w)}"; } } }
+                                                            }
+                                                        }
+                                                    }
+                                                    HorizontalLayout {
+                                                        spacing: 10px;
+                                                        VerticalLayout { alignment: center; Text { text: @tr("Height"); color: Theme.fg-muted; font-size: Theme.text-body; width: 52px; } }
+                                                        VerticalLayout {
+                                                            horizontal-stretch: 1;
+                                                            alignment: center;
+                                                            Rectangle {
+                                                                height: 36px;
+                                                                border-radius: Theme.radius-md;
+                                                                background: Theme.surface-input;
+                                                                border-width: 1px;
+                                                                border-color: hh.has-focus ? Theme.accent : Theme.border-strong;
+                                                                clip: true;
+                                                                hh := TextInput { x: 10px; width: parent.width - 20px; height: 100%; text <=> root.rz-h; color: Theme.fg; font-size: Theme.text-body; single-line: true; vertical-alignment: center; edited => { if (root.rz-lock && root.base-h > 0) { root.rz-w = "\{Math.round(self.text.to-float() * root.base-w / root.base-h)}"; } } }
+                                                            }
+                                                        }
+                                                    }
+                                                    HorizontalLayout {
+                                                        spacing: 10px;
+                                                        VerticalLayout { alignment: center; Toggle { on <=> root.rz-lock; } }
+                                                        VerticalLayout { alignment: center; Text { text: @tr("Lock aspect"); color: Theme.fg-muted; font-size: Theme.text-body; } }
+                                                        Rectangle { }
+                                                        VerticalLayout {
+                                                            alignment: center;
+                                                            Rectangle {
+                                                                width: ap.width + 28px;
+                                                                height: 36px;
+                                                                border-radius: Theme.radius-md;
+                                                                background: apt.has-hover ? Theme.accent-hover : Theme.accent;
+                                                                ap := Text { text: @tr("Apply"); color: white; font-size: Theme.text-body; font-weight: 600; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                                                                apt := TouchArea { mouse-cursor: pointer; clicked => { root.resize-to(root.rz-w.to-float(), root.rz-h.to-float()); rzpop.close(); } }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if root.has-style: VerticalLayout { alignment: center; Rectangle { width: 1px; height: 22px; background: Theme.border-subtle; } }
+                                // Fill toggle — rect/ellipse only.
+                                if root.has-fill: VerticalLayout { alignment: center; ToolBtn { icon: Icons.paint-bucket; selected: root.fill; clicked => { root.fill = !root.fill; } } }
+                                // Colour dropdown — trigger shows the current swatch.
+                                if root.has-style: VerticalLayout {
+                                    alignment: center;
+                                    Rectangle {
+                                        width: 34px;
+                                        height: 30px;
+                                        border-radius: Theme.radius-sm;
+                                        background: ct.has-hover ? Theme.surface-2 : transparent;
+                                        Rectangle {
+                                            width: 18px;
+                                            height: 18px;
+                                            border-radius: Theme.radius-md;
+                                            background: root.draw-color;
+                                            border-width: 1px;
+                                            border-color: Theme.border-strong;
+                                            x: (parent.width - self.width) / 2;
+                                            y: (parent.height - self.height) / 2;
+                                        }
+                                        ct := Clickable { clicked => { colorpop.show(); } }
+                                        colorpop := PopupWindow {
+                                            x: -6px;
+                                            y: 34px;
+                                            close-policy: close-on-click-outside;
+                                            Rectangle {
+                                                background: Theme.surface-1;
+                                                border-radius: Theme.radius-xl;
+                                                border-width: 1px;
+                                                border-color: Theme.border-subtle;
+                                                VerticalLayout {
+                                                    padding: 14px;
+                                                    spacing: 10px;
+                                                    HorizontalLayout {
+                                                        spacing: 10px;
+                                                        Swatch { swatch: #ff1744; selected: root.draw-color == #ff1744; clicked => { root.draw-color = #ff1744; colorpop.close(); } }
+                                                        Swatch { swatch: #ff6e40; selected: root.draw-color == #ff6e40; clicked => { root.draw-color = #ff6e40; colorpop.close(); } }
+                                                        Swatch { swatch: #ffbf3c; selected: root.draw-color == #ffbf3c; clicked => { root.draw-color = #ffbf3c; colorpop.close(); } }
+                                                        Swatch { swatch: #9ccc65; selected: root.draw-color == #9ccc65; clicked => { root.draw-color = #9ccc65; colorpop.close(); } }
+                                                        Swatch { swatch: #3ed184; selected: root.draw-color == #3ed184; clicked => { root.draw-color = #3ed184; colorpop.close(); } }
+                                                    }
+                                                    HorizontalLayout {
+                                                        spacing: 10px;
+                                                        Swatch { swatch: #1de9b6; selected: root.draw-color == #1de9b6; clicked => { root.draw-color = #1de9b6; colorpop.close(); } }
+                                                        Swatch { swatch: #5b9eff; selected: root.draw-color == #5b9eff; clicked => { root.draw-color = #5b9eff; colorpop.close(); } }
+                                                        Swatch { swatch: #7c4dff; selected: root.draw-color == #7c4dff; clicked => { root.draw-color = #7c4dff; colorpop.close(); } }
+                                                        Swatch { swatch: #000000; selected: root.draw-color == #000000; clicked => { root.draw-color = #000000; colorpop.close(); } }
+                                                        Swatch { swatch: #ffffff; selected: root.draw-color == #ffffff; clicked => { root.draw-color = #ffffff; colorpop.close(); } }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                // Stroke-width slider — hidden for the text tool (uses size).
+                                if root.has-style && !root.has-text: VerticalLayout { alignment: center; Slider { width: 110px; minimum: 1; maximum: 30; value <=> root.stroke; } }
+                                if root.has-style && !root.has-text: VerticalLayout { alignment: center; Text { text: "\{Math.round(root.stroke)}"; color: Theme.fg-muted; font-size: Theme.text-small; min-width: 18px; } }
+                                // Text tool: font family + size pickers.
+                                // Font family + size as compact dropdowns — Segmenteds here
+                                // made the toolbar overflow (it's already button-dense).
+                                if root.has-text: VerticalLayout { alignment: center; Dropdown { width: 104px; options: [@tr("Sans"), @tr("Serif"), @tr("Mono"), @tr("Impact")]; current <=> root.text-font; } }
+                                if root.has-text: VerticalLayout { alignment: center; Dropdown { width: 64px; options: ["16", "24", "32", "48", "64"]; current <=> root.text-size-idx; } }
+                            }
+                        }
+                    }
+                    VerticalLayout { alignment: center; IconButton { icon: Icons.copy; a11y-label: @tr("Copy"); clicked => { root.copy(); } } }
+                    VerticalLayout { alignment: center; IconButton { icon: Icons.save; a11y-label: @tr("Save"); clicked => { root.save(); } } }
+                    VerticalLayout {
+                        alignment: center;
+                        WindowControls {
+                            is-maximized: root.is-maximized;
+                            minimize => { root.minimize(); }
+                            maximize => { root.maximize(); }
+                            close => { root.dismiss(); }
+                        }
+                    }
+                }
+            }
+            stage := Rectangle {
+                background: Theme.surface-input;
+                clip: true;
+                // Checkerboard canvas — generated theme-aware in Rust; cover-fit
+                // keeps the squares uniform and shows around the image when zoomed out.
+                // Fit the whole FRAME (photo + padding + aspect) with 32px room,
+                // never upscaling past 1×. Rust's map_shot mirrors this exactly.
+                property <float> fit: Math.min(Math.min(((stage.width / 1px) - 32) / Math.max(root.frame-w, 1), ((stage.height / 1px) - 32) / Math.max(root.frame-h, 1)), 1.0);
+                Image { source: root.checker; image-fit: cover; width: 100%; height: 100%; }
+                // ── Background frame: GPU scene-graph layers (no CPU compositor) ──
+                // Backdrop fill (solid / gradient brush, or the blurred miniature).
+                if root.bg-on: Rectangle {
+                    x: root.frame-x;
+                    y: root.frame-y;
+                    width: root.frame-w * root.shot-scale * 1px;
+                    height: root.frame-h * root.shot-scale * 1px;
+                    clip: true;
+                    background: root.bg-preset == 8 ? transparent : root.bg-fill-brush;
+                    if root.bg-preset == 8: Image { source: root.bg-blur-image; image-fit: cover; width: 100%; height: 100%; }
+                    // Drop-shadow caster — the photo (drawn next) covers it, so only
+                    // the soft shadow shows. Strength → shadow alpha (instant, GPU).
+                    Rectangle {
+                        x: (root.frame-w - root.base-w) / 2 * root.shot-scale * 1px;
+                        y: (root.frame-h - root.base-h) / 2 * root.shot-scale * 1px;
+                        width: root.base-w * root.shot-scale * 1px;
+                        height: root.base-h * root.shot-scale * 1px;
+                        border-radius: root.bg-radius * root.shot-scale * 1px;
+                        background: #000000;
+                        drop-shadow-blur: root.bg-shadow ? Math.max(16, Math.max(root.bg-padding, 16) * 0.6) * root.shot-scale * 1px : 0;
+                        drop-shadow-offset-y: root.bg-shadow ? Math.max(8, Math.max(root.bg-padding, 16) * 0.25) * root.shot-scale * 1px : 0;
+                        drop-shadow-color: root.bg-shadow ? Colors.black.with-alpha(0.7 * root.bg-shadow-strength / 100) : transparent;
+                    }
+                }
+                // The photo (annotated base) — scaled by fit × zoom, rounded-clipped
+                // when framed. Centred when the frame is off.
+                Rectangle {
+                    x: root.photo-x;
+                    y: root.photo-y;
+                    width: root.base-w * root.shot-scale * 1px;
+                    height: root.base-h * root.shot-scale * 1px;
+                    border-radius: root.bg-on ? root.bg-radius * root.shot-scale * 1px : 0;
+                    clip: true;
+                    Image { source: root.source; image-fit: ImageFit.fill; width: 100%; height: 100%; }
+                }
+                ta := TouchArea {
+                    width: 100%;
+                    height: 100%;
+                    mouse-cursor: root.tool == 7 ? MouseCursor.move : MouseCursor.crosshair;
+                    pointer-event(event) => {
+                        if (event.kind == PointerEventKind.down && root.tool == 7) {
+                            root.pick-move(ta.pressed-x, ta.pressed-y, ta.width, ta.height, root.zoom);
+                        }
+                        if (event.kind == PointerEventKind.down && root.tool == 10) {
+                            root.pen-start(ta.pressed-x, ta.pressed-y, ta.width, ta.height, root.draw-color, root.stroke, root.zoom);
+                        }
+                        if (event.kind == PointerEventKind.up && root.tool == 10) {
+                            root.pen-commit();
+                        }
+                        if (event.kind == PointerEventKind.up && root.tool != 7 && root.tool != 8 && root.tool != 10) {
+                            if (root.tool == 6) {
+                                // Commit any text in progress, then start a new one here.
+                                if (root.text-editing) {
+                                    root.add-text(root.text-x, root.text-y, stage.width, stage.height, root.text-buffer, root.draw-color, root.text-size, root.text-font, root.zoom);
+                                }
+                                root.text-x = ta.pressed-x;
+                                root.text-y = ta.pressed-y;
+                                root.text-buffer = "";
+                                root.text-editing = true;
+                                ti.focus();
+                            } else if (root.tool == 9) {
+                                root.add-badge(ta.pressed-x, ta.pressed-y, ta.width, ta.height, root.draw-color, root.stroke, root.zoom);
+                            } else {
+                                root.add-shape(root.tool, ta.pressed-x, ta.pressed-y, root.end-x, root.end-y, ta.width, ta.height, root.draw-color, root.stroke, root.zoom, root.fill);
+                            }
+                        }
+                    }
+                    moved => {
+                        if (root.tool == 7) {
+                            root.drag-move(ta.mouse-x, ta.mouse-y, ta.width, ta.height, root.zoom);
+                        }
+                        if (root.tool == 10) {
+                            root.pen-extend(ta.mouse-x, ta.mouse-y, ta.width, ta.height, root.zoom);
+                        }
+                    }
+                    // Rectangle
+                    if ta.pressed && root.tool == 1: Rectangle {
+                        x: Math.min(ta.pressed-x, root.end-x);
+                        y: Math.min(ta.pressed-y, root.end-y);
+                        width: Math.abs(root.end-x - ta.pressed-x);
+                        height: Math.abs(root.end-y - ta.pressed-y);
+                        background: root.fill ? root.draw-color.with-alpha(0.25) : transparent;
+                        border-width: root.draw-width;
+                        border-color: root.draw-color;
+                        border-radius: Math.min(self.width, self.height) * 0.08;
+                    }
+                    // Pixelate region marker (the blur itself is applied on commit).
+                    if ta.pressed && root.tool == 5: Rectangle {
+                        x: Math.min(ta.pressed-x, root.end-x);
+                        y: Math.min(ta.pressed-y, root.end-y);
+                        width: Math.abs(root.end-x - ta.pressed-x);
+                        height: Math.abs(root.end-y - ta.pressed-y);
+                        background: #ffffff20;
+                        border-width: 1px;
+                        border-color: #ffffffaa;
+                    }
+                    // Ellipse preview — a true oval (cubic-bezier quarters), so it
+                    // matches the committed shape instead of looking like a pill.
+                    if ta.pressed && root.tool == 2: Path {
+                        width: 100%;
+                        height: 100%;
+                        viewbox-width: ta.width / 1px;
+                        viewbox-height: ta.height / 1px;
+                        property <float> cx: (ta.pressed-x + root.end-x) / 2 / 1px;
+                        property <float> cy: (ta.pressed-y + root.end-y) / 2 / 1px;
+                        property <float> rx: Math.abs((root.end-x - ta.pressed-x) / 1px) / 2;
+                        property <float> ry: Math.abs((root.end-y - ta.pressed-y) / 1px) / 2;
+                        property <float> kx: rx * 0.5523;
+                        property <float> ky: ry * 0.5523;
+                        fill: root.fill ? root.draw-color.with-alpha(0.25) : transparent;
+                        stroke: root.draw-color;
+                        stroke-width: root.draw-width;
+                        MoveTo { x: parent.cx - parent.rx; y: parent.cy; }
+                        CubicTo { control-1-x: parent.cx - parent.rx; control-1-y: parent.cy - parent.ky; control-2-x: parent.cx - parent.kx; control-2-y: parent.cy - parent.ry; x: parent.cx; y: parent.cy - parent.ry; }
+                        CubicTo { control-1-x: parent.cx + parent.kx; control-1-y: parent.cy - parent.ry; control-2-x: parent.cx + parent.rx; control-2-y: parent.cy - parent.ky; x: parent.cx + parent.rx; y: parent.cy; }
+                        CubicTo { control-1-x: parent.cx + parent.rx; control-1-y: parent.cy + parent.ky; control-2-x: parent.cx + parent.kx; control-2-y: parent.cy + parent.ry; x: parent.cx; y: parent.cy + parent.ry; }
+                        CubicTo { control-1-x: parent.cx - parent.kx; control-1-y: parent.cy + parent.ry; control-2-x: parent.cx - parent.rx; control-2-y: parent.cy + parent.ky; x: parent.cx - parent.rx; y: parent.cy; }
+                        Close { }
+                    }
+                    // Arrow + line share a straight segment preview.
+                    if ta.pressed && (root.tool == 0 || root.tool == 3): Path {
+                        width: 100%;
+                        height: 100%;
+                        viewbox-width: ta.width / 1px;
+                        viewbox-height: ta.height / 1px;
+                        commands: "M \{ta.pressed-x / 1px} \{ta.pressed-y / 1px} L \{root.end-x / 1px} \{root.end-y / 1px}";
+                        stroke: root.draw-color;
+                        stroke-width: root.draw-width;
+                        fill: transparent;
+                    }
+                    // Highlighter — thick, translucent marker stroke.
+                    if ta.pressed && root.tool == 4: Path {
+                        width: 100%;
+                        height: 100%;
+                        viewbox-width: ta.width / 1px;
+                        viewbox-height: ta.height / 1px;
+                        commands: "M \{ta.pressed-x / 1px} \{ta.pressed-y / 1px} L \{root.end-x / 1px} \{root.end-y / 1px}";
+                        stroke: root.draw-color.with-alpha(0.4);
+                        stroke-width: root.draw-width * 4;
+                        fill: transparent;
+                    }
+                    // Crop overlay — dim outside + dashed-style frame + 8 handles.
+                    // A full-stage TouchArea owns the gesture: press picks a handle
+                    // (or the interior to move), drag updates the rect edges.
+                    if root.tool == 8 && root.crop-armed: cta := TouchArea {
+                        width: 100%;
+                        height: 100%;
+                        mouse-cursor: MouseCursor.crosshair;
+                        pointer-event(event) => {
+                            if (event.kind == PointerEventKind.down) {
+                                if (Math.abs(cta.pressed-x - root.crop-l) < 14px && Math.abs(cta.pressed-y - root.crop-t) < 14px) { root.crop-handle = 1; }
+                                else if (Math.abs(cta.pressed-x - root.crop-r) < 14px && Math.abs(cta.pressed-y - root.crop-t) < 14px) { root.crop-handle = 3; }
+                                else if (Math.abs(cta.pressed-x - root.crop-r) < 14px && Math.abs(cta.pressed-y - root.crop-b) < 14px) { root.crop-handle = 5; }
+                                else if (Math.abs(cta.pressed-x - root.crop-l) < 14px && Math.abs(cta.pressed-y - root.crop-b) < 14px) { root.crop-handle = 7; }
+                                else if (Math.abs(cta.pressed-x - (root.crop-l + root.crop-r) / 2) < 14px && Math.abs(cta.pressed-y - root.crop-t) < 14px) { root.crop-handle = 2; }
+                                else if (Math.abs(cta.pressed-x - root.crop-r) < 14px && Math.abs(cta.pressed-y - (root.crop-t + root.crop-b) / 2) < 14px) { root.crop-handle = 4; }
+                                else if (Math.abs(cta.pressed-x - (root.crop-l + root.crop-r) / 2) < 14px && Math.abs(cta.pressed-y - root.crop-b) < 14px) { root.crop-handle = 6; }
+                                else if (Math.abs(cta.pressed-x - root.crop-l) < 14px && Math.abs(cta.pressed-y - (root.crop-t + root.crop-b) / 2) < 14px) { root.crop-handle = 8; }
+                                else if (cta.pressed-x > root.crop-l && cta.pressed-x < root.crop-r && cta.pressed-y > root.crop-t && cta.pressed-y < root.crop-b) {
+                                    root.crop-handle = 9;
+                                    root.crop-l0 = root.crop-l;
+                                    root.crop-t0 = root.crop-t;
+                                    root.crop-w0 = root.crop-r - root.crop-l;
+                                    root.crop-h0 = root.crop-b - root.crop-t;
+                                } else {
+                                    root.crop-handle = 0;
+                                }
+                            }
+                            if (event.kind == PointerEventKind.up) { root.crop-handle = 0; }
+                        }
+                        moved => {
+                            if (root.crop-handle == 1) { root.crop-l = Math.clamp(cta.mouse-x, root.crop-ix0, root.crop-r - 16px); root.crop-t = Math.clamp(cta.mouse-y, root.crop-iy0, root.crop-b - 16px); }
+                            if (root.crop-handle == 2) { root.crop-t = Math.clamp(cta.mouse-y, root.crop-iy0, root.crop-b - 16px); }
+                            if (root.crop-handle == 3) { root.crop-r = Math.clamp(cta.mouse-x, root.crop-l + 16px, root.crop-ix1); root.crop-t = Math.clamp(cta.mouse-y, root.crop-iy0, root.crop-b - 16px); }
+                            if (root.crop-handle == 4) { root.crop-r = Math.clamp(cta.mouse-x, root.crop-l + 16px, root.crop-ix1); }
+                            if (root.crop-handle == 5) { root.crop-r = Math.clamp(cta.mouse-x, root.crop-l + 16px, root.crop-ix1); root.crop-b = Math.clamp(cta.mouse-y, root.crop-t + 16px, root.crop-iy1); }
+                            if (root.crop-handle == 6) { root.crop-b = Math.clamp(cta.mouse-y, root.crop-t + 16px, root.crop-iy1); }
+                            if (root.crop-handle == 7) { root.crop-l = Math.clamp(cta.mouse-x, root.crop-ix0, root.crop-r - 16px); root.crop-b = Math.clamp(cta.mouse-y, root.crop-t + 16px, root.crop-iy1); }
+                            if (root.crop-handle == 8) { root.crop-l = Math.clamp(cta.mouse-x, root.crop-ix0, root.crop-r - 16px); }
+                            if (root.crop-handle == 9) {
+                                root.crop-l = Math.clamp(root.crop-l0 + (cta.mouse-x - cta.pressed-x), root.crop-ix0, root.crop-ix1 - root.crop-w0);
+                                root.crop-t = Math.clamp(root.crop-t0 + (cta.mouse-y - cta.pressed-y), root.crop-iy0, root.crop-iy1 - root.crop-h0);
+                                root.crop-r = root.crop-l + root.crop-w0;
+                                root.crop-b = root.crop-t + root.crop-h0;
+                            }
+                        }
+                        Rectangle { x: 0; y: 0; width: parent.width; height: root.crop-t; background: #00000088; }
+                        Rectangle { x: 0; y: root.crop-b; width: parent.width; height: parent.height - root.crop-b; background: #00000088; }
+                        Rectangle { x: 0; y: root.crop-t; width: root.crop-l; height: root.crop-b - root.crop-t; background: #00000088; }
+                        Rectangle { x: root.crop-r; y: root.crop-t; width: parent.width - root.crop-r; height: root.crop-b - root.crop-t; background: #00000088; }
+                        Rectangle { x: root.crop-l; y: root.crop-t; width: root.crop-r - root.crop-l; height: root.crop-b - root.crop-t; background: transparent; border-width: 1.5px; border-color: #fffffff2; }
+                        CropHandle { cx: root.crop-l; cy: root.crop-t; }
+                        CropHandle { cx: root.crop-r; cy: root.crop-t; }
+                        CropHandle { cx: root.crop-r; cy: root.crop-b; }
+                        CropHandle { cx: root.crop-l; cy: root.crop-b; }
+                        CropHandle { pill-h: true; cx: (root.crop-l + root.crop-r) / 2; cy: root.crop-t; }
+                        CropHandle { pill-h: true; cx: (root.crop-l + root.crop-r) / 2; cy: root.crop-b; }
+                        CropHandle { pill-v: true; cx: root.crop-r; cy: (root.crop-t + root.crop-b) / 2; }
+                        CropHandle { pill-v: true; cx: root.crop-l; cy: (root.crop-t + root.crop-b) / 2; }
+                    }
+                    // Selection box + resize handles (move tool).
+                    if root.tool == 7 && root.sel-active: Rectangle {
+                        width: 100%;
+                        height: 100%;
+                        property <length> bl: root.sw2wx(Math.min(root.sel-x1, root.sel-x2));
+                        property <length> bt: root.sw2wy(Math.min(root.sel-y1, root.sel-y2));
+                        property <length> br: root.sw2wx(Math.max(root.sel-x1, root.sel-x2));
+                        property <length> bb: root.sw2wy(Math.max(root.sel-y1, root.sel-y2));
+                        Rectangle { x: parent.bl; y: parent.bt; width: parent.br - parent.bl; height: parent.bb - parent.bt; background: transparent; border-width: 1.5px; border-color: #fffffff2; }
+                        if root.sel-line: CropHandle { cx: root.sw2wx(root.sel-x1); cy: root.sw2wy(root.sel-y1); }
+                        if root.sel-line: CropHandle { cx: root.sw2wx(root.sel-x2); cy: root.sw2wy(root.sel-y2); }
+                        if root.sel-box: CropHandle { cx: parent.bl; cy: parent.bt; }
+                        if root.sel-box: CropHandle { cx: parent.br; cy: parent.bt; }
+                        if root.sel-box: CropHandle { cx: parent.br; cy: parent.bb; }
+                        if root.sel-box: CropHandle { cx: parent.bl; cy: parent.bb; }
+                        if root.sel-box: CropHandle { pill-h: true; cx: (parent.bl + parent.br) / 2; cy: parent.bt; }
+                        if root.sel-box: CropHandle { pill-h: true; cx: (parent.bl + parent.br) / 2; cy: parent.bb; }
+                        if root.sel-box: CropHandle { pill-v: true; cx: parent.br; cy: (parent.bt + parent.bb) / 2; }
+                        if root.sel-box: CropHandle { pill-v: true; cx: parent.bl; cy: (parent.bt + parent.bb) / 2; }
+                    }
+                }
+                // Crop action bar — dims + Cancel + Apply, docked bottom-centre.
+                if root.tool == 8 && root.crop-armed: Rectangle {
+                    width: cropbar.preferred-width + 10px;
+                    height: 40px;
+                    x: (stage.width - self.width) / 2;
+                    y: stage.height - self.height - 14px;
+                    background: Theme.surface-2;
+                    border-width: 1px;
+                    border-color: Theme.border-subtle;
+                    border-radius: Theme.radius-lg;
+                    cropbar := HorizontalLayout {
+                        padding-left: 12px;
+                        padding-right: 5px;
+                        spacing: 8px;
+                        VerticalLayout { alignment: center; Text { text: "\{Math.round((root.crop-r - root.crop-l) / 1px / root.shot-scale)} × \{Math.round((root.crop-b - root.crop-t) / 1px / root.shot-scale)}"; color: Theme.fg-muted; font-size: Theme.text-small; } }
+                        VerticalLayout {
+                            alignment: center;
+                            Rectangle {
+                                height: 30px;
+                                border-radius: Theme.radius-md;
+                                background: cnx.has-hover ? Theme.surface-3 : transparent;
+                                HorizontalLayout {
+                                    padding-left: 10px;
+                                    padding-right: 12px;
+                                    spacing: 5px;
+                                    VerticalLayout { alignment: center; Icon { source: Icons.close; size: 13px; color: Theme.fg-muted; } }
+                                    VerticalLayout { alignment: center; Text { text: @tr("Cancel"); color: Theme.fg; font-size: Theme.text-small; } }
+                                }
+                                cnx := Clickable { clicked => { root.tool = 0; } }
+                            }
+                        }
+                        VerticalLayout {
+                            alignment: center;
+                            Rectangle {
+                                height: 30px;
+                                border-radius: Theme.radius-md;
+                                background: apx.has-hover ? Theme.accent-hover : Theme.accent;
+                                HorizontalLayout {
+                                    padding-left: 10px;
+                                    padding-right: 12px;
+                                    spacing: 5px;
+                                    VerticalLayout { alignment: center; Icon { source: Icons.check; size: 13px; color: white; } }
+                                    VerticalLayout { alignment: center; Text { text: @tr("Apply"); color: white; font-size: Theme.text-small; font-weight: 600; } }
+                                }
+                                apx := Clickable { clicked => { root.crop-apply(root.crop-l, root.crop-t, root.crop-r - root.crop-l, root.crop-b - root.crop-t, ta.width, ta.height, root.zoom); root.tool = 0; } }
+                            }
+                        }
+                    }
+                }
+                // Zoom bar (bottom-right): −  ·  percent (click = fit)  ·  +
+                // Hidden during crop — that mode has its own action bar.
+                if root.tool != 8: Rectangle {
+                    width: zb.preferred-width + 6px;
+                    height: 32px;
+                    x: stage.width - self.width - 12px;
+                    y: stage.height - self.height - 12px;
+                    background: Theme.surface-2;
+                    border-width: 1px;
+                    border-color: Theme.border-subtle;
+                    border-radius: Theme.radius-md;
+                    zb := HorizontalLayout {
+                        padding: 3px;
+                        spacing: 2px;
+                        Rectangle {
+                            width: 28px;
+                            height: 26px;
+                            border-radius: Theme.radius-sm;
+                            background: zo.has-hover ? Theme.surface-3 : transparent;
+                            Text { text: "−"; color: Theme.fg; font-size: Theme.text-heading; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                            zo := TouchArea { mouse-cursor: pointer; clicked => { root.zoom = Math.max(root.zoom / 1.25, 0.25); } }
+                        }
+                        Rectangle {
+                            width: 52px;
+                            height: 26px;
+                            border-radius: Theme.radius-sm;
+                            background: zr.has-hover ? Theme.surface-3 : transparent;
+                            Text { text: "\{Math.round(stage.fit * root.zoom * 100)}%"; color: Theme.fg; font-size: Theme.text-small; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                            zr := TouchArea { mouse-cursor: pointer; clicked => { root.zoom = 1.0 / stage.fit; } }
+                        }
+                        Rectangle {
+                            width: 28px;
+                            height: 26px;
+                            border-radius: Theme.radius-sm;
+                            background: zi.has-hover ? Theme.surface-3 : transparent;
+                            Text { text: "+"; color: Theme.fg; font-size: 15px; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                            zi := TouchArea { mouse-cursor: pointer; clicked => { root.zoom = Math.min(root.zoom * 1.25, 4.0); } }
+                        }
+                    }
+                }
+                // Undo / redo — floating pill bottom-left, mirroring the zoom bar.
+                // Hidden during crop to keep that mode focused.
+                if root.tool != 8: Rectangle {
+                    x: 12px;
+                    y: stage.height - self.height - 12px;
+                    width: ub.preferred-width + 6px;
+                    height: 32px;
+                    background: Theme.surface-2;
+                    border-width: 1px;
+                    border-color: Theme.border-subtle;
+                    border-radius: Theme.radius-md;
+                    ub := HorizontalLayout {
+                        padding: 3px;
+                        spacing: 2px;
+                        Rectangle {
+                            width: 30px;
+                            height: 26px;
+                            border-radius: Theme.radius-sm;
+                            background: ud.has-hover ? Theme.surface-3 : transparent;
+                            Icon { source: Icons.restart; size: 15px; color: Theme.fg-muted; }
+                            ud := TouchArea { mouse-cursor: pointer; clicked => { root.undo(); } }
+                        }
+                        Rectangle {
+                            width: 30px;
+                            height: 26px;
+                            border-radius: Theme.radius-sm;
+                            background: rd.has-hover ? Theme.surface-3 : transparent;
+                            Icon { source: Icons.redo; size: 15px; color: Theme.fg-muted; }
+                            rd := TouchArea { mouse-cursor: pointer; clicked => { root.redo(); } }
+                        }
+                    }
+                }
+                // Text tool — inline editor placed at the click; Enter commits.
+                // Always present (parked off-screen when idle) so it's realized
+                // and can actually take focus; click focuses it via `ti.focus()`.
+                ti := TextInput {
+                    x: root.text-editing ? root.text-x : -3000px;
+                    y: root.text-y;
+                    width: 360px;
+                    color: root.draw-color;
+                    font-size: root.text-size * 1px;
+                    font-family: root.text-font-name;
+                    text <=> root.text-buffer;
+                    single-line: true;
+                    accepted => {
+                        root.add-text(root.text-x, root.text-y, stage.width, stage.height, root.text-buffer, root.draw-color, root.text-size, root.text-font, root.zoom);
+                        root.text-editing = false;
+                        fs.focus();
+                    }
+                }
+            }
+        }
+        // Background panel — an in-window overlay (not a PopupWindow) so it grows
+        // and shrinks with its content without the popup fixed-size glitch.
+        if root.bg-open: Rectangle {
+            width: 100%;
+            height: 100%;
+            TouchArea { clicked => { root.bg-open = false; } }
+            Rectangle {
+                x: Math.clamp(bgtrig.absolute-position.x - 133px, 8px, root.width - 308px);
+                y: bgtrig.absolute-position.y + 38px;
+                width: 300px;
+                height: bgpanel.preferred-height;
+                background: Theme.surface-1;
+                border-radius: Theme.radius-xl;
+                border-width: 1px;
+                border-color: Theme.border-subtle;
+                drop-shadow-blur: 24px;
+                drop-shadow-offset-y: 6px;
+                drop-shadow-color: #00000055;
+                TouchArea { }
+                bgpanel := VerticalLayout {
+                    padding: 14px;
+                    spacing: 14px;
+                    // ── Main panel: preset grid + (when on) controls ──
+                    if !root.bg-cp-open: VerticalLayout {
+                        spacing: 14px;
+                        HorizontalLayout {
+                            spacing: 8px;
+                            BgChip { swatch: Theme.surface-2; has-glyph: true; glyph: Icons.close; selected: root.bg-preset == 0; clicked => { root.bg-off(); } }
+                            BgChip { swatch: #0f172a; selected: root.bg-preset == 1; clicked => { root.pick-bg-preset(1); } }
+                            BgChip { swatch: #f8fafc; selected: root.bg-preset == 2; clicked => { root.pick-bg-preset(2); } }
+                            BgChip { swatch: @linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%); selected: root.bg-preset == 3; clicked => { root.pick-bg-preset(3); } }
+                            BgChip { swatch: @linear-gradient(135deg, #34d399 0%, #06b6d4 100%); selected: root.bg-preset == 4; clicked => { root.pick-bg-preset(4); } }
+                        }
+                        HorizontalLayout {
+                            spacing: 8px;
+                            BgChip { swatch: @linear-gradient(135deg, #fb923c 0%, #ec4899 100%); selected: root.bg-preset == 5; clicked => { root.pick-bg-preset(5); } }
+                            BgChip { swatch: @linear-gradient(135deg, #a855f7 0%, #2563eb 100%); selected: root.bg-preset == 6; clicked => { root.pick-bg-preset(6); } }
+                            BgChip { swatch: @linear-gradient(135deg, #f43f5e 0%, #7c2d12 100%); selected: root.bg-preset == 7; clicked => { root.pick-bg-preset(7); } }
+                            BgChip { swatch: Theme.surface-2; has-glyph: true; glyph: Icons.eye-off; selected: root.bg-preset == 8; clicked => { root.pick-bg-preset(8); } }
+                            // Custom colour — opens the HSV picker.
+                            Rectangle {
+                                horizontal-stretch: 1;
+                                height: self.width;
+                                border-radius: self.width * 0.26;
+                                background: root.bg-color;
+                                border-width: root.bg-preset == 9 ? 2.5px : 1px;
+                                border-color: root.bg-preset == 9 ? Theme.accent : Theme.border-strong;
+                                Text { text: "+"; color: white; font-size: 18px; font-weight: 600; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                                Clickable { clicked => { root.bg-open-picker(); root.bg-cp-open = true; } }
+                            }
+                        }
+                        // Controls — only meaningful when a backdrop is active.
+                        if root.bg-on: VerticalLayout {
+                            spacing: 12px;
+                            Rectangle { height: 1px; background: Theme.border-subtle; }
+                            VerticalLayout {
+                                spacing: 6px;
+                                Text { text: @tr("Aspect"); color: Theme.fg-muted; font-size: Theme.text-small; }
+                                Segmented { fill: true; width: parent.width; options: [@tr("Free"), "1:1", "16:9", "9:16", "4:3"]; selected <=> root.bg-aspect; changed(i) => { root.set-bg-aspect(i); } }
+                            }
+                            VerticalLayout {
+                                spacing: 6px;
+                                Text { text: @tr("Padding"); color: Theme.fg-muted; font-size: Theme.text-small; }
+                                Segmented { fill: true; width: parent.width; options: ["0", "16", "32", "64", "96"]; selected <=> root.bg-pad-idx; changed(i) => { root.set-bg-padding(i == 0 ? 0 : i == 1 ? 16 : i == 2 ? 32 : i == 3 ? 64 : 96); } }
+                            }
+                            VerticalLayout {
+                                spacing: 6px;
+                                Text { text: @tr("Radius"); color: Theme.fg-muted; font-size: Theme.text-small; }
+                                Segmented { fill: true; width: parent.width; options: ["0", "8", "16", "24", "32"]; selected <=> root.bg-rad-idx; changed(i) => { root.set-bg-radius(i == 0 ? 0 : i == 1 ? 8 : i == 2 ? 16 : i == 3 ? 24 : 32); } }
+                            }
+                            Rectangle { height: 1px; background: Theme.border-subtle; }
+                            HorizontalLayout {
+                                spacing: 8px;
+                                VerticalLayout { alignment: center; Text { text: @tr("Shadow"); color: Theme.fg; font-size: Theme.text-body; } }
+                                Rectangle { }
+                                VerticalLayout { alignment: center; Toggle { on <=> root.bg-shadow; toggled(v) => { root.set-bg-shadow(v); } } }
+                            }
+                            if root.bg-shadow: HorizontalLayout {
+                                spacing: 10px;
+                                VerticalLayout { alignment: center; Text { text: @tr("Strength"); color: Theme.fg-muted; font-size: Theme.text-body; } }
+                                VerticalLayout { alignment: center; horizontal-stretch: 1; Slider { minimum: 0; maximum: 100; value <=> root.bg-shadow-strength; changed(v) => { root.set-bg-strength(v); } } }
+                            }
+                            Rectangle {
+                                height: 32px;
+                                border-radius: Theme.radius-md;
+                                background: rst.has-hover ? Theme.surface-2 : transparent;
+                                border-width: 1px;
+                                border-color: Theme.border-subtle;
+                                Text { text: @tr("Reset background"); color: Theme.fg-muted; font-size: Theme.text-small; x: (parent.width - self.width) / 2; y: (parent.height - self.height) / 2; }
+                                rst := Clickable { clicked => { root.reset-bg(); } }
+                            }
+                        }
+                    }
+                    // ── Custom-colour picker (HSV square + hue bar + hex) ──
+                    if root.bg-cp-open: VerticalLayout {
+                        spacing: 12px;
+                        HorizontalLayout {
+                            spacing: 8px;
+                            VerticalLayout { alignment: center; Rectangle { width: 28px; height: 28px; border-radius: Theme.radius-sm; background: bkt.has-hover ? Theme.surface-2 : transparent; Icon { source: Icons.chevron-left; size: 16px; color: Theme.fg-muted; } bkt := Clickable { clicked => { root.bg-cp-open = false; } } } }
+                            VerticalLayout { horizontal-stretch: 1; alignment: center; Text { text: @tr("Custom colour"); color: Theme.fg; font-size: Theme.text-title; font-weight: 600; } }
+                        }
+                        Rectangle {
+                            height: 132px;
+                            border-radius: Theme.radius-md;
+                            clip: true;
+                            background: Colors.hsv(root.bg-hue * 360, 1, 1);
+                            Rectangle { width: 100%; height: 100%; background: @linear-gradient(90deg, #ffffff 0%, #ffffff00 100%); }
+                            Rectangle { width: 100%; height: 100%; background: @linear-gradient(0deg, #000000 0%, #00000000 100%); }
+                            Rectangle { width: 14px; height: 14px; border-radius: Theme.radius-md; border-width: 2px; border-color: white; x: root.bg-sat * parent.width - self.width / 2; y: (1 - root.bg-val) * parent.height - self.height / 2; }
+                            sva := TouchArea {
+                                moved => { root.bg-sat = Math.clamp(self.mouse-x / self.width, 0, 1); root.bg-val = 1 - Math.clamp(self.mouse-y / self.height, 0, 1); root.bg-solid(Colors.hsv(root.bg-hue * 360, root.bg-sat, root.bg-val), false); }
+                                clicked => { root.bg-sat = Math.clamp(self.mouse-x / self.width, 0, 1); root.bg-val = 1 - Math.clamp(self.mouse-y / self.height, 0, 1); root.bg-solid(Colors.hsv(root.bg-hue * 360, root.bg-sat, root.bg-val), false); }
+                            }
+                        }
+                        Rectangle {
+                            height: 16px;
+                            border-radius: Theme.radius-md;
+                            clip: true;
+                            background: @linear-gradient(90deg, #ff0000 0%, #ffff00 16.6%, #00ff00 33.3%, #00ffff 50%, #0000ff 66.6%, #ff00ff 83.3%, #ff0000 100%);
+                            Rectangle { width: 4px; height: 100%; border-radius: Theme.radius-xs; background: white; x: root.bg-hue * parent.width - self.width / 2; }
+                            hua := TouchArea {
+                                moved => { root.bg-hue = Math.clamp(self.mouse-x / self.width, 0, 1); root.bg-solid(Colors.hsv(root.bg-hue * 360, root.bg-sat, root.bg-val), false); }
+                                clicked => { root.bg-hue = Math.clamp(self.mouse-x / self.width, 0, 1); root.bg-solid(Colors.hsv(root.bg-hue * 360, root.bg-sat, root.bg-val), false); }
+                            }
+                        }
+                        Rectangle {
+                            height: 32px;
+                            border-radius: Theme.radius-md;
+                            background: Theme.surface-input;
+                            border-width: 1px;
+                            border-color: hx.has-focus ? Theme.accent : Theme.border-strong;
+                            clip: true;
+                            if root.bg-hex == "": Text { x: 10px; y: (parent.height - self.height) / 2; text: @tr("#hex"); color: Theme.fg-subtle; font-size: Theme.text-body; }
+                            hx := TextInput { x: 10px; width: parent.width - 20px; height: 100%; text <=> root.bg-hex; color: Theme.fg; font-size: Theme.text-body; single-line: true; vertical-alignment: center; accepted => { root.bg-hex-commit(root.bg-hex); } }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

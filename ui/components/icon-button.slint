@@ -1,0 +1,38 @@
+import { Theme } from "../theme.slint";
+import { Icon } from "icon.slint";
+import { Clickable } from "clickable.slint";
+import { Loader } from "loader.slint";
+
+// The single icon button for the whole app. Surfaces that need a different
+// footprint or look declare a thin `inherits IconButton` variant that only
+// overrides the size/style defaults — no logic is duplicated. Flags:
+// `busy` swaps the icon for a spinner (uploads / GIF export), `danger` gives the
+// destructive red hover (close / delete), `on-dark` switches to the translucent-
+// white hover for buttons sitting over media or dark chrome.
+export component IconButton inherits Rectangle {
+    in property <image> icon;
+    in property <string> a11y-label; // screen-reader name (icon-only → no visible text)
+    in property <bool> busy;
+    in property <bool> danger;
+    in property <bool> on-dark;
+    in property <length> icon-size: 15px;
+    callback clicked;
+    width: 32px;
+    height: 28px;
+    border-radius: Theme.radius-sm;
+    background: t.has-hover
+        ? (root.danger ? Theme.danger : (root.on-dark ? #ffffff1a : Theme.surface-2))
+        : transparent;
+    accessible-role: button;
+    accessible-label: root.a11y-label;
+    accessible-action-default => { root.clicked(); }
+    if !root.busy: Icon {
+        source: root.icon;
+        size: root.icon-size;
+        color: root.on-dark
+            ? (t.has-hover ? #ffffff : #ffffffb3)
+            : (root.danger && t.has-hover ? white : (t.has-hover ? Theme.fg : Theme.fg-muted));
+    }
+    if root.busy: Loader { size: root.icon-size; tint: root.on-dark ? #ffffffb3 : Theme.fg-muted; }
+    t := Clickable { clicked => { root.clicked(); } }
+}

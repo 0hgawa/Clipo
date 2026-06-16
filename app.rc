@@ -1,0 +1,6 @@
+// Windows resource: icon id 1 becomes the application icon (lowest-numbered
+// RT_GROUP_ICON), which Windows uses for the exe, taskbar, alt-tab and Explorer.
+1 ICON "assets/icon.ico"
+// Icon id 2 is the document-style image icon shown for files associated with
+// Clipo (referenced as "<exe>,-2" in the image-association DefaultIcon).
+2 ICON "assets/imageicon.ico"

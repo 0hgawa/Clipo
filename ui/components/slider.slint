@@ -1,0 +1,52 @@
+import { Theme } from "../theme.slint";
+
+// Fluent / Windows 11 slider — a 4px track (accent fill up to the value,
+// surface-3 after) with a 16px accent thumb that shrinks to 12px while dragging
+// and carries a surface-0 ring so it reads as floating. Drag or click anywhere
+// on the track to set.
+export component Slider inherits Rectangle {
+    in property <float> minimum: 0;
+    in property <float> maximum: 100;
+    in-out property <float> value: 0;
+    callback changed(float);
+    min-width: 90px;
+    height: 20px;
+    property <float> frac: root.maximum > root.minimum
+        ? Math.clamp((root.value - root.minimum) / (root.maximum - root.minimum), 0, 1)
+        : 0;
+    // Track + accent fill.
+    Rectangle {
+        y: (parent.height - self.height) / 2;
+        height: 4px;
+        border-radius: Theme.radius-xs;
+        background: Theme.surface-3;
+        Rectangle {
+            x: 0;
+            width: parent.width * root.frac;
+            height: 100%;
+            border-radius: Theme.radius-xs;
+            background: Theme.accent;
+        }
+    }
+    // Thumb.
+    Rectangle {
+        width: ta.pressed ? 12px : 16px;
+        height: self.width;
+        border-radius: self.width / 2;
+        x: root.frac * (root.width - self.width);
+        y: (parent.height - self.height) / 2;
+        background: Theme.accent;
+        border-width: 3px;
+        border-color: Theme.surface-0;
+        animate width { duration: 100ms; }
+    }
+    ta := TouchArea {
+        mouse-cursor: pointer;
+        moved => { root.set-value-at(self.mouse-x); }
+        clicked => { root.set-value-at(self.mouse-x); }
+    }
+    function set-value-at(mx: length) {
+        root.value = root.minimum + Math.clamp(mx / root.width, 0, 1) * (root.maximum - root.minimum);
+        root.changed(root.value);
+    }
+}

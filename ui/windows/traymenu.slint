@@ -1,0 +1,128 @@
+import { Theme, Icons } from "../theme.slint";
+import { Icon, WindowShell } from "../components.slint";
+
+// One menu row: icon + label, optional shortcut on the right. Quit uses the
+// danger tint. A custom tray menu (icon + label + kbd).
+component TrayItem inherits Rectangle {
+    in property <image> icon;
+    in property <string> label;
+    in property <string> shortcut;
+    in property <bool> danger;
+    callback clicked;
+    height: 32px;
+    border-radius: Theme.radius-sm;
+    background: ta.has-hover ? Theme.surface-2 : transparent;
+    HorizontalLayout {
+        padding-left: 10px;
+        padding-right: 10px;
+        spacing: 10px;
+        VerticalLayout {
+            alignment: center;
+            Icon {
+                source: root.icon;
+                size: 15px;
+                color: root.danger ? Theme.danger : (ta.has-hover ? Theme.fg : Theme.fg-muted);
+            }
+        }
+        VerticalLayout {
+            horizontal-stretch: 1;
+            alignment: center;
+            Text { text: root.label; color: root.danger ? Theme.danger : Theme.fg; font-size: Theme.text-body; }
+        }
+        if root.shortcut != "": VerticalLayout {
+            alignment: center;
+            Text { text: root.shortcut; color: Theme.fg-subtle; font-size: Theme.text-small; }
+        }
+    }
+    ta := TouchArea { mouse-cursor: pointer; clicked => { root.clicked(); } }
+}
+
+// Section divider — 1px line with breathing room above/below.
+component Sep inherits Rectangle {
+    height: 11px;
+    Rectangle { y: 5px; height: 1px; background: Theme.border-subtle; }
+}
+
+// Custom tray menu — a full-screen transparent window whose card is anchored
+// near the tray cursor. Click outside (backdrop) or Esc dismisses; picking an
+// item fires `pick(id)`. Replaces the OS-native popup so it carries the app's
+// theme, icons, and live shortcut labels.
+export component TrayMenuWindow inherits Window {
+    no-frame: true;
+    title: "Clipo Menu";
+    background: transparent;
+    default-font-size: Theme.text-body;
+    // A small popup (card + 16px transparent margin for the shadow), positioned
+    // at the cursor by the host and dismissed on focus-loss — NOT a fullscreen
+    // overlay, so it never blacks out hardware video planes behind it.
+    width: max(300px, list.preferred-width + 32px);
+    height: list.preferred-height + 32px;
+    callback pick(string);
+    callback dismiss();
+    in property <string> sc-region;
+    in property <string> sc-fullscreen;
+    in property <string> sc-window;
+    in property <string> sc-record;
+    in property <string> sc-menu;
+    in property <string> sc-ocr;
+    // While a recording runs, capture actions can't open (DXGI is exclusive to
+    // the recorder), so the menu swaps them for the recording controls — same
+    // set the floating bar offers, reachable when the bar is off-screen/hidden.
+    in property <bool> recording;
+    in property <bool> rec-paused;
+    in property <bool> audio-on;   // system-audio capture enabled → offer mute
+    in property <bool> mic-on;     // mic capture enabled → offer mute
+    in property <bool> audio-muted;
+    in property <bool> mic-muted;
+    forward-focus: fs;
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.dismiss(); }
+            accept
+        }
+    }
+    WindowShell {
+        bg: Theme.surface-0;
+        list := VerticalLayout {
+            padding: 6px;
+            spacing: 1px;
+            // ── Idle: capture + record actions ──
+            if !root.recording: VerticalLayout {
+                spacing: 1px;
+                TrayItem { icon: Icons.crop; label: @tr("Capture region"); shortcut: root.sc-region; clicked => { root.pick("region"); } }
+                TrayItem { icon: Icons.monitor; label: @tr("Capture fullscreen"); shortcut: root.sc-fullscreen; clicked => { root.pick("fullscreen"); } }
+                TrayItem { icon: Icons.app-window; label: @tr("Capture window"); shortcut: root.sc-window; clicked => { root.pick("window"); } }
+                TrayItem { icon: Icons.timer; label: @tr("Capture with timer"); clicked => { root.pick("timer"); } }
+                TrayItem { icon: Icons.scan-text; label: @tr("Extract text (OCR)"); shortcut: root.sc-ocr; clicked => { root.pick("ocr"); } }
+                Sep { }
+                TrayItem { icon: Icons.video; label: @tr("Record fullscreen"); shortcut: root.sc-record; clicked => { root.pick("record"); } }
+                TrayItem { icon: Icons.crop; label: @tr("Record region…"); clicked => { root.pick("record-region"); } }
+                Sep { }
+                TrayItem { icon: Icons.grid; label: @tr("All-in-one menu"); shortcut: root.sc-menu; clicked => { root.pick("menu"); } }
+            }
+            // ── Recording: playback controls (mirror the floating bar) ──
+            if root.recording: VerticalLayout {
+                spacing: 1px;
+                // Stop carries the red, mirroring the floating bar's red Stop
+                // pill; Discard stays neutral there too (a plain trash icon).
+                TrayItem { icon: Icons.square-filled; label: @tr("Stop recording"); danger: true; clicked => { root.pick("recording-stop"); } }
+                if !root.rec-paused: TrayItem { icon: Icons.pause; label: @tr("Pause recording"); clicked => { root.pick("recording-pause"); } }
+                if root.rec-paused: TrayItem { icon: Icons.play; label: @tr("Resume recording"); clicked => { root.pick("recording-pause"); } }
+                TrayItem { icon: Icons.restart; label: @tr("Restart recording"); clicked => { root.pick("recording-restart"); } }
+                TrayItem { icon: Icons.discard; label: @tr("Discard recording"); clicked => { root.pick("recording-discard"); } }
+                if root.audio-on || root.mic-on: Sep { }
+                if root.audio-on && !root.audio-muted: TrayItem { icon: Icons.volume; label: @tr("Mute system audio"); clicked => { root.pick("recording-mute-audio"); } }
+                if root.audio-on && root.audio-muted: TrayItem { icon: Icons.volume-off; label: @tr("Unmute system audio"); clicked => { root.pick("recording-mute-audio"); } }
+                if root.mic-on && !root.mic-muted: TrayItem { icon: Icons.mic; label: @tr("Mute microphone"); clicked => { root.pick("recording-mute-mic"); } }
+                if root.mic-on && root.mic-muted: TrayItem { icon: Icons.mic-off; label: @tr("Unmute microphone"); clicked => { root.pick("recording-mute-mic"); } }
+            }
+            // ── Shared tail (both states) ──
+            Sep { }
+            TrayItem { icon: Icons.photo; label: @tr("History…"); clicked => { root.pick("history"); } }
+            TrayItem { icon: Icons.folder-open; label: @tr("Open captures folder"); clicked => { root.pick("open-folder"); } }
+            TrayItem { icon: Icons.settings; label: @tr("Settings…"); clicked => { root.pick("settings"); } }
+            Sep { }
+            TrayItem { icon: Icons.log-out; label: @tr("Quit Clipo"); danger: true; clicked => { root.pick("quit"); } }
+        }
+    }
+}

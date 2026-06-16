@@ -1,0 +1,32 @@
+import { Theme } from "../theme.slint";
+import { Clickable } from "clickable.slint";
+
+// Windows 11 / Fluent toggle: an outlined transparent track with a small grey
+// thumb when off; an accent-filled track with a white thumb (nudged right and
+// a touch larger) when on. Shorter than a Material switch.
+export component Toggle inherits Rectangle {
+    in-out property <bool> on: false;
+    in property <string> a11y-label; // what the switch controls (set from the row title)
+    callback toggled(bool);
+    width: 40px;
+    height: 20px;
+    border-radius: Theme.radius-lg;
+    background: on ? Theme.accent : transparent;
+    border-width: 1px;
+    border-color: on ? transparent : Theme.fg-subtle;
+    accessible-role: switch;
+    accessible-label: root.a11y-label;
+    accessible-checked: root.on;
+    accessible-action-default => { on = !on; root.toggled(on); }
+    animate background, border-color { duration: 120ms; }
+    Rectangle {
+        width: on ? 14px : 12px;
+        height: self.width;
+        border-radius: self.width / 2;
+        background: on ? white : Theme.fg-subtle;
+        y: (parent.height - self.height) / 2;
+        x: on ? parent.width - self.width - 3px : 4px;
+        animate x, width, background { duration: 120ms; }
+    }
+    Clickable { clicked => { on = !on; root.toggled(on); } }
+}

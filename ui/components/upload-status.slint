@@ -1,0 +1,25 @@
+// Localized text for the upload/share status banner shown across the
+// post-capture panel, viewer, history and settings. The host sets a status
+// *code* (not a pre-built English sentence) plus an optional detail (an error
+// message), so @tr applies and the banner translates with the rest of the UI.
+// Centralized here so the wording lives in one place, not copied per window.
+export global UploadStatus {
+    // kind: 0 hidden · 1 uploading · 2 upload failed (detail) · 3 gif saved ·
+    // 4 gif failed (detail) · 5 disconnected · 6 fields incomplete ·
+    // 7 testing · 8 test failed (detail).
+    public pure function text(kind: int, detail: string) -> string {
+        kind == 1 ? @tr("Uploading…")
+        : kind == 2 ? @tr("Upload failed: {}", detail)
+        : kind == 3 ? @tr("GIF saved")
+        : kind == 4 ? @tr("GIF failed: {}", detail)
+        : kind == 5 ? @tr("Disconnected.")
+        : kind == 6 ? @tr("Fill every field to enable upload.")
+        : kind == 7 ? @tr("Testing…")
+        : kind == 8 ? @tr("Failed: {}", detail)
+        : ""
+    }
+    // The error kinds — drive the banner's red background.
+    public pure function failed(kind: int) -> bool {
+        kind == 2 || kind == 4 || kind == 8
+    }
+}
